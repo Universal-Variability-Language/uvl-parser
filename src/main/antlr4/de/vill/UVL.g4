@@ -104,8 +104,9 @@ group: groupName NEWLINE INDENT feature+ DEDENT;
 feature: FEATURENAME NEWLINE?;
 
 groupName
-    : OR
-    | OPTIONAL;
+    : OR        # OrGroup
+    | OPTIONAL  # OptionalGroup
+    ;
 
 OR: 'or';
 OPTIONAL: 'optional';
