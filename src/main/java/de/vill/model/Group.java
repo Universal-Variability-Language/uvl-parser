@@ -1,5 +1,7 @@
 package de.vill.model;
 
+import de.vill.config.Configuration;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,11 +21,11 @@ public abstract class Group {
         StringBuilder result = new StringBuilder();
 
         for(Feature feature : features){
-            String[] rootFeatureLines = feature.toString().split("\n");
+            String[] rootFeatureLines = feature.toString().split(Configuration.NEWLINE);
             for(String line : rootFeatureLines){
-                result.append("\t");
+                result.append(Configuration.TABULATOR);
                 result.append(line);
-                result.append("\n");
+                result.append(Configuration.NEWLINE);
             }
         }
 

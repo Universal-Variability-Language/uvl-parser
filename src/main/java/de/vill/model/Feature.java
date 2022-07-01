@@ -1,5 +1,7 @@
 package de.vill.model;
 
+import de.vill.config.Configuration;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,13 +21,13 @@ public class Feature {
     public String toString(){
         StringBuilder result = new StringBuilder();
         result.append(NAME);
-        result.append("\n");
+        result.append(Configuration.NEWLINE);
         for (Group group : children){
-            String[] groupLines = group.toString().split("\n");
+            String[] groupLines = group.toString().split(Configuration.NEWLINE);
             for(String line : groupLines){
-                result.append("\t");
+                result.append(Configuration.TABULATOR);
                 result.append(line);
-                result.append("\n");
+                result.append(Configuration.NEWLINE);
             }
         }
 

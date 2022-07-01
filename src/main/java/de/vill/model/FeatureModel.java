@@ -1,5 +1,7 @@
 package de.vill.model;
 
+import de.vill.config.Configuration;
+
 public class FeatureModel {
     private Feature rootFeature;
 
@@ -15,12 +17,12 @@ public class FeatureModel {
     public String toString(){
         StringBuilder result = new StringBuilder();
         result.append("features");
-        result.append("\n");
-        String[] rootFeatureLines = getRootFeature().toString().split("\n");
+        result.append(Configuration.NEWLINE);
+        String[] rootFeatureLines = getRootFeature().toString().split(Configuration.NEWLINE);
         for(String line : rootFeatureLines){
-            result.append("\t");
+            result.append(Configuration.TABULATOR);
             result.append(line);
-            result.append("\n");
+            result.append(Configuration.NEWLINE);
         }
 
         return result.toString();
