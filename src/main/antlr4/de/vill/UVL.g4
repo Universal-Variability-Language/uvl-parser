@@ -100,7 +100,9 @@ rootFeature: FEATURENAME NEWLINE INDENT group+ DEDENT;
 
 group
     : OR groupSpec          # OrGroup
+    | ALTERNATIVE groupSpec # AlternativeGroup
     | OPTIONAL groupSpec    # OptionalGroup
+    | MANDATORY groupSpec   # MandatoryGroup
     ;
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
@@ -108,7 +110,9 @@ groupSpec: NEWLINE INDENT feature+ DEDENT;
 feature: FEATURENAME NEWLINE (INDENT group+ DEDENT)?;
 
 OR: 'or';
+ALTERNATIVE: 'alternative';
 OPTIONAL: 'optional';
+MANDATORY: 'mandatory';
 
 FEATURENAME: [a-zA-Z][a-zA-Z0-9_]*;
 
