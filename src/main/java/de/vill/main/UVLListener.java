@@ -97,6 +97,10 @@ public class UVLListener extends UVLBaseListener {
         featureStack.peek().add(feature);
     }
 
+    @Override public void exitAttribute(UVLParser.AttributeContext ctx) {
+        //TODO
+    }
+
 
 
     public FeatureModel getFeatureModel() {

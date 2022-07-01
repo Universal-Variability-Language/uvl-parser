@@ -108,15 +108,32 @@ group
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
-feature: FEATURENAME NEWLINE (INDENT group+ DEDENT)?;
+feature: FEATURENAME attributes? NEWLINE (INDENT group+ DEDENT)?;
+
+attributes: CURLYBRACESOPEN (attribute (COMMA attribute)*)? CURLYBRACESCLOSE;
+
+attribute: key (' ' value)?;
+
+key: FEATURENAME;
+//TODO Add Float and Constraints as possible attribute
+//TODO vector und attribute in attribut klappt noch nicht klappt noch nicht
+value: BOOLEAN | INTEGER | STRING | attributes | vector;
+vector: '[' (value COMMA?)* ']';
 
 OR: 'or';
 ALTERNATIVE: 'alternative';
 OPTIONAL: 'optional';
 MANDATORY: 'mandatory';
 
-FEATURENAME: [a-zA-Z][a-zA-Z0-9_]*;
+
 INTEGER: '0' | [1-9][0-9]*;
+BOOLEAN: 'true' | 'false';
+STRING: '"'~[\r?\n]*'"';
+FEATURENAME: [a-zA-Z][a-zA-Z0-9_]*;
+
+COMMA: SPACES ',' SPACES;
+CURLYBRACESOPEN: SPACES '{' SPACES;
+CURLYBRACESCLOSE: SPACES '}' SPACES;
 
 SPACES : ' '* | '\t'*;
 
