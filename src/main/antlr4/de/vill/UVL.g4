@@ -95,9 +95,20 @@ tokens { INDENT, DEDENT }
 
 featureModel: features?;
 
-features: 'features' NEWLINE INDENT feature+ DEDENT;
+features: 'features' NEWLINE INDENT rootFeature DEDENT;
+
+rootFeature: FEATURENAME (NEWLINE INDENT group+ DEDENT)?;
+
+group: groupName NEWLINE INDENT feature+ DEDENT;
 
 feature: FEATURENAME NEWLINE?;
+
+groupName
+    : OR
+    | OPTIONAL;
+
+OR: 'or';
+OPTIONAL: 'optional';
 
 FEATURENAME: [a-zA-Z][a-zA-Z0-9_]*;
 
