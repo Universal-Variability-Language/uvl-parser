@@ -97,16 +97,17 @@ featureModel: features?;
 
 features: 'features' NEWLINE INDENT rootFeature DEDENT;
 
-rootFeature: FEATURENAME (NEWLINE INDENT group+ DEDENT)?;
+rootFeature: FEATURENAME NEWLINE INDENT group+ DEDENT;
 
-group: groupName NEWLINE INDENT feature+ DEDENT;
-
-feature: FEATURENAME NEWLINE?;
-
-groupName
-    : OR        # OrGroup
-    | OPTIONAL  # OptionalGroup
+group
+    : OR groupSpec          # OrGroup
+    | OPTIONAL groupSpec    # OptionalGroup
     ;
+
+groupSpec: NEWLINE INDENT feature+ DEDENT;
+
+feature: FEATURENAME NEWLINE (INDENT group+ DEDENT)?;
+
 
 OR: 'or';
 OPTIONAL: 'optional';

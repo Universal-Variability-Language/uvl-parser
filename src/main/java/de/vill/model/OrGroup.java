@@ -6,10 +6,7 @@ public class OrGroup extends Group {
         StringBuilder result = new StringBuilder();
         result.append("or");
         result.append("\n");
-        result.append("\t");
-        for(Feature feature : features){
-            result.append(feature.toString());
-        }
+        result.append(super.toString());
         return result.toString();
     }
 }

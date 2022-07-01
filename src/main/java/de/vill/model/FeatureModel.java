@@ -13,6 +13,16 @@ public class FeatureModel {
 
     @Override
     public String toString(){
-        return rootFeature.toString();
+        StringBuilder result = new StringBuilder();
+        result.append("features");
+        result.append("\n");
+        String[] rootFeatureLines = getRootFeature().toString().split("\n");
+        for(String line : rootFeatureLines){
+            result.append("\t");
+            result.append(line);
+            result.append("\n");
+        }
+
+        return result.toString();
     }
 }

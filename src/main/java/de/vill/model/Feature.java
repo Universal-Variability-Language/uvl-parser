@@ -17,6 +17,18 @@ public class Feature {
     }
     @Override
     public String toString(){
-        return NAME;
+        StringBuilder result = new StringBuilder();
+        result.append(NAME);
+        result.append("\n");
+        for (Group group : children){
+            String[] groupLines = group.toString().split("\n");
+            for(String line : groupLines){
+                result.append("\t");
+                result.append(line);
+                result.append("\n");
+            }
+        }
+
+        return result.toString();
     }
 }
