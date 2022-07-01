@@ -2,7 +2,6 @@ grammar UVL;
 
 tokens { INDENT, DEDENT }
 
-//TODO Handle other linebreaks than \n
 @lexer::members {
   // A queue where extra tokens are pushed on (see the NEWLINE lexer rule).
   private java.util.LinkedList<Token> tokens = new java.util.LinkedList<>();
@@ -108,24 +107,22 @@ groupSpec: NEWLINE INDENT feature+ DEDENT;
 
 feature: FEATURENAME NEWLINE (INDENT group+ DEDENT)?;
 
-
 OR: 'or';
 OPTIONAL: 'optional';
 
 FEATURENAME: [a-zA-Z][a-zA-Z0-9_]*;
 
-SPACES : ' '+ | '\t'+;
+SPACES : ' '* | '\t'*;
 
-//TODO Handle other linebreaks than \n
 NEWLINE
  : ( {atStartOfInput()}?   SPACES
-   | ('\n') SPACES?
+   | ( '\r'? '\n' | '\r' ) SPACES?
    )
    {
-     String newLine = getText().replaceAll("[^\n]+", "");
-     String spaces = getText().replaceAll("[\n]+", "");
+     String newLine = getText().replaceAll("[^\r\n]+", "");
+     String spaces = getText().replaceAll("[\r\n]+", "");
      int next = _input.LA(1);
-     if (opened > 0 || next == '\n' || next == '#') {
+     if (opened > 0 || next == '\r' || next == '\n' || next == '#') {
        // If we're inside a list or on a blank line, ignore all indents,
        // dedents and line breaks.
        skip();
