@@ -103,6 +103,7 @@ group
     | ALTERNATIVE groupSpec # AlternativeGroup
     | OPTIONAL groupSpec    # OptionalGroup
     | MANDATORY groupSpec   # MandatoryGroup
+    | '[' lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? ']' groupSpec    # CardinalityGroup
     ;
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
@@ -115,6 +116,7 @@ OPTIONAL: 'optional';
 MANDATORY: 'mandatory';
 
 FEATURENAME: [a-zA-Z][a-zA-Z0-9_]*;
+INTEGER: '0' | [1-9][0-9]*;
 
 SPACES : ' '* | '\t'*;
 

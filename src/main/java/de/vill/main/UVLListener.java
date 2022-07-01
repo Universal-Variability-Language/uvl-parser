@@ -3,6 +3,7 @@ package de.vill.main;
 import de.vill.UVLBaseListener;
 import de.vill.UVLParser;
 import de.vill.model.*;
+import org.antlr.v4.runtime.Token;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -60,6 +61,22 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void exitMandatoryGroup(UVLParser.MandatoryGroupContext ctx) {
         Group group = new MandatoryGroup();
+        List<Feature> featureList = featureStack.pop();
+        for(Feature feature : featureList){
+            group.addFeature(feature);
+        }
+        groupStack.peek().add(group);
+    }
+
+    @Override public void exitCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
+        CardinalityGroup group = new CardinalityGroup();
+        group.setLowerBound(ctx.lowerBound.getText());
+        if(ctx.upperBound != null) {
+            group.setUpperBound(ctx.upperBound.getText());
+        } else {
+            group.setUpperBound(ctx.lowerBound.getText());
+        }
+
         List<Feature> featureList = featureStack.pop();
         for(Feature feature : featureList){
             group.addFeature(feature);
