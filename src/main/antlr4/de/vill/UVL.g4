@@ -112,11 +112,10 @@ feature: FEATURENAME attributes? NEWLINE (INDENT group+ DEDENT)?;
 
 attributes: CURLYBRACESOPEN (attribute (COMMA attribute)*)? CURLYBRACESCLOSE;
 
-attribute: key (' ' value)?;
+attribute: key (SPACES? value)?;
 
 key: FEATURENAME;
 //TODO Add Float and Constraints as possible attribute
-//TODO vector und attribute in attribut klappt noch nicht klappt noch nicht
 value: BOOLEAN | INTEGER | STRING | attributes | vector;
 vector: '[' (value COMMA?)* ']';
 

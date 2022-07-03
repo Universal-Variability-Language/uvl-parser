@@ -5,15 +5,14 @@ import de.vill.UVLParser;
 import de.vill.model.*;
 import org.antlr.v4.runtime.Token;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class UVLListener extends UVLBaseListener {
     private FeatureModel featureModel = new FeatureModel();
     private Stack<List<Feature>> featureStack = new Stack<>();
     private Stack<List<Group>> groupStack = new Stack<>();
 
+    private Map<String, Object> attribtues = new HashMap<>();
 
     @Override public void enterRootFeature(UVLParser.RootFeatureContext ctx) {
         groupStack.push(new LinkedList<>());
@@ -94,11 +93,20 @@ public class UVLListener extends UVLBaseListener {
         for(Group group : groupList){
             feature.addChildren(group);
         }
+        for(Map.Entry<String, Object> entry : attribtues.entrySet()){
+            feature.setAttribute(entry.getKey(), entry.getValue());
+        }
+        attribtues = new HashMap<String, Object>();
         featureStack.peek().add(feature);
     }
 
+
     @Override public void exitAttribute(UVLParser.AttributeContext ctx) {
-        //TODO
+        if(ctx.value() != null) {
+            attribtues.put(ctx.key().getText(), ctx.value().getText());
+        }else {
+            attribtues.put(ctx.key().getText(), "");
+        }
     }
 
 

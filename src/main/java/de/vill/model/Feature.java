@@ -28,12 +28,18 @@ public class Feature {
         StringBuilder result = new StringBuilder();
         result.append(NAME);
         result.append(' ');
-        attributes.forEach((k, v) -> {
-            result.append(k);
-            result.append(' ');
-            result.append(v);
-            result.append(',');
-        });
+        if(!attributes.isEmpty()){
+            result.append("{");
+            attributes.forEach((k, v) -> {
+                result.append(k);
+                result.append(' ');
+                result.append(v);
+                result.append(',');
+            });
+            result.deleteCharAt(result.length() - 1);
+            result.append("}");
+        }
+
         result.append(Configuration.NEWLINE);
         for (Group group : children){
             result.append(Util.indentEachLine(group.toString()));
