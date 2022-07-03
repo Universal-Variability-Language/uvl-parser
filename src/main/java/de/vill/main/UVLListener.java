@@ -14,12 +14,16 @@ public class UVLListener extends UVLBaseListener {
 
     private Map<String, Object> attribtues = new HashMap<>();
 
+    @Override public void exitNamespace(UVLParser.NamespaceContext ctx) {
+        featureModel.setNamespace(ctx.REFERENCE().getText());
+    }
+
     @Override public void enterRootFeature(UVLParser.RootFeatureContext ctx) {
         groupStack.push(new LinkedList<>());
     }
 
     @Override public void exitRootFeature(UVLParser.RootFeatureContext ctx) {
-        Feature feature = new Feature(ctx.FEATURENAME().getText());
+        Feature feature = new Feature(ctx.REFERENCE().getText());
         List<Group> groupList = groupStack.pop();
         for(Group group : groupList){
             feature.addChildren(group);
@@ -88,7 +92,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitFeature(UVLParser.FeatureContext ctx) {
-        Feature feature = new Feature(ctx.FEATURENAME().getText());
+        Feature feature = new Feature(ctx.REFERENCE().getText());
         List<Group> groupList = groupStack.pop();
         for(Group group : groupList){
             feature.addChildren(group);

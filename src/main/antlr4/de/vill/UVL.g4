@@ -92,11 +92,13 @@ tokens { INDENT, DEDENT }
   }
 }
 
-featureModel: features?;
+featureModel: namespace? NEWLINE? features? EOF;
+
+namespace: 'namespace' SPACES REFERENCE;
 
 features: 'features' NEWLINE INDENT rootFeature DEDENT;
 
-rootFeature: FEATURENAME NEWLINE INDENT group+ DEDENT;
+rootFeature: REFERENCE NEWLINE INDENT group+ DEDENT;
 
 group
     : OR groupSpec          # OrGroup
@@ -108,13 +110,13 @@ group
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
-feature: FEATURENAME attributes? NEWLINE (INDENT group+ DEDENT)?;
+feature: REFERENCE attributes? NEWLINE (INDENT group+ DEDENT)?;
 
 attributes: CURLYBRACESOPEN (attribute (COMMA attribute)*)? CURLYBRACESCLOSE;
 
 attribute: key (SPACES? value)?;
 
-key: FEATURENAME;
+key: REFERENCE;
 //TODO Add Float and Constraints as possible attribute
 value: BOOLEAN | INTEGER | STRING | attributes | vector;
 vector: '[' (value COMMA?)* ']';
@@ -128,7 +130,9 @@ MANDATORY: 'mandatory';
 INTEGER: '0' | [1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
 STRING: '"'~[\r?\n]*'"';
-FEATURENAME: [a-zA-Z][a-zA-Z0-9_]*;
+
+REFERENCE: (ID '.')* ID;
+ID: [a-zA-Z][a-zA-Z0-9_]*;
 
 COMMA: SPACES ',' SPACES;
 CURLYBRACESOPEN: SPACES '{' SPACES;
