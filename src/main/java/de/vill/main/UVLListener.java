@@ -18,6 +18,16 @@ public class UVLListener extends UVLBaseListener {
         featureModel.setNamespace(ctx.REFERENCE().getText());
     }
 
+    @Override public void exitImportLine(UVLParser.ImportLineContext ctx) {
+        Import importLine;
+        if(ctx.alias != null){
+            importLine = new Import(ctx.ns.getText(), ctx.alias.getText());
+        }else{
+            importLine = new Import(ctx.ns.getText(), null);
+        }
+        featureModel.getImports().add(importLine);
+    }
+
     @Override public void enterRootFeature(UVLParser.RootFeatureContext ctx) {
         groupStack.push(new LinkedList<>());
     }

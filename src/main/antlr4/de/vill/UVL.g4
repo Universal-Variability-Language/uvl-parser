@@ -92,9 +92,12 @@ tokens { INDENT, DEDENT }
   }
 }
 
-featureModel: namespace? NEWLINE? features? EOF;
+featureModel: namespace? NEWLINE? imports? NEWLINE? features? EOF;
 
 namespace: 'namespace' SPACES REFERENCE;
+
+imports: 'imports' NEWLINE (INDENT importLine* DEDENT)?;
+importLine: ns=REFERENCE (SPACES 'as' SPACES alias=REFERENCE)? NEWLINE;
 
 features: 'features' NEWLINE INDENT rootFeature DEDENT;
 
