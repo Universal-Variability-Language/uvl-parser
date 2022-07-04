@@ -3,14 +3,28 @@ package de.vill.model;
 import de.vill.config.Configuration;
 import de.vill.util.Util;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class FeatureModel {
     private Feature rootFeature;
     private String namespace;
 
     private List<Import> imports = new LinkedList<>();
+
+    private List<Constraint> constraints = new LinkedList<>();
+
+    private Map<String, Feature> featureMap = new HashMap<>();
+
+    public List<Constraint> getConstraints() {
+        return constraints;
+    }
+
+    public Map<String, Feature> getFeatureMap() {
+        return featureMap;
+    }
 
     public Feature getRootFeature() {
         return rootFeature;
@@ -56,6 +70,16 @@ public class FeatureModel {
             result.append("features");
             result.append(Configuration.NEWLINE);
             result.append(Util.indentEachLine(getRootFeature().toString()));
+            result.append(Configuration.NEWLINE);
+        }
+        if(getConstraints().size() > 0) {
+            result.append("constraints");
+            result.append(Configuration.NEWLINE);
+            for(Constraint constraint : constraints){
+                result.append(Configuration.TABULATOR);
+                result.append(constraint.toString());
+                result.append(Configuration.NEWLINE);
+            }
         }
         return result.toString();
     }

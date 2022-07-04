@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Feature {
+    public String getNAME() {
+        return NAME;
+    }
+
     private final String NAME;
     private List<Group> children;
 

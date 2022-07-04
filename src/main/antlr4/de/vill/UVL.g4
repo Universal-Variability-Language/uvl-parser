@@ -92,7 +92,7 @@ tokens { INDENT, DEDENT }
   }
 }
 
-featureModel: namespace? NEWLINE? imports? NEWLINE? features? EOF;
+featureModel: namespace? NEWLINE? imports? NEWLINE? features? NEWLINE? constraints? EOF;
 
 namespace: 'namespace' SPACES REFERENCE;
 
@@ -104,7 +104,7 @@ features: 'features' NEWLINE INDENT rootFeature DEDENT;
 rootFeature: REFERENCE NEWLINE INDENT group+ DEDENT;
 
 group
-    : OR groupSpec          # OrGroup
+    : ORGROUP groupSpec          # OrGroup
     | ALTERNATIVE groupSpec # AlternativeGroup
     | OPTIONAL groupSpec    # OptionalGroup
     | MANDATORY groupSpec   # MandatoryGroup
@@ -124,10 +124,30 @@ key: REFERENCE;
 value: BOOLEAN | INTEGER | STRING | attributes | vector;
 vector: '[' (value COMMA?)* ']';
 
-OR: 'or';
+constraints: 'constraints' NEWLINE (INDENT constraintLine* DEDENT)?;
+
+constraintLine: constraint NEWLINE;
+
+constraint:
+    REFERENCE                               # LiteralConstraint
+    | BRACESOPEN constraint BRACESCLOSE     # ParenthesisConstraint
+    | NOT constraint                        # NotConstraint
+    | constraint AND constraint             # AndConstraint
+    | constraint OR constraint              # OrConstraint
+    | constraint IMPLICATION constraint     # ImplicationConstraint
+    | constraint EQUIVALENCE constraint     # EquivalenceConstraint
+	;
+
+ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
 OPTIONAL: 'optional';
 MANDATORY: 'mandatory';
+
+NOT: SPACES '!' SPACES;
+AND: SPACES '&' SPACES;
+OR: SPACES '|' SPACES;
+EQUIVALENCE: SPACES '<=>' SPACES;
+IMPLICATION: SPACES '=>' SPACES;
 
 
 INTEGER: '0' | [1-9][0-9]*;
@@ -140,6 +160,8 @@ ID: [a-zA-Z][a-zA-Z0-9_]*;
 COMMA: SPACES ',' SPACES;
 CURLYBRACESOPEN: SPACES '{' SPACES;
 CURLYBRACESCLOSE: SPACES '}' SPACES;
+BRACESOPEN: SPACES '(' SPACES;
+BRACESCLOSE: SPACES ')' SPACES;
 
 SPACES : ' '* | '\t'*;
 

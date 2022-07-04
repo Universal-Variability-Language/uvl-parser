@@ -12,6 +12,8 @@ public class UVLListener extends UVLBaseListener {
     private Stack<List<Feature>> featureStack = new Stack<>();
     private Stack<List<Group>> groupStack = new Stack<>();
 
+    private Stack<Constraint> constraintStack = new Stack<>();
+
     private Map<String, Object> attribtues = new HashMap<>();
 
     @Override public void exitNamespace(UVLParser.NamespaceContext ctx) {
@@ -112,6 +114,7 @@ public class UVLListener extends UVLBaseListener {
         }
         attribtues = new HashMap<String, Object>();
         featureStack.peek().add(feature);
+        featureModel.getFeatureMap().put(feature.getNAME(), feature);
     }
 
 
@@ -123,7 +126,52 @@ public class UVLListener extends UVLBaseListener {
         }
     }
 
+    @Override public void exitLiteralConstraint(UVLParser.LiteralConstraintContext ctx) {
+        Constraint constraint = new LiteralConstraint(ctx.REFERENCE().getText());
+        constraintStack.push(constraint);
+    }
 
+    @Override public void exitParenthesisConstraint(UVLParser.ParenthesisConstraintContext ctx) {
+        Constraint constraint = new ParenthesisConstraint(constraintStack.pop());
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitNotConstraint(UVLParser.NotConstraintContext ctx) {
+        Constraint constraint = new NotConstraint(constraintStack.pop());
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitAndConstraint(UVLParser.AndConstraintContext ctx) {
+        Constraint rightConstraint = constraintStack.pop();
+        Constraint leftConstraint = constraintStack.pop();
+        Constraint constraint = new AndConstraint(leftConstraint, rightConstraint);
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitOrConstraint(UVLParser.OrConstraintContext ctx) {
+        Constraint rightConstraint = constraintStack.pop();
+        Constraint leftConstraint = constraintStack.pop();
+        Constraint constraint = new OrConstraint(leftConstraint, rightConstraint);
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitImplicationConstraint(UVLParser.ImplicationConstraintContext ctx) {
+        Constraint rightConstraint = constraintStack.pop();
+        Constraint leftConstraint = constraintStack.pop();
+        Constraint constraint = new ImplicationConstraint(leftConstraint, rightConstraint);
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitEquivalenceConstraint(UVLParser.EquivalenceConstraintContext ctx) {
+        Constraint rightConstraint = constraintStack.pop();
+        Constraint leftConstraint = constraintStack.pop();
+        Constraint constraint = new EquivalenceConstraint(leftConstraint, rightConstraint);
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitConstraintLine(UVLParser.ConstraintLineContext ctx) {
+        featureModel.getConstraints().add(constraintStack.pop());
+    }
 
     public FeatureModel getFeatureModel() {
         return featureModel;
