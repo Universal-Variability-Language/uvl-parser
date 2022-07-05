@@ -13,7 +13,25 @@ public class Feature {
         return NAME;
     }
 
+    public String getLowerBound() {
+        return lowerBound;
+    }
+
+    public String getUpperBound() {
+        return upperBound;
+    }
+
+    public void setLowerBound(String lowerBound) {
+        this.lowerBound = lowerBound;
+    }
+
+    public void setUpperBound(String upperBound) {
+        this.upperBound = upperBound;
+    }
+
     private final String NAME;
+    private String lowerBound;
+    private String upperBound;
     private List<Group> children;
 
     private Map<String, Object> attributes;
@@ -32,6 +50,17 @@ public class Feature {
         StringBuilder result = new StringBuilder();
         result.append(NAME);
         result.append(' ');
+        if(!(upperBound == null & lowerBound == null)){
+            result.append("cardinality [");
+            if(getLowerBound().equals(getUpperBound())){
+                result.append(getLowerBound());
+            } else {
+                result.append(getLowerBound());
+                result.append("..");
+                result.append(getUpperBound());
+            }
+            result.append("] ");
+        }
         if(!attributes.isEmpty()){
             result.append("{");
             attributes.forEach((k, v) -> {

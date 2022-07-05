@@ -96,24 +96,26 @@ featureModel: namespace? NEWLINE? imports? NEWLINE? features? NEWLINE? constrain
 
 namespace: 'namespace' SPACES REFERENCE;
 
-imports: 'imports' NEWLINE (INDENT importLine* DEDENT)?;
+imports: 'imports' NEWLINE INDENT importLine* DEDENT;
 importLine: ns=REFERENCE (SPACES 'as' SPACES alias=REFERENCE)? NEWLINE;
 
-features: 'features' NEWLINE INDENT rootFeature DEDENT;
+features: 'features' NEWLINE INDENT feature DEDENT;
 
-rootFeature: REFERENCE NEWLINE INDENT group+ DEDENT;
+//rootFeature: REFERENCE NEWLINE INDENT group+ DEDENT;
 
 group
     : ORGROUP groupSpec          # OrGroup
     | ALTERNATIVE groupSpec # AlternativeGroup
     | OPTIONAL groupSpec    # OptionalGroup
     | MANDATORY groupSpec   # MandatoryGroup
-    | '[' lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? ']' groupSpec    # CardinalityGroup
+    | SQUAREBRACESOPEN lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? SQUAREBRACESCLOSE groupSpec    # CardinalityGroup
     ;
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
-feature: REFERENCE attributes? NEWLINE (INDENT group+ DEDENT)?;
+feature: REFERENCE featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
+
+featureCardinality: SPACES 'cardinality' SQUAREBRACESOPEN lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? SQUAREBRACESCLOSE;
 
 attributes: CURLYBRACESOPEN (attribute (COMMA attribute)*)? CURLYBRACESCLOSE;
 
@@ -122,9 +124,9 @@ attribute: key (SPACES? value)?;
 key: REFERENCE;
 //TODO Add Float and Constraints as possible attribute
 value: BOOLEAN | INTEGER | STRING | attributes | vector;
-vector: '[' (value COMMA?)* ']';
+vector: SQUAREBRACESOPEN (value COMMA?)* SQUAREBRACESCLOSE;
 
-constraints: 'constraints' NEWLINE (INDENT constraintLine* DEDENT)?;
+constraints: 'constraints' NEWLINE INDENT constraintLine* DEDENT;
 
 constraintLine: constraint NEWLINE;
 
@@ -186,6 +188,8 @@ ID: [a-zA-Z][a-zA-Z0-9_]*;
 COMMA: SPACES ',' SPACES;
 CURLYBRACESOPEN: SPACES '{' SPACES;
 CURLYBRACESCLOSE: SPACES '}' SPACES;
+SQUAREBRACESOPEN: SPACES '[' SPACES;
+SQUAREBRACESCLOSE: SPACES ']' SPACES;
 BRACESOPEN: SPACES '(' SPACES;
 BRACESCLOSE: SPACES ')' SPACES;
 

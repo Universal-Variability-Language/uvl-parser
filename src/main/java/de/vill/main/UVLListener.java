@@ -17,6 +17,8 @@ public class UVLListener extends UVLBaseListener {
 
     private Map<String, Object> attribtues = new HashMap<>();
 
+    private boolean featureCardinality = false;
+
     @Override public void exitNamespace(UVLParser.NamespaceContext ctx) {
         featureModel.setNamespace(ctx.REFERENCE().getText());
     }
@@ -31,12 +33,13 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getImports().add(importLine);
     }
 
-    @Override public void enterRootFeature(UVLParser.RootFeatureContext ctx) {
+    @Override public void enterFeatures(UVLParser.FeaturesContext ctx) {
         groupStack.push(new LinkedList<>());
+        featureStack.push(new LinkedList<>());
     }
 
-    @Override public void exitRootFeature(UVLParser.RootFeatureContext ctx) {
-        Feature feature = new Feature(ctx.REFERENCE().getText());
+    @Override public void exitFeatures(UVLParser.FeaturesContext ctx) {
+        Feature feature = featureStack.pop().get(0);
         List<Group> groupList = groupStack.pop();
         for(Group group : groupList){
             feature.addChildren(group);
@@ -102,20 +105,39 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void enterFeature(UVLParser.FeatureContext ctx) {
         groupStack.push(new LinkedList<>());
+        Feature feature = new Feature(ctx.REFERENCE().getText());
+        featureStack.peek().add(feature);
+        featureModel.getFeatureMap().put(feature.getNAME(), feature);
     }
 
     @Override public void exitFeature(UVLParser.FeatureContext ctx) {
-        Feature feature = new Feature(ctx.REFERENCE().getText());
+        List<Feature> featureList = featureStack.peek();
+        Feature feature = featureList.get(featureList.size()-1);
         List<Group> groupList = groupStack.pop();
         for(Group group : groupList){
             feature.addChildren(group);
         }
+
+        attribtues = new HashMap<String, Object>();
+    }
+
+    @Override public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
+        List<Feature> featureList = featureStack.peek();
+        Feature feature = featureList.get(featureList.size()-1);
+        feature.setLowerBound(ctx.lowerBound.getText());
+        if(ctx.upperBound != null) {
+            feature.setUpperBound(ctx.upperBound.getText());
+        }else {
+            feature.setUpperBound(ctx.lowerBound.getText());
+        }
+    }
+
+    @Override public void exitAttributes(UVLParser.AttributesContext ctx) {
+        List<Feature> featureList = featureStack.peek();
+        Feature feature = featureList.get(featureList.size()-1);
         for(Map.Entry<String, Object> entry : attribtues.entrySet()){
             feature.setAttribute(entry.getKey(), entry.getValue());
         }
-        attribtues = new HashMap<String, Object>();
-        featureStack.peek().add(feature);
-        featureModel.getFeatureMap().put(feature.getNAME(), feature);
     }
 
 
