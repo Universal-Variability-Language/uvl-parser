@@ -3,7 +3,6 @@ package de.vill.main;
 import de.vill.UVLBaseListener;
 import de.vill.UVLParser;
 import de.vill.model.*;
-import org.antlr.v4.runtime.Token;
 
 import java.util.*;
 
@@ -13,6 +12,8 @@ public class UVLListener extends UVLBaseListener {
     private Stack<List<Group>> groupStack = new Stack<>();
 
     private Stack<Constraint> constraintStack = new Stack<>();
+
+    private Stack<Expression> expressionStack = new Stack<>();
 
     private Map<String, Object> attribtues = new HashMap<>();
 
@@ -167,6 +168,65 @@ public class UVLListener extends UVLBaseListener {
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new EquivalenceConstraint(leftConstraint, rightConstraint);
         constraintStack.push(constraint);
+    }
+
+    @Override public void exitEqualEquation(UVLParser.EqualEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new EqualEquationConstraint(left, right);
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitLowerEquation(UVLParser.LowerEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new LowerEquationConstraint(left, right);
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitGreaterEquation(UVLParser.GreaterEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new GreaterEquationConstraint(left, right);
+        constraintStack.push(constraint);
+    }
+
+    @Override public void exitIntegerLiteralExpression(UVLParser.IntegerLiteralExpressionContext ctx) {
+        Expression expression = new LiteralExpression(ctx.INTEGER().getText());
+        expressionStack.push(expression);
+    }
+
+    @Override public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
+        Expression expression = new AttributeExpression(ctx.REFERENCE().getText());
+        expressionStack.push(expression);
+    }
+
+    @Override public void exitAddExpression(UVLParser.AddExpressionContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Expression expression = new AddExpression(left, right);
+        expressionStack.push(expression);
+    }
+
+    @Override public void exitSubExpression(UVLParser.SubExpressionContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Expression expression = new SubExpression(left, right);
+        expressionStack.push(expression);
+    }
+
+    @Override public void exitMulExpression(UVLParser.MulExpressionContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Expression expression = new MulExpression(left, right);
+        expressionStack.push(expression);
+    }
+
+    @Override public void exitDivExpresssion(UVLParser.DivExpresssionContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Expression expression = new DivExpression(left, right);
+        expressionStack.push(expression);
     }
 
     @Override public void exitConstraintLine(UVLParser.ConstraintLineContext ctx) {

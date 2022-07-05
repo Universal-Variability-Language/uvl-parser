@@ -128,8 +128,9 @@ constraints: 'constraints' NEWLINE (INDENT constraintLine* DEDENT)?;
 
 constraintLine: constraint NEWLINE;
 
-constraint:
-    REFERENCE                               # LiteralConstraint
+constraint
+    : equation                              # EquationConstraint
+    | REFERENCE                             # LiteralConstraint
     | BRACESOPEN constraint BRACESCLOSE     # ParenthesisConstraint
     | NOT constraint                        # NotConstraint
     | constraint AND constraint             # AndConstraint
@@ -137,6 +138,22 @@ constraint:
     | constraint IMPLICATION constraint     # ImplicationConstraint
     | constraint EQUIVALENCE constraint     # EquivalenceConstraint
 	;
+
+equation
+    : expression EQUAL expression       # EqualEquation
+    | expression LOWER expression       # LowerEquation
+    | expression GREATER expression     # GreaterEquation
+    ;
+
+expression:
+    INTEGER                                 # IntegerLiteralExpression
+    | REFERENCE                             # AttributeLiteralExpression
+    | BRACESOPEN expression BRACESCLOSE     # BracketExpression
+    | expression ADD expression             # AddExpression
+    | expression SUB expression             # SubExpression
+    | expression MUL expression             # MulExpression
+    | expression DIV expression             # DivExpresssion
+    ;
 
 ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
@@ -149,6 +166,15 @@ OR: SPACES '|' SPACES;
 EQUIVALENCE: SPACES '<=>' SPACES;
 IMPLICATION: SPACES '=>' SPACES;
 
+EQUAL: SPACES '==' SPACES;
+LOWER: SPACES '<' SPACES;
+GREATER: SPACES '>' SPACES;
+
+//TODO: Multiplication does for some reason not work without spaces (if we chose another symbol than * e.g. # it works)
+DIV: SPACES '/' SPACES;
+MUL: SPACES '*' SPACES;
+ADD: SPACES '+' SPACES;
+SUB: SPACES '-' SPACES;
 
 INTEGER: '0' | [1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
