@@ -149,12 +149,20 @@ equation
 
 expression:
     INTEGER                                 # IntegerLiteralExpression
+    | aggregateFunction                     # AggregateFunctionExpression
     | REFERENCE                             # AttributeLiteralExpression
     | BRACESOPEN expression BRACESCLOSE     # BracketExpression
     | expression ADD expression             # AddExpression
     | expression SUB expression             # SubExpression
     | expression MUL expression             # MulExpression
     | expression DIV expression             # DivExpresssion
+    ;
+
+aggregateFunction
+    : 'min' BRACESOPEN (REFERENCE COMMA)? REFERENCE BRACESCLOSE    # MinAggregateFunction
+    | 'max' BRACESOPEN (REFERENCE COMMA)? REFERENCE BRACESCLOSE    # MaxAggregateFunction
+    | 'sum' BRACESOPEN (REFERENCE COMMA)? REFERENCE BRACESCLOSE    # SumAggregateFunction
+    | 'avg' BRACESOPEN (REFERENCE COMMA)? REFERENCE BRACESCLOSE    # AvgAggregateFunction
     ;
 
 ORGROUP: 'or';

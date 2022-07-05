@@ -250,6 +250,46 @@ public class UVLListener extends UVLBaseListener {
         expressionStack.push(expression);
     }
 
+    @Override public void exitMinAggregateFunction(UVLParser.MinAggregateFunctionContext ctx) {
+        Expression expression;
+        if(ctx.REFERENCE().size() > 1) {
+            expression = new MinAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+        }else {
+            expression = new MinAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
+        }
+        expressionStack.push(expression);
+    }
+
+    @Override public void exitMaxAggregateFunction(UVLParser.MaxAggregateFunctionContext ctx) {
+        Expression expression;
+        if(ctx.REFERENCE().size() > 1) {
+            expression = new MaxAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+        }else {
+            expression = new MaxAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
+        }
+        expressionStack.push(expression);
+    }
+
+    @Override public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
+        Expression expression;
+        if(ctx.REFERENCE().size() > 1) {
+            expression = new SumAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+        }else {
+            expression = new SumAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
+        }
+        expressionStack.push(expression);
+    }
+
+    @Override public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
+        Expression expression;
+        if(ctx.REFERENCE().size() > 1) {
+            expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+        }else {
+            expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
+        }
+        expressionStack.push(expression);
+    }
+
     @Override public void exitConstraintLine(UVLParser.ConstraintLineContext ctx) {
         featureModel.getConstraints().add(constraintStack.pop());
     }
