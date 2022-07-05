@@ -17,6 +17,10 @@ public abstract class Group {
         features.add(feature);
     }
 
+    public List<Feature> getFeatures(){
+        return features;
+    }
+
     @Override
     public String toString(){
         StringBuilder result = new StringBuilder();

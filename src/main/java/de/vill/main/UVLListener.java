@@ -8,8 +8,8 @@ import java.util.*;
 
 public class UVLListener extends UVLBaseListener {
     private FeatureModel featureModel = new FeatureModel();
-    private Stack<List<Feature>> featureStack = new Stack<>();
-    private Stack<List<Group>> groupStack = new Stack<>();
+    private Stack<Feature> featureStack = new Stack<>();
+    private Stack<Group> groupStack = new Stack<>();
 
     private Stack<Constraint> constraintStack = new Stack<>();
 
@@ -34,60 +34,64 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterFeatures(UVLParser.FeaturesContext ctx) {
-        groupStack.push(new LinkedList<>());
-        featureStack.push(new LinkedList<>());
+        groupStack.push(new MandatoryGroup());
     }
 
     @Override public void exitFeatures(UVLParser.FeaturesContext ctx) {
-        Feature feature = featureStack.pop().get(0);
-        List<Group> groupList = groupStack.pop();
-        for(Group group : groupList){
-            feature.addChildren(group);
-        }
+        Group group = groupStack.pop();
+        Feature feature = group.getFeatures().get(0);
         featureModel.setRootFeature(feature);
     }
 
     @Override public void enterGroupSpec(UVLParser.GroupSpecContext ctx) {
-        featureStack.push(new LinkedList<>());
+
+    }
+
+    @Override public void enterOrGroup(UVLParser.OrGroupContext ctx) {
+        Group group = new OrGroup();
+        Feature feature = featureStack.peek();
+        feature.addChildren(group);
+        groupStack.push(group);
     }
 
     @Override public void exitOrGroup(UVLParser.OrGroupContext ctx) {
-        Group group = new OrGroup();
-        List<Feature> featureList = featureStack.pop();
-        for(Feature feature : featureList){
-            group.addFeature(feature);
-        }
-        groupStack.peek().add(group);
+        groupStack.pop();
+    }
+
+    @Override public void enterAlternativeGroup(UVLParser.AlternativeGroupContext ctx) {
+        Group group = new AlternativeGroup();
+        Feature feature = featureStack.peek();
+        feature.addChildren(group);
+        groupStack.push(group);
     }
 
     @Override public void exitAlternativeGroup(UVLParser.AlternativeGroupContext ctx) {
-        Group group = new AlternativeGroup();
-        List<Feature> featureList = featureStack.pop();
-        for(Feature feature : featureList){
-            group.addFeature(feature);
-        }
-        groupStack.peek().add(group);
+        groupStack.pop();
+    }
+
+    @Override public void enterOptionalGroup(UVLParser.OptionalGroupContext ctx) {
+        Group group = new OptionalGroup();
+        Feature feature = featureStack.peek();
+        feature.addChildren(group);
+        groupStack.push(group);
     }
 
     @Override public void exitOptionalGroup(UVLParser.OptionalGroupContext ctx) {
-        Group group = new OptionalGroup();
-        List<Feature> featureList = featureStack.pop();
-        for(Feature feature : featureList){
-            group.addFeature(feature);
-        }
-        groupStack.peek().add(group);
+        groupStack.pop();
+    }
+
+    @Override public void enterMandatoryGroup(UVLParser.MandatoryGroupContext ctx) {
+        Group group = new MandatoryGroup();
+        Feature feature = featureStack.peek();
+        feature.addChildren(group);
+        groupStack.push(group);
     }
 
     @Override public void exitMandatoryGroup(UVLParser.MandatoryGroupContext ctx) {
-        Group group = new MandatoryGroup();
-        List<Feature> featureList = featureStack.pop();
-        for(Feature feature : featureList){
-            group.addFeature(feature);
-        }
-        groupStack.peek().add(group);
+        groupStack.pop();
     }
 
-    @Override public void exitCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
+    @Override public void enterCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
         CardinalityGroup group = new CardinalityGroup();
         group.setLowerBound(ctx.lowerBound.getText());
         if(ctx.upperBound != null) {
@@ -96,34 +100,30 @@ public class UVLListener extends UVLBaseListener {
             group.setUpperBound(ctx.lowerBound.getText());
         }
 
-        List<Feature> featureList = featureStack.pop();
-        for(Feature feature : featureList){
-            group.addFeature(feature);
-        }
-        groupStack.peek().add(group);
+        Feature feature = featureStack.peek();
+        feature.addChildren(group);
+        groupStack.push(group);
+    }
+
+    @Override public void exitCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
+        groupStack.pop();
     }
 
     @Override public void enterFeature(UVLParser.FeatureContext ctx) {
-        groupStack.push(new LinkedList<>());
         Feature feature = new Feature(ctx.REFERENCE().getText());
-        featureStack.peek().add(feature);
+        featureStack.push(feature);
+        groupStack.peek().addFeature(feature);
         featureModel.getFeatureMap().put(feature.getNAME(), feature);
     }
 
     @Override public void exitFeature(UVLParser.FeatureContext ctx) {
-        List<Feature> featureList = featureStack.peek();
-        Feature feature = featureList.get(featureList.size()-1);
-        List<Group> groupList = groupStack.pop();
-        for(Group group : groupList){
-            feature.addChildren(group);
-        }
+       featureStack.pop();
 
         attribtues = new HashMap<String, Object>();
     }
 
     @Override public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
-        List<Feature> featureList = featureStack.peek();
-        Feature feature = featureList.get(featureList.size()-1);
+        Feature feature = featureStack.peek();
         feature.setLowerBound(ctx.lowerBound.getText());
         if(ctx.upperBound != null) {
             feature.setUpperBound(ctx.upperBound.getText());
@@ -133,8 +133,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitAttributes(UVLParser.AttributesContext ctx) {
-        List<Feature> featureList = featureStack.peek();
-        Feature feature = featureList.get(featureList.size()-1);
+        Feature feature = featureStack.peek();
         for(Map.Entry<String, Object> entry : attribtues.entrySet()){
             feature.setAttribute(entry.getKey(), entry.getValue());
         }
