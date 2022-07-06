@@ -94,10 +94,10 @@ tokens { INDENT, DEDENT }
 
 featureModel: namespace? NEWLINE? imports? NEWLINE? features? NEWLINE? constraints? EOF;
 
-namespace: 'namespace' SPACES REFERENCE;
+namespace: 'namespace' REFERENCE;
 
 imports: 'imports' NEWLINE INDENT importLine* DEDENT;
-importLine: ns=REFERENCE (SPACES 'as' SPACES alias=REFERENCE)? NEWLINE;
+importLine: ns=REFERENCE ('as' alias=REFERENCE)? NEWLINE;
 
 features: 'features' NEWLINE INDENT feature DEDENT;
 
@@ -115,11 +115,11 @@ groupSpec: NEWLINE INDENT feature+ DEDENT;
 
 feature: REFERENCE featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
 
-featureCardinality: SPACES 'cardinality' SQUAREBRACESOPEN lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? SQUAREBRACESCLOSE;
+featureCardinality: 'cardinality' SQUAREBRACESOPEN lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? SQUAREBRACESCLOSE;
 
 attributes: CURLYBRACESOPEN (attribute (COMMA attribute)*)? CURLYBRACESCLOSE;
 
-attribute: key (SPACES? value)?;
+attribute: key (value)?;
 
 key: REFERENCE;
 //TODO Add Float and Constraints as possible attribute
@@ -133,7 +133,7 @@ constraintLine: constraint NEWLINE;
 constraint
     : equation                              # EquationConstraint
     | REFERENCE                             # LiteralConstraint
-    | BRACESOPEN constraint BRACESCLOSE     # ParenthesisConstraint
+    | BRACESOPEN constraint BRACESCLOSE      # ParenthesisConstraint
     | NOT constraint                        # NotConstraint
     | constraint AND constraint             # AndConstraint
     | constraint OR constraint              # OrConstraint
@@ -170,21 +170,20 @@ ALTERNATIVE: 'alternative';
 OPTIONAL: 'optional';
 MANDATORY: 'mandatory';
 
-NOT: SPACES '!' SPACES;
-AND: SPACES '&' SPACES;
-OR: SPACES '|' SPACES;
-EQUIVALENCE: SPACES '<=>' SPACES;
-IMPLICATION: SPACES '=>' SPACES;
+NOT: '!';
+AND: '&';
+OR: '|';
+EQUIVALENCE: '<=>';
+IMPLICATION: '=>';
 
-EQUAL: SPACES '==' SPACES;
-LOWER: SPACES '<' SPACES;
-GREATER: SPACES '>' SPACES;
+EQUAL: '==';
+LOWER: '<';
+GREATER: '>';
 
-//TODO: Multiplication does for some reason not work without spaces (if we chose another symbol than * e.g. # it works)
-DIV: SPACES '/' SPACES;
-MUL: SPACES '*' SPACES;
-ADD: SPACES '+' SPACES;
-SUB: SPACES '-' SPACES;
+DIV: '/';
+MUL: '*';
+ADD: '+';
+SUB: '-';
 
 INTEGER: '0' | [1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
@@ -193,15 +192,13 @@ STRING: '"'~[\r?\n]*'"';
 REFERENCE: (ID '.')* ID;
 ID: [a-zA-Z][a-zA-Z0-9_]*;
 
-COMMA: SPACES ',' SPACES;
-CURLYBRACESOPEN: SPACES '{' SPACES;
-CURLYBRACESCLOSE: SPACES '}' SPACES;
-SQUAREBRACESOPEN: SPACES '[' SPACES;
-SQUAREBRACESCLOSE: SPACES ']' SPACES;
-BRACESOPEN: SPACES '(' SPACES;
-BRACESCLOSE: SPACES ')' SPACES;
-
-SPACES : ' '* | '\t'*;
+COMMA: ',';
+CURLYBRACESOPEN: '{';
+CURLYBRACESCLOSE: '}';
+SQUAREBRACESOPEN: '[';
+SQUAREBRACESCLOSE: ']';
+BRACESOPEN: '(';
+BRACESCLOSE: ')';
 
 NEWLINE
  : ( {atStartOfInput()}?   SPACES
@@ -211,12 +208,12 @@ NEWLINE
      String newLine = getText().replaceAll("[^\r\n]+", "");
      String spaces = getText().replaceAll("[\r\n]+", "");
      int next = _input.LA(1);
-     if (opened > 0 || next == '\r' || next == '\n' || next == '#') {
+
+     if (opened > 0 || next == '\r' || next == '\n') {
        // If we're inside a list or on a blank line, ignore all indents,
        // dedents and line breaks.
        skip();
-     }
-     else {
+     } else {
        emit(commonToken(NEWLINE, newLine));
        int indent = getIndentationCount(spaces);
        int previous = indents.isEmpty() ? 0 : indents.peek();
@@ -238,3 +235,13 @@ NEWLINE
      }
    }
  ;
+
+ SKIP_
+  : ( SPACES ) -> skip
+  ;
+
+
+
+  fragment SPACES
+   : [ \t]+
+   ;
