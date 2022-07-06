@@ -108,23 +108,23 @@ group
     | ALTERNATIVE groupSpec # AlternativeGroup
     | OPTIONAL groupSpec    # OptionalGroup
     | MANDATORY groupSpec   # MandatoryGroup
-    | SQUAREBRACESOPEN lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? SQUAREBRACESCLOSE groupSpec    # CardinalityGroup
+    | OPEN_BRACK lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? CLOSE_BRACK groupSpec    # CardinalityGroup
     ;
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
 feature: REFERENCE featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
 
-featureCardinality: 'cardinality' SQUAREBRACESOPEN lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? SQUAREBRACESCLOSE;
+featureCardinality: 'cardinality' OPEN_BRACK lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? CLOSE_BRACK;
 
-attributes: CURLYBRACESOPEN (attribute (COMMA attribute)*)? CURLYBRACESCLOSE;
+attributes: OPEN_BRACE (attribute (COMMA attribute)*)? CLOSE_BRACE;
 
 attribute: key (value)?;
 
 key: REFERENCE;
 //TODO Add Float and Constraints as possible attribute
 value: BOOLEAN | INTEGER | STRING | attributes | vector;
-vector: SQUAREBRACESOPEN (value COMMA?)* SQUAREBRACESCLOSE;
+vector: OPEN_BRACK (value COMMA?)* CLOSE_BRACK;
 
 constraints: 'constraints' NEWLINE INDENT constraintLine* DEDENT;
 
@@ -133,7 +133,7 @@ constraintLine: constraint NEWLINE;
 constraint
     : equation                              # EquationConstraint
     | REFERENCE                             # LiteralConstraint
-    | BRACESOPEN constraint BRACESCLOSE      # ParenthesisConstraint
+    | OPEN_PAREN constraint CLOSE_PAREN      # ParenthesisConstraint
     | NOT constraint                        # NotConstraint
     | constraint AND constraint             # AndConstraint
     | constraint OR constraint              # OrConstraint
@@ -151,7 +151,7 @@ expression:
     INTEGER                                 # IntegerLiteralExpression
     | aggregateFunction                     # AggregateFunctionExpression
     | REFERENCE                             # AttributeLiteralExpression
-    | BRACESOPEN expression BRACESCLOSE     # BracketExpression
+    | OPEN_PAREN expression CLOSE_PAREN     # BracketExpression
     | expression ADD expression             # AddExpression
     | expression SUB expression             # SubExpression
     | expression MUL expression             # MulExpression
@@ -159,10 +159,10 @@ expression:
     ;
 
 aggregateFunction
-    : 'min' BRACESOPEN (REFERENCE COMMA)? REFERENCE BRACESCLOSE    # MinAggregateFunction
-    | 'max' BRACESOPEN (REFERENCE COMMA)? REFERENCE BRACESCLOSE    # MaxAggregateFunction
-    | 'sum' BRACESOPEN (REFERENCE COMMA)? REFERENCE BRACESCLOSE    # SumAggregateFunction
-    | 'avg' BRACESOPEN (REFERENCE COMMA)? REFERENCE BRACESCLOSE    # AvgAggregateFunction
+    : 'min' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # MinAggregateFunction
+    | 'max' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # MaxAggregateFunction
+    | 'sum' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # SumAggregateFunction
+    | 'avg' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # AvgAggregateFunction
     ;
 
 ORGROUP: 'or';
@@ -193,12 +193,13 @@ REFERENCE: (ID '.')* ID;
 ID: [a-zA-Z][a-zA-Z0-9_]*;
 
 COMMA: ',';
-CURLYBRACESOPEN: '{';
-CURLYBRACESCLOSE: '}';
-SQUAREBRACESOPEN: '[';
-SQUAREBRACESCLOSE: ']';
-BRACESOPEN: '(';
-BRACESCLOSE: ')';
+
+OPEN_PAREN : '(' {this.opened += 1;};
+CLOSE_PAREN : ')' {this.opened -= 1;};
+OPEN_BRACK : '[' {this.opened += 1;};
+CLOSE_BRACK : ']' {this.opened -= 1;};
+OPEN_BRACE : '{' {this.opened += 1;};
+CLOSE_BRACE : '}' {this.opened -= 1;};
 
 NEWLINE
  : ( {atStartOfInput()}?   SPACES
