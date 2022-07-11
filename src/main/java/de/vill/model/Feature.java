@@ -48,6 +48,10 @@ public class Feature {
     }
     @Override
     public String toString(){
+        return toString(true);
+    }
+
+    public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
         result.append(NAME);
         result.append(' ');
@@ -62,21 +66,24 @@ public class Feature {
             }
             result.append("] ");
         }
-        if(!attributes.isEmpty()){
-            result.append("{");
-            attributes.forEach((k, v) -> {
-                result.append(k);
-                result.append(' ');
-                result.append(v);
-                result.append(',');
-            });
-            result.deleteCharAt(result.length() - 1);
-            result.append("}");
-        }
+        if(!isImported() || withSubmodels) {
+            if(!attributes.isEmpty()){
+                result.append("{");
+                attributes.forEach((k, v) -> {
+                    result.append(k);
+                    result.append(' ');
+                    result.append(v);
+                    result.append(',');
+                });
+                result.deleteCharAt(result.length() - 1);
+                result.append("}");
+            }
 
-        result.append(Configuration.NEWLINE);
-        for (Group group : children){
-            result.append(Util.indentEachLine(group.toString()));
+            result.append(Configuration.NEWLINE);
+
+            for (Group group : children) {
+                result.append(Util.indentEachLine(group.toString()));
+            }
         }
 
         return result.toString();

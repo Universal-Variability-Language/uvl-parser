@@ -77,7 +77,7 @@ public class FeatureModel {
         if(rootFeature != null) {
             result.append("features");
             result.append(Configuration.NEWLINE);
-            result.append(Util.indentEachLine(getRootFeature().toString()));
+            result.append(Util.indentEachLine(getRootFeature().toString(false)));
             result.append(Configuration.NEWLINE);
         }
         if(getOwnConstraints().size() > 0) {
@@ -90,5 +90,42 @@ public class FeatureModel {
             }
         }
         return result.toString();
+    }
+
+    public String composedModelToString(){
+        StringBuilder result = new StringBuilder();
+        if(namespace != null) {
+            result.append("namespace ");
+            result.append(namespace);
+            result.append(Configuration.NEWLINE);
+            result.append(Configuration.NEWLINE);
+        }
+        if(rootFeature != null) {
+            result.append("features");
+            result.append(Configuration.NEWLINE);
+            result.append(Util.indentEachLine(getRootFeature().toString()));
+            result.append(Configuration.NEWLINE);
+        }
+        if(getConstraints().size() > 0) {
+            result.append("constraints");
+            result.append(Configuration.NEWLINE);
+            for(Constraint constraint : constraints){
+                result.append(Configuration.TABULATOR);
+                result.append(constraint.toString());
+                result.append(Configuration.NEWLINE);
+            }
+        }
+        return result.toString();
+    }
+
+    public Map<String, String> decomposedModelToString(){
+        var models = new HashMap<String, String>();
+        models.put(getNamespace(), toString());
+
+        for(Import importLine : imports){
+            models.putAll(importLine.getFeatureModel().decomposedModelToString());
+        }
+
+        return models;
     }
 }
