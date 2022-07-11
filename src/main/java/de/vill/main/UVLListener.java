@@ -110,7 +110,28 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterFeature(UVLParser.FeatureContext ctx) {
-        Feature feature = new Feature(ctx.REFERENCE().getText());
+        String featureReference = ctx.REFERENCE().getText();
+
+        Feature feature = new Feature(featureReference);
+
+        if(featureReference.contains(".")){
+            int lastDotIndex = featureReference.lastIndexOf(".");
+            String subModelName = featureReference.substring(0, lastDotIndex);
+            String featureName = featureReference.substring(lastDotIndex + 1, featureReference.length());
+            boolean isReference = false;
+            for(Import importLine : featureModel.getImports()){
+                if(importLine.getAlias().equals(subModelName)){
+                    isReference = true;
+                    break;
+                }
+            }
+            if(isReference){
+                feature.setImported(true);
+                //System.out.println(subModelName);
+                //System.out.println(featureName);
+            }
+        }
+
         featureStack.push(feature);
         groupStack.peek().addFeature(feature);
         featureModel.getFeatureMap().put(feature.getNAME(), feature);
