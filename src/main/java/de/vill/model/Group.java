@@ -23,10 +23,14 @@ public abstract class Group {
 
     @Override
     public String toString(){
+        return toString(true);
+    }
+
+    public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
 
         for(Feature feature : features){
-            result.append(Util.indentEachLine(feature.toString()));
+            result.append(Util.indentEachLine(feature.toString(withSubmodels)));
         }
 
         return result.toString();

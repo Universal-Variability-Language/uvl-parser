@@ -118,17 +118,12 @@ public class UVLListener extends UVLBaseListener {
             int lastDotIndex = featureReference.lastIndexOf(".");
             String subModelName = featureReference.substring(0, lastDotIndex);
             String featureName = featureReference.substring(lastDotIndex + 1, featureReference.length());
-            boolean isReference = false;
             for(Import importLine : featureModel.getImports()){
                 if(importLine.getAlias().equals(subModelName)){
-                    isReference = true;
+                    feature.setImported(true);
+                    feature.setRelatedImport(importLine);
                     break;
                 }
-            }
-            if(isReference){
-                feature.setImported(true);
-                //System.out.println(subModelName);
-                //System.out.println(featureName);
             }
         }
 

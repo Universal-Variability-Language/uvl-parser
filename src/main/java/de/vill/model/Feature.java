@@ -40,6 +40,16 @@ public class Feature {
     }
 
     private String nameSpace;
+
+    public Import getRelatedImport() {
+        return relatedImport;
+    }
+
+    public void setRelatedImport(Import relatedImport) {
+        this.relatedImport = relatedImport;
+    }
+
+    private Import relatedImport;
     private String lowerBound;
     private String upperBound;
 
@@ -72,7 +82,15 @@ public class Feature {
 
     public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
-        result.append(NAME);
+        if(withSubmodels){
+            if(getNameSpace() != null){
+                result.append(getNameSpace());
+                result.append(".");
+            }
+            result.append(NAME);
+        }else{
+            result.append(NAME);
+        }
         result.append(' ');
         if(!(upperBound == null & lowerBound == null)){
             result.append("cardinality [");
@@ -101,7 +119,7 @@ public class Feature {
             result.append(Configuration.NEWLINE);
 
             for (Group group : children) {
-                result.append(Util.indentEachLine(group.toString()));
+                result.append(Util.indentEachLine(group.toString(withSubmodels)));
             }
         }
 

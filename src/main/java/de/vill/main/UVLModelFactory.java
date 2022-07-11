@@ -87,7 +87,7 @@ public class UVLModelFactory {
                 String subModelName = oldFeature.getNAME().substring(0, lastDotIndex);
                 String featureName = oldFeature.getNAME().substring(lastDotIndex + 1, oldFeature.getNAME().length());
 
-                Import relatedImport = getRelatedImport(featureModel, subModelName);
+                Import relatedImport = oldFeature.getRelatedImport();
 
                 Feature newFeature = relatedImport.getFeatureModel().getRootFeature();
                 newFeature.setNameSpace(oldFeature.getNameSpace());
@@ -95,21 +95,5 @@ public class UVLModelFactory {
                 oldFeature.getAttributes().putAll(newFeature.getAttributes());
             }
         }
-    }
-
-    private Import getRelatedImport(FeatureModel featureModel, String importName){
-        Import relatedImport = null;
-        for(Import importLine : featureModel.getImports()){
-            if (importLine.getAlias().equals(importName)){
-                relatedImport = importLine;
-                break;
-            }
-            Import tempRelatedImport = getRelatedImport(importLine.getFeatureModel(), importName);
-            if(tempRelatedImport != null){
-                relatedImport = tempRelatedImport;
-                break;
-            }
-        }
-        return relatedImport;
     }
 }
