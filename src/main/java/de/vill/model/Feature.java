@@ -33,6 +33,7 @@ public class Feature {
     private String lowerBound;
     private String upperBound;
     private List<Group> children;
+    private boolean isImported = false;
 
     private Map<String, Object> attributes;
 
@@ -87,5 +88,13 @@ public class Feature {
 
     public Object getAttribute(String name){
         return attributes.get(name);
+    }
+
+    public boolean isImported() {
+        return isImported;
+    }
+
+    public void setImported(boolean imported) {
+        isImported = imported;
     }
 }

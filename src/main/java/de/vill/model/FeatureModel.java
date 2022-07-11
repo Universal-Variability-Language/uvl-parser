@@ -16,10 +16,14 @@ public class FeatureModel {
 
     private List<Constraint> constraints = new LinkedList<>();
 
+    private List<Constraint> ownConstraints = new LinkedList<>();
     private Map<String, Feature> featureMap = new HashMap<>();
 
     public List<Constraint> getConstraints() {
         return constraints;
+    }
+    public List<Constraint> getOwnConstraints() {
+        return ownConstraints;
     }
 
     public Map<String, Feature> getFeatureMap() {
@@ -34,7 +38,11 @@ public class FeatureModel {
         this.rootFeature = rootFeature;
     }
     public String getNamespace() {
-        return namespace;
+        if (namespace == null){
+            return rootFeature.getNAME();
+        }else {
+            return namespace;
+        }
     }
     public void setNamespace(String namespace) {
         this.namespace = namespace;
@@ -72,10 +80,10 @@ public class FeatureModel {
             result.append(Util.indentEachLine(getRootFeature().toString()));
             result.append(Configuration.NEWLINE);
         }
-        if(getConstraints().size() > 0) {
+        if(getOwnConstraints().size() > 0) {
             result.append("constraints");
             result.append(Configuration.NEWLINE);
-            for(Constraint constraint : constraints){
+            for(Constraint constraint : ownConstraints){
                 result.append(Configuration.TABULATOR);
                 result.append(constraint.toString());
                 result.append(Configuration.NEWLINE);

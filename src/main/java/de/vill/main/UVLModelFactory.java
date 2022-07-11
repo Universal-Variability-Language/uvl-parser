@@ -3,6 +3,7 @@ package de.vill.main;
 import de.vill.UVLLexer;
 import de.vill.UVLParser;
 import de.vill.exception.ParseError;
+import de.vill.model.Feature;
 import de.vill.model.FeatureModel;
 import de.vill.model.Import;
 import org.antlr.v4.runtime.*;
@@ -37,6 +38,7 @@ public class UVLModelFactory {
         walker.walk(uvlListener, uvlParser.featureModel());
 
         FeatureModel featureModel = uvlListener.getFeatureModel();
+        featureModel.getOwnConstraints().addAll(featureModel.getConstraints());
 
         visitedImports.put(featureModel.getNamespace(), null);
 
@@ -48,13 +50,20 @@ public class UVLModelFactory {
                     String path = fileLoader.get(importLine.getNamespace());
                     Path filePath = Path.of(path);
                     String content = Files.readString(filePath);
-                    importLine.setFeatureModel(parseFeatureModelWithImports(content, fileLoader, visitedImports));
+                    FeatureModel subModel = parseFeatureModelWithImports(content, fileLoader, visitedImports);
+                    importLine.setFeatureModel(subModel);
                     visitedImports.put(importLine.getNamespace(), importLine);
+                    featureModel.getConstraints().addAll(subModel.getOwnConstraints());
+                    featureModel.getFeatureMap().putAll(subModel.getFeatureMap());
                 } catch (IOException e) {
                     throw new ParseError(0, 0, "Could not resolve import: " + e.getMessage(), e);
                 }
             }
         }
         return featureModel;
+    }
+
+    private void composeFeatureModelFromImports(FeatureModel featureModel){
+
     }
 }
