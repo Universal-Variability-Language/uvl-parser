@@ -30,6 +30,16 @@ public class Feature {
     }
 
     private final String NAME;
+
+    public String getNameSpace() {
+        return nameSpace;
+    }
+
+    public void setNameSpace(String nameSpace) {
+        this.nameSpace = nameSpace;
+    }
+
+    private String nameSpace;
     private String lowerBound;
     private String upperBound;
 

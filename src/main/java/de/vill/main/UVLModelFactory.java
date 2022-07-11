@@ -18,7 +18,9 @@ import java.util.Map;
 public class UVLModelFactory {
 
     public FeatureModel parse(String text, Map<String, String> fileLoader) throws ParseError{
-        return parseFeatureModelWithImports(text,fileLoader, new HashMap<>());
+        FeatureModel featureModel = parseFeatureModelWithImports(text,fileLoader, new HashMap<>());
+        composeFeatureModelFromImports(featureModel);
+        return featureModel;
     }
 
     public FeatureModel parseFeatureModelWithImports(String text, Map<String, String> fileLoader, Map<String, Import> visitedImports){
@@ -40,6 +42,7 @@ public class UVLModelFactory {
         FeatureModel featureModel = uvlListener.getFeatureModel();
         featureModel.getOwnConstraints().addAll(featureModel.getConstraints());
 
+
         visitedImports.put(featureModel.getNamespace(), null);
 
         for(Import importLine : featureModel.getImports()){
@@ -53,14 +56,26 @@ public class UVLModelFactory {
                     FeatureModel subModel = parseFeatureModelWithImports(content, fileLoader, visitedImports);
                     importLine.setFeatureModel(subModel);
                     visitedImports.put(importLine.getNamespace(), importLine);
-                    featureModel.getConstraints().addAll(subModel.getOwnConstraints());
-                    featureModel.getFeatureMap().putAll(subModel.getFeatureMap());
+                    featureModel.getConstraints().addAll(subModel.getConstraints());
+
+                    for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
+                        if(entry.getValue().getNameSpace() == null){
+                            entry.getValue().setNameSpace(importLine.getAlias());
+                        }else {
+                            entry.getValue().setNameSpace(importLine.getAlias() + "." + entry.getValue().getNameSpace());
+                        }
+                        if(!featureModel.getFeatureMap().containsKey(entry.getValue().getNameSpace() + "." + entry.getValue().getNAME())) {
+                            featureModel.getFeatureMap().put(entry.getValue().getNameSpace() + "." + entry.getValue().getNAME(), entry.getValue());
+                        }
+                    }
+
+                    //featureModel.getFeatureMap().putAll(subModel.getFeatureMap());
                 } catch (IOException e) {
                     throw new ParseError(0, 0, "Could not resolve import: " + e.getMessage(), e);
                 }
             }
         }
-        composeFeatureModelFromImports(featureModel);
+
         return featureModel;
     }
 
@@ -72,17 +87,29 @@ public class UVLModelFactory {
                 String subModelName = oldFeature.getNAME().substring(0, lastDotIndex);
                 String featureName = oldFeature.getNAME().substring(lastDotIndex + 1, oldFeature.getNAME().length());
 
-                Import relatedImport = null;
-                for(Import importLine : featureModel.getImports()){
-                    if (importLine.getAlias().equals(subModelName)){
-                        relatedImport = importLine;
-                        break;
-                    }
-                }
+                Import relatedImport = getRelatedImport(featureModel, subModelName);
+
                 Feature newFeature = relatedImport.getFeatureModel().getRootFeature();
+                newFeature.setNameSpace(oldFeature.getNameSpace());
                 oldFeature.getChildren().addAll(newFeature.getChildren());
                 oldFeature.getAttributes().putAll(newFeature.getAttributes());
             }
         }
+    }
+
+    private Import getRelatedImport(FeatureModel featureModel, String importName){
+        Import relatedImport = null;
+        for(Import importLine : featureModel.getImports()){
+            if (importLine.getAlias().equals(importName)){
+                relatedImport = importLine;
+                break;
+            }
+            Import tempRelatedImport = getRelatedImport(importLine.getFeatureModel(), importName);
+            if(tempRelatedImport != null){
+                relatedImport = tempRelatedImport;
+                break;
+            }
+        }
+        return relatedImport;
     }
 }
