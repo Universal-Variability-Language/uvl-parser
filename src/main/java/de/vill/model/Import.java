@@ -15,7 +15,11 @@ public class Import {
     }
 
     public String getAlias() {
-        return alias;
+        if(alias == null){
+            return namespace;
+        }else{
+            return alias;
+        }
     }
 
     public FeatureModel getFeatureModel(){return featureModel;}
