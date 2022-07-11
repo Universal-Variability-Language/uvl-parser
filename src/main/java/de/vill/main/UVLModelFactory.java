@@ -60,10 +60,29 @@ public class UVLModelFactory {
                 }
             }
         }
+        composeFeatureModelFromImports(featureModel);
         return featureModel;
     }
 
     private void composeFeatureModelFromImports(FeatureModel featureModel){
+        for (Map.Entry<String, Feature> entry : featureModel.getFeatureMap().entrySet()) {
+            if(entry.getValue().isImported()){
+                Feature oldFeature = entry.getValue();
+                int lastDotIndex = oldFeature.getNAME().lastIndexOf(".");
+                String subModelName = oldFeature.getNAME().substring(0, lastDotIndex);
+                String featureName = oldFeature.getNAME().substring(lastDotIndex + 1, oldFeature.getNAME().length());
 
+                Import relatedImport = null;
+                for(Import importLine : featureModel.getImports()){
+                    if (importLine.getAlias().equals(subModelName)){
+                        relatedImport = importLine;
+                        break;
+                    }
+                }
+                Feature newFeature = relatedImport.getFeatureModel().getRootFeature();
+                oldFeature.getChildren().addAll(newFeature.getChildren());
+                oldFeature.getAttributes().putAll(newFeature.getAttributes());
+            }
+        }
     }
 }

@@ -32,8 +32,17 @@ public class Feature {
     private final String NAME;
     private String lowerBound;
     private String upperBound;
+
+    public List<Group> getChildren() {
+        return children;
+    }
+
     private List<Group> children;
     private boolean isImported = false;
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
     private Map<String, Object> attributes;
 
