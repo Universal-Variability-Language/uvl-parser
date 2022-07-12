@@ -3,14 +3,17 @@ package de.vill.model;
 import de.vill.config.Configuration;
 import de.vill.util.Util;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FeatureModel {
     private Feature rootFeature;
     private String namespace;
+
+    public Set<LanguageLevel> getUsedLanguageLevels() {
+        return usedLanguageLevels;
+    }
+
+    private Set<LanguageLevel> usedLanguageLevels = new HashSet<>(){{add(LanguageLevel.SAT_LEVEL);}};
 
     private List<Import> imports = new LinkedList<>();
 

@@ -103,6 +103,8 @@ public class UVLListener extends UVLBaseListener {
         Feature feature = featureStack.peek();
         feature.addChildren(group);
         groupStack.push(group);
+
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.GROUP_CARDINALITY);
     }
 
     @Override public void exitCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
@@ -146,6 +148,9 @@ public class UVLListener extends UVLBaseListener {
         }else {
             feature.setUpperBound(ctx.lowerBound.getText());
         }
+
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.FEATURE_CARDINALITY);
     }
 
     @Override public void exitAttributes(UVLParser.AttributesContext ctx) {
@@ -319,6 +324,15 @@ public class UVLListener extends UVLBaseListener {
             expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
         }
         expressionStack.push(expression);
+    }
+
+    @Override public void enterAggregateFunctionExpression(UVLParser.AggregateFunctionExpressionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
+    }
+
+    @Override public void enterEquationConstraint(UVLParser.EquationConstraintContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
     }
 
     @Override public void exitConstraintLine(UVLParser.ConstraintLineContext ctx) {
