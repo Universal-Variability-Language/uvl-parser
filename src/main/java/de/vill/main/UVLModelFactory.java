@@ -38,26 +38,22 @@ public class UVLModelFactory {
         return featureModel;
     }
 
-    public FeatureModel dropLanguageLevel(Set<LanguageLevel> levelsToDrop){
-        return null;
-    }
+    public void dropLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop){}
 
-    public FeatureModel convertLanguageLevel(Set<LanguageLevel> levelsToConvert){
-        return null;
-    }
+    public void convertLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop){}
 
-    public FeatureModel dropExceptAcceptedLanguageLevel(Set<LanguageLevel> supportedLanguageLevel){
+    public void dropExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop, Set<LanguageLevel> supportedLanguageLevel){
         Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
         allLevels.removeAll(supportedLanguageLevel);
 
-        return dropLanguageLevel(allLevels);
+        dropLanguageLevel(featureModel, allLevels);
     }
 
-    public FeatureModel convertExceptAcceptedLanguageLevel(Set<LanguageLevel> supportedLanguageLevel){
+    public void convertExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop, Set<LanguageLevel> supportedLanguageLevel){
         Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
         allLevels.removeAll(supportedLanguageLevel);
 
-        return convertLanguageLevel(allLevels);
+        convertLanguageLevel(featureModel, allLevels);
     }
 
     private FeatureModel parseFeatureModelWithImports(String text, Function<String, String> fileLoader, Map<String, Import> visitedImports){
