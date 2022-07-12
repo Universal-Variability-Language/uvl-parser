@@ -165,7 +165,22 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitLiteralConstraint(UVLParser.LiteralConstraintContext ctx) {
-        Constraint constraint = new LiteralConstraint(ctx.REFERENCE().getText());
+        String featureReference = ctx.REFERENCE().getText();
+
+        var constraint = new LiteralConstraint(featureReference);
+
+        if(featureReference.contains(".")){
+            int lastDotIndex = featureReference.lastIndexOf(".");
+            String subModelName = featureReference.substring(0, lastDotIndex);
+            String featureName = featureReference.substring(lastDotIndex + 1, featureReference.length());
+            for(Import importLine : featureModel.getImports()){
+                if(importLine.getAlias().equals(subModelName)){
+                    constraint.setRelatedImport(importLine);
+                    break;
+                }
+            }
+        }
+        featureModel.getLiteralConstraints().add(constraint);
         constraintStack.push(constraint);
     }
 

@@ -10,7 +10,7 @@ public class LowerEquationConstraint extends Constraint{
     }
 
     @Override
-    public String toString(){
+    public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
         result.append(left.toString());
         result.append(" < ");

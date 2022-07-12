@@ -14,6 +14,12 @@ public class FeatureModel {
 
     private List<Import> imports = new LinkedList<>();
 
+    public List<LiteralConstraint> getLiteralConstraints() {
+        return literalConstraints;
+    }
+
+    private List<LiteralConstraint> literalConstraints = new LinkedList<>();
+
     private List<Constraint> constraints = new LinkedList<>();
 
     private List<Constraint> ownConstraints = new LinkedList<>();
@@ -85,7 +91,7 @@ public class FeatureModel {
             result.append(Configuration.NEWLINE);
             for(Constraint constraint : ownConstraints){
                 result.append(Configuration.TABULATOR);
-                result.append(constraint.toString());
+                result.append(constraint.toString(false));
                 result.append(Configuration.NEWLINE);
             }
         }
@@ -111,7 +117,7 @@ public class FeatureModel {
             result.append(Configuration.NEWLINE);
             for(Constraint constraint : constraints){
                 result.append(Configuration.TABULATOR);
-                result.append(constraint.toString());
+                result.append(constraint.toString(true));
                 result.append(Configuration.NEWLINE);
             }
         }

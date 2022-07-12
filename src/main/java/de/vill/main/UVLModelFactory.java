@@ -6,6 +6,7 @@ import de.vill.exception.ParseError;
 import de.vill.model.Feature;
 import de.vill.model.FeatureModel;
 import de.vill.model.Import;
+import de.vill.model.LiteralConstraint;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class UVLModelFactory {
@@ -20,6 +23,7 @@ public class UVLModelFactory {
     public FeatureModel parse(String text, Map<String, String> fileLoader) throws ParseError{
         FeatureModel featureModel = parseFeatureModelWithImports(text,fileLoader, new HashMap<>());
         composeFeatureModelFromImports(featureModel);
+        referenceFeaturesInConstraints(featureModel);
         return featureModel;
     }
 
@@ -93,6 +97,40 @@ public class UVLModelFactory {
                 newFeature.setNameSpace(oldFeature.getNameSpace());
                 oldFeature.getChildren().addAll(newFeature.getChildren());
                 oldFeature.getAttributes().putAll(newFeature.getAttributes());
+                relatedImport.getFeatureModel().setRootFeature(oldFeature);
+            }
+        }
+    }
+
+    private List<FeatureModel> createSubModelList(FeatureModel featureModel){
+        var subModelList = new LinkedList<FeatureModel>();
+        for(Import importLine : featureModel.getImports()){
+            subModelList.add(importLine.getFeatureModel());
+            subModelList.addAll(createSubModelList(importLine.getFeatureModel()));
+        }
+        return subModelList;
+    }
+
+    private void referenceFeaturesInConstraints(FeatureModel featureModel){
+        var subModelList = createSubModelList(featureModel);
+        var literalConstraints = featureModel.getLiteralConstraints();
+        for(LiteralConstraint constraint : literalConstraints){
+            Feature referencedFeature = featureModel.getFeatureMap().get(constraint.getLiteral());
+            if(referencedFeature == null){
+                throw new ParseError(0,0,"Feature " + constraint + " is referenced in a constraint in" + featureModel.getNamespace() + " but does not exist as feature in the tree!",null);
+            }else {
+                constraint.setFeature(referencedFeature);
+            }
+        }
+        for(FeatureModel subModel : subModelList){
+            literalConstraints = subModel.getLiteralConstraints();
+            for(LiteralConstraint constraint : literalConstraints){
+                Feature referencedFeature = subModel.getFeatureMap().get(constraint.getLiteral());
+                if(referencedFeature == null){
+                    throw new ParseError(0,0,"Feature " + constraint + " is referenced in a constraint in" + subModel.getNamespace() + " but does not exist as feature in the tree!",null);
+                }else {
+                    constraint.setFeature(referencedFeature);
+                }
             }
         }
     }

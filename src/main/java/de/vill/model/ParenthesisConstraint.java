@@ -12,10 +12,10 @@ public class ParenthesisConstraint extends Constraint{
     }
 
     @Override
-    public String toString(){
+    public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
         result.append("(");
-        result.append(content);
+        result.append(content.toString(withSubmodels));
         result.append(")");
         return result.toString();
     }

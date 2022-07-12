@@ -18,11 +18,11 @@ public class AndConstraint extends Constraint{
     }
 
     @Override
-    public String toString(){
+    public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
-        result.append(left);
+        result.append(left.toString(withSubmodels));
         result.append(" & ");
-        result.append(right);
+        result.append(right.toString(withSubmodels));
         return result.toString();
     }
 }
