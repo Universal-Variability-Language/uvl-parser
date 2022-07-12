@@ -38,7 +38,27 @@ public class UVLModelFactory {
         return featureModel;
     }
 
+    public FeatureModel dropLanguageLevel(Set<LanguageLevel> levelsToDrop){
+        return null;
+    }
 
+    public FeatureModel convertLanguageLevel(Set<LanguageLevel> levelsToConvert){
+        return null;
+    }
+
+    public FeatureModel dropExceptAcceptedLanguageLevel(Set<LanguageLevel> supportedLanguageLevel){
+        Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
+        allLevels.removeAll(supportedLanguageLevel);
+
+        return dropLanguageLevel(allLevels);
+    }
+
+    public FeatureModel convertExceptAcceptedLanguageLevel(Set<LanguageLevel> supportedLanguageLevel){
+        Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
+        allLevels.removeAll(supportedLanguageLevel);
+
+        return convertLanguageLevel(allLevels);
+    }
 
     private FeatureModel parseFeatureModelWithImports(String text, Function<String, String> fileLoader, Map<String, Import> visitedImports){
         UVLLexer uvlLexer = new UVLLexer(CharStreams.fromString(text));
