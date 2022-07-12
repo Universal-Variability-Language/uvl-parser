@@ -48,7 +48,7 @@ public class UVLModelFactory {
      * @throws ParseError If there is an error during parsing or the construction of the feature model
      */
     public FeatureModel parse(String text) throws ParseError {
-        Function<String, String> fileloaderFunction = x -> "./" + x.replace(".", System.getProperty("file.separator")) + ".uvl";
+        Function<String, String> fileloaderFunction = x -> System.getProperty("user.dir") + System.getProperty("file.separator") + x.replace(".", System.getProperty("file.separator")) + ".uvl";
         return parse(text, fileloaderFunction);
     }
 
