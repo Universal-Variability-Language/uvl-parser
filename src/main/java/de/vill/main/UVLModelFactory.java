@@ -3,20 +3,14 @@ package de.vill.main;
 import de.vill.UVLLexer;
 import de.vill.UVLParser;
 import de.vill.exception.ParseError;
-import de.vill.model.Feature;
-import de.vill.model.FeatureModel;
-import de.vill.model.Import;
-import de.vill.model.LiteralConstraint;
+import de.vill.model.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class UVLModelFactory {
@@ -46,7 +40,7 @@ public class UVLModelFactory {
 
 
 
-    public FeatureModel parseFeatureModelWithImports(String text, Function<String, String> fileLoader, Map<String, Import> visitedImports){
+    private FeatureModel parseFeatureModelWithImports(String text, Function<String, String> fileLoader, Map<String, Import> visitedImports){
         UVLLexer uvlLexer = new UVLLexer(CharStreams.fromString(text));
         CommonTokenStream tokens = new CommonTokenStream(uvlLexer);
         UVLParser uvlParser = new UVLParser(tokens);
