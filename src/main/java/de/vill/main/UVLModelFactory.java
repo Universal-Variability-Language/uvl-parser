@@ -17,17 +17,36 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class UVLModelFactory {
 
-    public FeatureModel parse(String text, Map<String, String> fileLoader) throws ParseError{
+    public FeatureModel parse(String text, Map<String, String> fileLoader) throws ParseError {
+        Function<String, String> fileloaderFunction = x -> fileLoader.get(x);
+        return parse(text, fileloaderFunction);
+    }
+
+    public FeatureModel parse(String text, String path) throws ParseError {
+
+        Function<String, String> fileloaderFunction = x -> path + System.getProperty("file.separator") + x.replace(".", System.getProperty("file.separator")) + ".uvl";
+        return parse(text, fileloaderFunction);
+    }
+
+    public FeatureModel parse(String text) throws ParseError {
+        Function<String, String> fileloaderFunction = x -> "./" + x.replace(".", System.getProperty("file.separator")) + ".uvl";
+        return parse(text, fileloaderFunction);
+    }
+
+    public FeatureModel parse(String text, Function<String, String> fileLoader) throws ParseError{
         FeatureModel featureModel = parseFeatureModelWithImports(text,fileLoader, new HashMap<>());
         composeFeatureModelFromImports(featureModel);
         referenceFeaturesInConstraints(featureModel);
         return featureModel;
     }
 
-    public FeatureModel parseFeatureModelWithImports(String text, Map<String, String> fileLoader, Map<String, Import> visitedImports){
+
+
+    public FeatureModel parseFeatureModelWithImports(String text, Function<String, String> fileLoader, Map<String, Import> visitedImports){
         UVLLexer uvlLexer = new UVLLexer(CharStreams.fromString(text));
         CommonTokenStream tokens = new CommonTokenStream(uvlLexer);
         UVLParser uvlParser = new UVLParser(tokens);
@@ -54,7 +73,7 @@ public class UVLModelFactory {
                 throw new ParseError(0,0, "Cyclic import detected! " + "The import of " + importLine.getNamespace() + " in " + featureModel.getNamespace() + " creates a cycle", null);
             }else {
                 try {
-                    String path = fileLoader.get(importLine.getNamespace());
+                    String path = fileLoader.apply(importLine.getNamespace());
                     Path filePath = Path.of(path);
                     String content = Files.readString(filePath);
                     FeatureModel subModel = parseFeatureModelWithImports(content, fileLoader, visitedImports);
