@@ -15,22 +15,50 @@ import java.util.function.Function;
 
 public class UVLModelFactory {
 
+    /**
+     * This method parses the givel text and returns a {@link FeatureModel} if everything is fine or throws a {@link ParseError} if something went wrong.
+     * @param text A String that describes a feature model in UVL notation.
+     * @param fileLoader A Map, that maps every imported feature model from its namespace to a path, where the acutal model is
+     * @return A {@link FeatureModel} based on the uvl text
+     * @throws ParseError If there is an error during parsing or the construction of the feature model
+     */
     public FeatureModel parse(String text, Map<String, String> fileLoader) throws ParseError {
         Function<String, String> fileloaderFunction = x -> fileLoader.get(x);
         return parse(text, fileloaderFunction);
     }
 
+    /**
+     * This method parses the givel text and returns a {@link FeatureModel} if everything is fine or throws a {@link ParseError} if something went wrong.
+     * @param text A String that describes a feature model in UVL notation.
+     * @param path Path to the directory where all submodels are stored.
+     * @return A {@link FeatureModel} based on the uvl text
+     * @throws ParseError If there is an error during parsing or the construction of the feature model
+     */
     public FeatureModel parse(String text, String path) throws ParseError {
 
         Function<String, String> fileloaderFunction = x -> path + System.getProperty("file.separator") + x.replace(".", System.getProperty("file.separator")) + ".uvl";
         return parse(text, fileloaderFunction);
     }
 
+    /**
+     * This method parses the givel text and returns a {@link FeatureModel} if everything is fine or throws a {@link ParseError} if something went wrong.
+     * It assumes that all the necessary submodels are in the current working directory.
+     * @param text A String that describes a feature model in UVL notation.
+     * @return A {@link FeatureModel} based on the uvl text
+     * @throws ParseError If there is an error during parsing or the construction of the feature model
+     */
     public FeatureModel parse(String text) throws ParseError {
         Function<String, String> fileloaderFunction = x -> "./" + x.replace(".", System.getProperty("file.separator")) + ".uvl";
         return parse(text, fileloaderFunction);
     }
 
+    /**
+     * This method parses the givel text and returns a {@link FeatureModel} if everything is fine or throws a {@link ParseError} if something went wrong.
+     * @param text A String that describes a feature model in UVL notation.
+     * @param fileLoader A {@link Function}, that maps every imported feature model from its namespace to a path, where the acutal model is
+     * @return A {@link FeatureModel} based on the uvl text
+     * @throws ParseError If there is an error during parsing or the construction of the feature model
+     */
     public FeatureModel parse(String text, Function<String, String> fileLoader) throws ParseError{
         FeatureModel featureModel = parseFeatureModelWithImports(text,fileLoader, new HashMap<>());
         composeFeatureModelFromImports(featureModel);
@@ -38,10 +66,32 @@ public class UVLModelFactory {
         return featureModel;
     }
 
+    //TODO What if the level set is not consistent e.g. remove SMT_LEVEL but the feature model has AGGREGATE_FUNCTION level? -> remove does automatically as well or throw error?
+    /**
+     * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified {@link LanguageLevel}.
+     * It does that by removing the concepts of the level without any conversion strategies. This means information
+     * is lost and the configuration space of the feature model will most likely change. It can be used, if the actual
+     * conversion strategies are not performant enough.
+     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
+     * @param levelsToDrop All levels that should be removed from the feature model.
+     */
     public void dropLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop){}
 
+    /**
+     * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified {@link UVLModelFactory#dropLanguageLevel(FeatureModel, Set)}.
+     * It does that applying different conversion strategies, trying to keep as much information as possible. This means
+     * that the conversion can take a long time and my not be feasible for large models. If so try to just drop the levels instead.
+     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
+     * @param levelsToDrop All levels that should be removed from the feature model.
+     */
     public void convertLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop){}
 
+    /**
+     * This method takes a {@link FeatureModel} and transforms it so that it only uses the specified {@link LanguageLevel}.
+     * It just inverts the Set and calls {@link UVLModelFactory#dropLanguageLevel(FeatureModel, Set)}.
+     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
+     * @param levelsToDrop All levels that can stay in the feature model.
+     */
     public void dropExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop, Set<LanguageLevel> supportedLanguageLevel){
         Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
         allLevels.removeAll(supportedLanguageLevel);
@@ -49,6 +99,12 @@ public class UVLModelFactory {
         dropLanguageLevel(featureModel, allLevels);
     }
 
+    /**
+     * This method takes a {@link FeatureModel} and transforms it so that it only uses the specified {@link LanguageLevel}.
+     * It just inverts the Set and calls {@link UVLModelFactory#convertLanguageLevel(FeatureModel, Set)}.
+     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
+     * @param levelsToDrop All levels that can stay in the feature model.
+     */
     public void convertExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop, Set<LanguageLevel> supportedLanguageLevel){
         Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
         allLevels.removeAll(supportedLanguageLevel);
