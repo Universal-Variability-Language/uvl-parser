@@ -66,6 +66,10 @@ public class FeatureModel {
         return imports;
     }
 
+    /**
+     * Prints the current featuremodel without composing it with the other models.
+     * @return the uvl representation of the current model without submodels
+     */
     @Override
     public String toString(){
         StringBuilder result = new StringBuilder();
@@ -107,6 +111,12 @@ public class FeatureModel {
         return result.toString();
     }
 
+    /**
+     * WARNING: This method prints the composed model in a uvl LIKE syntax. The output is not valid UVL.
+     * This is because imported features are named with <namespace>.<featurename> but dots are not allowed
+     * in uvl names
+     * @return uvl LIKE string representing the UVL model
+     */
     public String composedModelToString(){
         StringBuilder result = new StringBuilder();
         if(namespace != null) {
@@ -133,6 +143,10 @@ public class FeatureModel {
         return result.toString();
     }
 
+    /**
+     * Prints the feature model and all it submodels to uvl according to its original decomposition.
+     * @return a map with namespaces of featuremodel and submodels as key and uvl strings as value
+     */
     public Map<String, String> decomposedModelToString(){
         var models = new HashMap<String, String>();
         models.put(getNamespace(), toString());
