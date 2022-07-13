@@ -10,11 +10,11 @@ public class AddExpression extends Expression{
     }
 
     @Override
-    public String toString(){
+    public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
-        result.append(left.toString());
+        result.append(left.toString(withSubmodels));
         result.append(" + ");
-        result.append(right.toString());
+        result.append(right.toString(withSubmodels));
         return result.toString();
     }
 }

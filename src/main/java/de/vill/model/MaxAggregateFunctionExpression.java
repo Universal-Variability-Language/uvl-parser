@@ -21,7 +21,7 @@ public class MaxAggregateFunctionExpression extends Expression{
     }
 
     @Override
-    public String toString(){
+    public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
         result.append("max(");
         if(getRootFeature() != null){

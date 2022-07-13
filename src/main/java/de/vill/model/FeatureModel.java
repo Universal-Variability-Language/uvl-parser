@@ -23,6 +23,12 @@ public class FeatureModel {
 
     private List<LiteralConstraint> literalConstraints = new LinkedList<>();
 
+    public List<LiteralExpression> getLiteralExpressions() {
+        return literalExpressions;
+    }
+
+    private List<LiteralExpression> literalExpressions = new LinkedList<>();
+
     private List<Constraint> constraints = new LinkedList<>();
 
     private List<Constraint> ownConstraints = new LinkedList<>();

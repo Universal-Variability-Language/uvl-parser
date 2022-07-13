@@ -60,11 +60,15 @@ public class Feature {
     private List<Group> children;
     private boolean isImported = false;
 
-    public Map<String, Object> getAttributes() {
+    public Map<String, Attribute> getAttributes() {
         return attributes;
     }
 
-    private Map<String, Object> attributes;
+    public void setAttributes(Map<String, Attribute> attributes){
+        this.attributes = attributes;
+    }
+
+    private Map<String, Attribute> attributes = new HashMap<>();
 
     public Feature (String name){
         this.NAME = name;
@@ -126,7 +130,7 @@ public class Feature {
         return result.toString();
     }
 
-    public void setAttribute(String name, Object value){
+    public void setAttribute(String name, Attribute value){
         attributes.put(name, value);
     }
 

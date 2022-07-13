@@ -2,6 +2,7 @@ package de.vill.main;
 
 import de.vill.UVLBaseListener;
 import de.vill.UVLParser;
+import de.vill.exception.ParseError;
 import de.vill.model.*;
 
 import java.util.*;
@@ -15,7 +16,7 @@ public class UVLListener extends UVLBaseListener {
 
     private Stack<Expression> expressionStack = new Stack<>();
 
-    private Map<String, Object> attribtues = new HashMap<>();
+    private Stack<Map<String,Attribute>> attributeStack = new Stack<>();
 
     private boolean featureCardinality = false;
 
@@ -136,8 +137,6 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void exitFeature(UVLParser.FeatureContext ctx) {
        featureStack.pop();
-
-        attribtues = new HashMap<String, Object>();
     }
 
     @Override public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
@@ -153,19 +152,48 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.FEATURE_CARDINALITY);
     }
 
+    @Override public void enterAttributes(UVLParser.AttributesContext ctx) {
+        attributeStack.push(new HashMap<>());
+    }
+
     @Override public void exitAttributes(UVLParser.AttributesContext ctx) {
-        Feature feature = featureStack.peek();
-        for(Map.Entry<String, Object> entry : attribtues.entrySet()){
-            feature.setAttribute(entry.getKey(), entry.getValue());
+        if(attributeStack.size() == 1){
+            Feature feature = featureStack.peek();
+            feature.setAttributes(attributeStack.pop());
         }
     }
 
 
     @Override public void exitAttribute(UVLParser.AttributeContext ctx) {
-        if(ctx.value() != null) {
-            attribtues.put(ctx.key().getText(), ctx.value().getText());
+        if (ctx.value() == null){
+            Attribute<Boolean> attribute = new Attribute(ctx.key().getText());
+            attribute.setValue(true);
+            attributeStack.peek().put(ctx.key().getText(), attribute);
+        }else if(ctx.value().BOOLEAN() != null){
+            Attribute<Boolean> attribute = new Attribute(ctx.key().getText());
+            attribute.setValue(Boolean.parseBoolean(ctx.value().getText()));
+            attributeStack.peek().put(ctx.key().getText(), attribute);
+        }else if(ctx.value().INTEGER() != null){
+            Attribute<Integer> attribute = new Attribute(ctx.key().getText());
+            attribute.setValue(Integer.parseInt(ctx.value().getText()));
+            attributeStack.peek().put(ctx.key().getText(), attribute);
+        }else if(ctx.value().STRING() != null) {
+            Attribute<String> attribute = new Attribute(ctx.key().getText());
+            attribute.setValue(ctx.value().getText());
+            attributeStack.peek().put(ctx.key().getText(), attribute);
+        }else if(ctx.value().vector() != null) {
+            Attribute<List<String>> attribute = new Attribute(ctx.key().getText());
+            String vectorString = ctx.value().getText();
+            vectorString = vectorString.substring(1, vectorString.length() - 1);
+            attribute.setValue(Arrays.asList(vectorString.split(",")));
+            attributeStack.peek().put(ctx.key().getText(), attribute);
+        }else if(ctx.value().attributes() != null){
+            var attributes = attributeStack.pop();
+            Attribute<Map<String, Attribute>> attribute = new Attribute<>(ctx.key().getText());
+            attribute.setValue(attributes);
+            attributeStack.peek().put(ctx.key().getText(), attribute);
         }else {
-            attribtues.put(ctx.key().getText(), "");
+            throw new ParseError(0,0,ctx.value().getText() + " is no value of any supported attribute type!", null);
         }
     }
 
@@ -249,13 +277,14 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitIntegerLiteralExpression(UVLParser.IntegerLiteralExpressionContext ctx) {
-        Expression expression = new LiteralExpression(ctx.INTEGER().getText());
+        Expression expression = new NumberExpression(Integer.parseInt(ctx.INTEGER().getText()));
         expressionStack.push(expression);
     }
 
     @Override public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
-        Expression expression = new AttributeExpression(ctx.REFERENCE().getText());
+        LiteralExpression expression = new LiteralExpression(ctx.REFERENCE().getText());
         expressionStack.push(expression);
+        featureModel.getLiteralExpressions().add(expression);
     }
 
     @Override public void exitAddExpression(UVLParser.AddExpressionContext ctx) {

@@ -21,7 +21,7 @@ public class MinAggregateFunctionExpression extends Expression {
     }
 
     @Override
-    public String toString(){
+    public String toString(boolean withSubmodels){
         StringBuilder result = new StringBuilder();
         result.append("min(");
         if(getRootFeature() != null){

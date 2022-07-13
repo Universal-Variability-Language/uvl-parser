@@ -63,6 +63,7 @@ public class UVLModelFactory {
         FeatureModel featureModel = parseFeatureModelWithImports(text,fileLoader, new HashMap<>());
         composeFeatureModelFromImports(featureModel);
         referenceFeaturesInConstraints(featureModel);
+        referenceAttributesInConstraints(featureModel);
         return featureModel;
     }
     //TODO submodules as Map of Strings and not as files (maybe they are generated in a program elsewhere and the caller does not want to safe them in a file first
@@ -219,5 +220,40 @@ public class UVLModelFactory {
                 }
             }
         }
+    }
+
+    private void referenceAttributesInConstraints(FeatureModel featureModel){
+        var subModelList = createSubModelList(featureModel);
+        var literalExpressions = featureModel.getLiteralExpressions();
+        for(LiteralExpression expression : literalExpressions){
+            String reference = expression.getAttributeName();
+            String[] referenceParts = reference.split("\\.");
+            String attributeName = referenceParts[referenceParts.length-1];
+            String featureName = reference.substring(0, reference.length()-attributeName.length()-1);
+            expression.setAttributeName(attributeName);
+            Feature referencedFeature = featureModel.getFeatureMap().get(featureName);
+            if(referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null){
+                throw new ParseError(0,0,"Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!",null);
+            }else {
+                expression.setFeature(featureModel.getFeatureMap().get(featureName));
+            }
+        }
+        for(FeatureModel subModel : subModelList){
+            literalExpressions = subModel.getLiteralExpressions();
+            for(LiteralExpression expression : literalExpressions){
+                String reference = expression.getAttributeName();
+                String[] referenceParts = reference.split("\\.");
+                String attributeName = referenceParts[referenceParts.length-1];
+                String featureName = reference.substring(0, reference.length()-attributeName.length()-1);
+                expression.setAttributeName(attributeName);
+                Feature referencedFeature = subModel.getFeatureMap().get(featureName);
+                if(referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null){
+                    throw new ParseError(0,0,"Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + subModel.getNamespace() + " but does not exist as feature in the tree!",null);
+                }else {
+                    expression.setFeature(referencedFeature);
+                }
+            }
+        }
+
     }
 }
