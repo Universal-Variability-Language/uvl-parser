@@ -316,9 +316,10 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitMinAggregateFunction(UVLParser.MinAggregateFunctionContext ctx) {
-        Expression expression;
+        AggregateFunctionExpression expression;
         if(ctx.REFERENCE().size() > 1) {
             expression = new MinAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+            featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
             expression = new MinAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
         }
@@ -326,9 +327,10 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitMaxAggregateFunction(UVLParser.MaxAggregateFunctionContext ctx) {
-        Expression expression;
+        AggregateFunctionExpression expression;
         if(ctx.REFERENCE().size() > 1) {
             expression = new MaxAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+            featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
             expression = new MaxAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
         }
@@ -336,9 +338,10 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
-        Expression expression;
+        AggregateFunctionExpression expression;
         if(ctx.REFERENCE().size() > 1) {
             expression = new SumAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+            featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
             expression = new SumAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
         }
@@ -346,9 +349,10 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
-        Expression expression;
+        AggregateFunctionExpression expression;
         if(ctx.REFERENCE().size() > 1) {
             expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+            featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
             expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
         }

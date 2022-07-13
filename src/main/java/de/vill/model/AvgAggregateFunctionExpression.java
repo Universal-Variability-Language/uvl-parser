@@ -1,35 +1,18 @@
 package de.vill.model;
 
-public class AvgAggregateFunctionExpression extends Expression{
-    public String getRootFeature() {
-        return rootFeature;
+public class AvgAggregateFunctionExpression extends AggregateFunctionExpression{
+
+
+    public AvgAggregateFunctionExpression(String attributeName) {
+        super(attributeName);
     }
 
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    private String rootFeature;
-    private String attributeName;
-
-    public AvgAggregateFunctionExpression(String attributeName){
-        this.attributeName = attributeName;
-    }
-    public AvgAggregateFunctionExpression(String rootFeature, String attributeName){
-        this(attributeName);
-        this.rootFeature = rootFeature;
+    public AvgAggregateFunctionExpression(String rootFeatureName, String attributeName) {
+        super(rootFeatureName, attributeName);
     }
 
     @Override
     public String toString(boolean withSubmodels){
-        StringBuilder result = new StringBuilder();
-        result.append("avg(");
-        if(getRootFeature() != null){
-            result.append(getRootFeature());
-            result.append(", ");
-        }
-        result.append(getAttributeName());
-        result.append(")");
-        return result.toString();
+        return super.toString(withSubmodels, "avg");
     }
 }

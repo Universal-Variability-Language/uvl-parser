@@ -64,6 +64,7 @@ public class UVLModelFactory {
         composeFeatureModelFromImports(featureModel);
         referenceFeaturesInConstraints(featureModel);
         referenceAttributesInConstraints(featureModel);
+        referenceRootFeaturesInAggregateFunctions(featureModel);
         return featureModel;
     }
 
@@ -234,7 +235,7 @@ public class UVLModelFactory {
             if(referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null){
                 throw new ParseError(0,0,"Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!",null);
             }else {
-                expression.setFeature(featureModel.getFeatureMap().get(featureName));
+                expression.setFeature(referencedFeature);
             }
         }
         for(FeatureModel subModel : subModelList){
@@ -253,6 +254,29 @@ public class UVLModelFactory {
                 }
             }
         }
+    }
 
+    private void referenceRootFeaturesInAggregateFunctions(FeatureModel featureModel){
+        var subModelList = createSubModelList(featureModel);
+        var aggregateFunctionExpressions = featureModel.getAggregateFunctionsWithRootFeature();
+        for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
+            Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName());
+            if(referencedFeature == null){
+                throw new ParseError(0,0,"Feature is used in aggregate function " + expression.toString(false) + " but does not exist as feature in the tree!",null);
+            }else {
+                expression.setRootFeature(referencedFeature);
+            }
+        }
+        for(FeatureModel subModel : subModelList){
+            aggregateFunctionExpressions = subModel.getAggregateFunctionsWithRootFeature();
+            for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
+                Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName());
+                if(referencedFeature == null){
+                    throw new ParseError(0,0,"Feature is used in aggregate function " + expression.toString(false) + " but does not exist as feature in the tree!",null);
+                }else {
+                    expression.setRootFeature(referencedFeature);
+                }
+            }
+        }
     }
 }

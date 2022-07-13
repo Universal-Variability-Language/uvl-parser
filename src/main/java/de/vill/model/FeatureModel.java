@@ -29,6 +29,12 @@ public class FeatureModel {
 
     private List<LiteralExpression> literalExpressions = new LinkedList<>();
 
+    public List<AggregateFunctionExpression> getAggregateFunctionsWithRootFeature() {
+        return aggregateFunctionsWithRootFeature;
+    }
+
+    private List<AggregateFunctionExpression> aggregateFunctionsWithRootFeature = new LinkedList<>();
+
     private List<Constraint> constraints = new LinkedList<>();
 
     private List<Constraint> ownConstraints = new LinkedList<>();
