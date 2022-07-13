@@ -68,7 +68,7 @@ public class UVLModelFactory {
     }
     //TODO submodules as Map of Strings and not as files (maybe they are generated in a program elsewhere and the caller does not want to safe them in a file first
 
-    //TODO What if the level set is not consistent e.g. remove SMT_LEVEL but the feature model has AGGREGATE_FUNCTION level? -> remove does automatically as well or throw error?
+    //TODO If the level set is not consistent e.g. remove SMT_LEVEL but the feature model has AGGREGATE_FUNCTION level? -> remove automatically all related constraints (auch in der BA schrieben (In conversion strats chaper diskutieren))
     /**
      * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified {@link LanguageLevel}.
      * It does that by removing the concepts of the level without any conversion strategies. This means information
