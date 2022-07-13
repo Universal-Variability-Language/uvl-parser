@@ -65,6 +65,7 @@ public class UVLModelFactory {
         referenceFeaturesInConstraints(featureModel);
         return featureModel;
     }
+    //TODO submodules as Map of Strings and not as files (maybe they are generated in a program elsewhere and the caller does not want to safe them in a file first
 
     //TODO What if the level set is not consistent e.g. remove SMT_LEVEL but the feature model has AGGREGATE_FUNCTION level? -> remove does automatically as well or throw error?
     /**
