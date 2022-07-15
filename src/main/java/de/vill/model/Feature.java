@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Feature {
-    public String getNAME() {
-        return NAME;
+    public String getFeatureName() {
+        return featureName;
     }
 
     public String getLowerBound() {
@@ -29,7 +29,14 @@ public class Feature {
         this.upperBound = upperBound;
     }
 
-    private final String NAME;
+    private final String featureName;
+
+    public String getFullReference() {
+        String fullReference = nameSpace + "." + featureName + "." + "<UNIQUEID>";
+
+        return fullReference.replace('.', '_');
+    }
+
 
     public String getNameSpace() {
         return nameSpace;
@@ -39,7 +46,7 @@ public class Feature {
         this.nameSpace = nameSpace;
     }
 
-    private String nameSpace;
+    private String nameSpace = "";
 
     public Import getRelatedImport() {
         return relatedImport;
@@ -58,7 +65,7 @@ public class Feature {
     }
 
     private List<Group> children;
-    private boolean isImported = false;
+    private boolean isSubmodelRoot = false;
 
     public Map<String, Attribute> getAttributes() {
         return attributes;
@@ -71,7 +78,7 @@ public class Feature {
     private Map<String, Attribute> attributes = new HashMap<>();
 
     public Feature (String name){
-        this.NAME = name;
+        this.featureName = name;
         children = new LinkedList<>();
         attributes = new HashMap<>();
     }
@@ -81,19 +88,74 @@ public class Feature {
     }
     @Override
     public String toString(){
-        return toString(true);
+        return toString(true, "");
     }
 
-    public String toString(boolean withSubmodels){
+    public String toStringAsRoot(String currentAlias){
+        StringBuilder result = new StringBuilder();
+        result.append(getFeatureName());
+
+        result.append(' ');
+        if(!(upperBound == null & lowerBound == null)){
+            result.append("cardinality [");
+            if(getLowerBound().equals(getUpperBound())){
+                result.append(getLowerBound());
+            } else {
+                result.append(getLowerBound());
+                result.append("..");
+                result.append(getUpperBound());
+            }
+            result.append("] ");
+        }
+
+        if(!attributes.isEmpty()){
+            result.append("{");
+            attributes.forEach((k, v) -> {
+                result.append(k);
+                result.append(' ');
+                result.append(v);
+                result.append(',');
+            });
+            result.deleteCharAt(result.length() - 1);
+            result.append("}");
+        }
+
+        result.append(Configuration.NEWLINE);
+
+        for (Group group : children) {
+            result.append(Util.indentEachLine(group.toString(false, currentAlias)));
+        }
+
+
+        return result.toString();
+    }
+
+    public String getReferenceFromSpecificSubmodel(String currentAlias){
+        String currentNamespace = getNameSpace().substring(currentAlias.length());
+        if(currentNamespace.equals("")){
+            return getFeatureName();
+        }else {
+            if(currentNamespace.charAt(0) == '.'){
+                currentNamespace = currentNamespace.substring(1);
+            }
+            return currentNamespace + "." + getFeatureName();
+        }
+    }
+
+    public String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
         if(withSubmodels){
-            if(getNameSpace() != null){
-                result.append(getNameSpace());
-                result.append(".");
-            }
-            result.append(NAME);
+            result.append(getFullReference());
         }else{
-            result.append(NAME);
+            String currentNamespace = getNameSpace().substring(currentAlias.length());
+            if(currentNamespace.equals("")){
+                result.append(getFeatureName());
+            }else {
+                if(currentNamespace.charAt(0) == '.'){
+                    currentNamespace = currentNamespace.substring(1);
+                }
+                result.append(currentNamespace + "." + getFeatureName());
+            }
         }
         result.append(' ');
         if(!(upperBound == null & lowerBound == null)){
@@ -107,7 +169,7 @@ public class Feature {
             }
             result.append("] ");
         }
-        if(!isImported() || withSubmodels) {
+        if(!isSubmodelRoot() || withSubmodels) {
             if(!attributes.isEmpty()){
                 result.append("{");
                 attributes.forEach((k, v) -> {
@@ -123,7 +185,7 @@ public class Feature {
             result.append(Configuration.NEWLINE);
 
             for (Group group : children) {
-                result.append(Util.indentEachLine(group.toString(withSubmodels)));
+                result.append(Util.indentEachLine(group.toString(withSubmodels, currentAlias)));
             }
         }
 
@@ -138,11 +200,11 @@ public class Feature {
         return attributes.get(name);
     }
 
-    public boolean isImported() {
-        return isImported;
+    public boolean isSubmodelRoot() {
+        return isSubmodelRoot;
     }
 
-    public void setImported(boolean imported) {
-        isImported = imported;
+    public void setSubmodelRoot(boolean submodelRoot) {
+        isSubmodelRoot = submodelRoot;
     }
 }

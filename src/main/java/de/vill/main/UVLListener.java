@@ -35,7 +35,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterFeatures(UVLParser.FeaturesContext ctx) {
-        groupStack.push(new MandatoryGroup());
+        groupStack.push(new Group(Group.GroupType.MANDATORY));
     }
 
     @Override public void exitFeatures(UVLParser.FeaturesContext ctx) {
@@ -49,7 +49,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterOrGroup(UVLParser.OrGroupContext ctx) {
-        Group group = new OrGroup();
+        Group group = new Group(Group.GroupType.OR);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
         groupStack.push(group);
@@ -60,7 +60,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterAlternativeGroup(UVLParser.AlternativeGroupContext ctx) {
-        Group group = new AlternativeGroup();
+        Group group = new Group(Group.GroupType.ALTERNATIVE);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
         groupStack.push(group);
@@ -71,7 +71,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterOptionalGroup(UVLParser.OptionalGroupContext ctx) {
-        Group group = new OptionalGroup();
+        Group group = new Group(Group.GroupType.OPTIONAL);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
         groupStack.push(group);
@@ -82,7 +82,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterMandatoryGroup(UVLParser.MandatoryGroupContext ctx) {
-        Group group = new MandatoryGroup();
+        Group group = new Group(Group.GroupType.MANDATORY);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
         groupStack.push(group);
@@ -93,7 +93,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
-        CardinalityGroup group = new CardinalityGroup();
+        Group group = new Group(Group.GroupType.CARDINALITY);
         group.setLowerBound(ctx.lowerBound.getText());
         if(ctx.upperBound != null) {
             group.setUpperBound(ctx.upperBound.getText());
@@ -114,25 +114,39 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void enterFeature(UVLParser.FeatureContext ctx) {
         String featureReference = ctx.REFERENCE().getText();
-
-        Feature feature = new Feature(featureReference);
-
-        if(featureReference.contains(".")){
-            int lastDotIndex = featureReference.lastIndexOf(".");
-            String subModelName = featureReference.substring(0, lastDotIndex);
-            String featureName = featureReference.substring(lastDotIndex + 1, featureReference.length());
+        String[] featureReferenceParts = featureReference.split("\\.");
+        String featureName;
+        String featureNamespace;
+        if(featureReferenceParts.length > 1){
+            featureName = featureReferenceParts[featureReferenceParts.length-1];
+            featureNamespace = featureReference.substring(0,featureReference.length()-featureName.length()-1);
+        }else {
+            featureName = featureReferenceParts[0];
+            featureNamespace = null;
+        }
+        Feature feature = new Feature(featureName);
+        if(featureNamespace != null) {
+            feature.setNameSpace(featureNamespace);
+            feature.setSubmodelRoot(true);
             for(Import importLine : featureModel.getImports()){
-                if(importLine.getAlias().equals(subModelName)){
-                    feature.setImported(true);
+                if(importLine.getAlias().equals(featureNamespace)){
                     feature.setRelatedImport(importLine);
                     break;
                 }
+            }
+            if (feature.getRelatedImport() == null){
+                throw new ParseError(0,0,"Feature " + featureReference + " is imported, but there is no import named " + featureNamespace, null);
             }
         }
 
         featureStack.push(feature);
         groupStack.peek().addFeature(feature);
-        featureModel.getFeatureMap().put(feature.getNAME(), feature);
+        if (featureNamespace == null) {
+            featureModel.getFeatureMap().put(featureName, feature);
+        }else {
+            featureModel.getFeatureMap().put(featureNamespace + "." + featureName, feature);
+        }
+
     }
 
     @Override public void exitFeature(UVLParser.FeatureContext ctx) {

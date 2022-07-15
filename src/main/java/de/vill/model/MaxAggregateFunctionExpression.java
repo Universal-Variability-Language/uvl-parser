@@ -12,7 +12,7 @@ public class MaxAggregateFunctionExpression extends AggregateFunctionExpression{
     }
 
     @Override
-    public String toString(boolean withSubmodels){
-        return super.toString(withSubmodels, "max");
+    public String toString(boolean withSubmodels, String currentAlias){
+        return super.toString(withSubmodels, "max", currentAlias);
     }
 }

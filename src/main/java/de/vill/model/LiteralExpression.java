@@ -33,22 +33,16 @@ public class LiteralExpression extends Expression{
 
     @Override
     public String toString(){
-        return toString(true);
+        return toString(true, "");
     }
 
-    public String toString(boolean withSubmodels){
-        if(getFeature() != null && withSubmodels){
-            if(getFeature().isImported()){
-                return getFeature().getNAME() + "." + getAttributeName();
-            }else {
-                if(getFeature().getNameSpace() != null) {
-                    return getFeature().getNameSpace() + "." + getFeature().getNAME() + "." + getAttributeName();
-                }else {
-                    return getFeature().getNAME() + "." + getAttributeName();
-                }
-            }
+    public String toString(boolean withSubmodels, String currentAlias){
+        if(getFeature() == null){
+            return getAttributeName();
+        }else if(withSubmodels){
+            return getFeature().getFullReference() + "." + getAttributeName();
         }else {
-            return getFeature().getNAME() + "." + getAttributeName();
+            return feature.getReferenceFromSpecificSubmodel(currentAlias) + "." + getAttributeName();
         }
     }
 }

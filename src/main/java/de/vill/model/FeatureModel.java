@@ -60,7 +60,7 @@ public class FeatureModel {
     }
     public String getNamespace() {
         if (namespace == null){
-            return rootFeature.getNAME();
+            return rootFeature.getFeatureName();
         }else {
             return namespace;
         }
@@ -78,6 +78,10 @@ public class FeatureModel {
      */
     @Override
     public String toString(){
+        return toString("");
+    }
+
+    public String toString(String currentAlias){
         StringBuilder result = new StringBuilder();
         if(namespace != null) {
             result.append("namespace ");
@@ -102,7 +106,7 @@ public class FeatureModel {
         if(rootFeature != null) {
             result.append("features");
             result.append(Configuration.NEWLINE);
-            result.append(Util.indentEachLine(getRootFeature().toString(false)));
+            result.append(Util.indentEachLine(getRootFeature().toStringAsRoot(currentAlias)));
             result.append(Configuration.NEWLINE);
         }
         if(getOwnConstraints().size() > 0) {
@@ -110,7 +114,7 @@ public class FeatureModel {
             result.append(Configuration.NEWLINE);
             for(Constraint constraint : ownConstraints){
                 result.append(Configuration.TABULATOR);
-                result.append(constraint.toString(false));
+                result.append(constraint.toString(false, currentAlias));
                 result.append(Configuration.NEWLINE);
             }
         }
@@ -142,7 +146,7 @@ public class FeatureModel {
             result.append(Configuration.NEWLINE);
             for(Constraint constraint : constraints){
                 result.append(Configuration.TABULATOR);
-                result.append(constraint.toString(true));
+                result.append(constraint.toString(true, ""));
                 result.append(Configuration.NEWLINE);
             }
         }
@@ -154,11 +158,21 @@ public class FeatureModel {
      * @return a map with namespaces of featuremodel and submodels as key and uvl strings as value
      */
     public Map<String, String> decomposedModelToString(){
+        return decomposedModelToString("");
+    }
+
+    private Map<String, String> decomposedModelToString(String currentAlias){
         var models = new HashMap<String, String>();
-        models.put(getNamespace(), toString());
+        models.put(getNamespace(), toString(currentAlias));
 
         for(Import importLine : imports){
-            models.putAll(importLine.getFeatureModel().decomposedModelToString());
+            String newCurrentAlias;
+            if(currentAlias.equals("")){
+                newCurrentAlias = importLine.getAlias();
+            }else {
+                newCurrentAlias = currentAlias + "." + importLine.getAlias();
+            }
+            models.putAll(importLine.getFeatureModel().decomposedModelToString(newCurrentAlias));
         }
 
         return models;

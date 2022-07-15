@@ -40,23 +40,16 @@ public class LiteralConstraint extends Constraint{
         return literal;
     }
 
-    @Override
-    public String toString(){
-        return toString(true);
-    }
-    public String toString(boolean withSubmodels){
-        if(getFeature() != null && withSubmodels){
-            if(getFeature().isImported()){
-                return getFeature().getNAME();
-            }else {
-                if(getFeature().getNameSpace() != null) {
-                    return getFeature().getNameSpace() + "." + getFeature().getNAME();
-                }else {
-                    return getFeature().getNAME();
-                }
-            }
-        }else {
+    public String toString(boolean withSubmodels, String currentAlias){
+        if(getFeature().getFeatureName().equals("feature1")){
+            System.out.println("test");
+        }
+        if(getFeature() == null){
             return getLiteral();
+        }else if(withSubmodels){
+            return getFeature().getFullReference();
+        }else {
+            return feature.getReferenceFromSpecificSubmodel(currentAlias);
         }
     }
 }

@@ -12,7 +12,7 @@ public class SumAggregateFunctionExpression extends AggregateFunctionExpression{
     }
 
     @Override
-    public String toString(boolean withSubmodels){
-        return super.toString(withSubmodels, "sum");
+    public String toString(boolean withSubmodels, String currentAlias){
+        return super.toString(withSubmodels, "sum", currentAlias);
     }
 }

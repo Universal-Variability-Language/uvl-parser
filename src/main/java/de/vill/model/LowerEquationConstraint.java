@@ -10,11 +10,11 @@ public class LowerEquationConstraint extends Constraint{
     }
 
     @Override
-    public String toString(boolean withSubmodels){
+    public String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
-        result.append(left.toString(withSubmodels));
+        result.append(left.toString(withSubmodels, currentAlias));
         result.append(" < ");
-        result.append(right.toString(withSubmodels));
+        result.append(right.toString(withSubmodels, currentAlias));
         return result.toString();
     }
 }

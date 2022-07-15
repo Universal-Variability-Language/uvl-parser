@@ -16,10 +16,10 @@ public class NumberExpression extends Expression{
     }
 
     public String toString(){
-        return toString(true);
+        return toString(true, "");
     }
 
-    public String toString(boolean withSubmodels){
+    public String toString(boolean withSubmodels, String currentAlias){
         return Integer.toString(number);
     }
 

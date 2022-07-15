@@ -146,21 +146,21 @@ public class UVLModelFactory {
                     String content = Files.readString(filePath);
                     FeatureModel subModel = parseFeatureModelWithImports(content, fileLoader, visitedImports);
                     importLine.setFeatureModel(subModel);
+                    subModel.getRootFeature().setRelatedImport(importLine);
                     visitedImports.put(importLine.getNamespace(), importLine);
                     featureModel.getConstraints().addAll(subModel.getConstraints());
 
                     for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
-                        if(entry.getValue().getNameSpace() == null){
-                            entry.getValue().setNameSpace(importLine.getAlias());
+                        Feature feature = entry.getValue();
+                        if(feature.getNameSpace().equals("")){
+                            feature.setNameSpace(importLine.getAlias());
                         }else {
-                            entry.getValue().setNameSpace(importLine.getAlias() + "." + entry.getValue().getNameSpace());
+                            feature.setNameSpace(importLine.getAlias() + "." + feature.getNameSpace());
                         }
-                        if(!featureModel.getFeatureMap().containsKey(entry.getValue().getNameSpace() + "." + entry.getValue().getNAME())) {
-                            featureModel.getFeatureMap().put(entry.getValue().getNameSpace() + "." + entry.getValue().getNAME(), entry.getValue());
+                        if(!featureModel.getFeatureMap().containsKey(feature.getNameSpace() + "." + entry.getValue().getFeatureName())) {
+                            featureModel.getFeatureMap().put(feature.getNameSpace() + "." + entry.getValue().getFeatureName(), feature);
                         }
                     }
-
-                    //featureModel.getFeatureMap().putAll(subModel.getFeatureMap());
                 } catch (IOException e) {
                     throw new ParseError(0, 0, "Could not resolve import: " + e.getMessage(), e);
                 }
@@ -172,19 +172,15 @@ public class UVLModelFactory {
 
     private void composeFeatureModelFromImports(FeatureModel featureModel){
         for (Map.Entry<String, Feature> entry : featureModel.getFeatureMap().entrySet()) {
-            if(entry.getValue().isImported()){
-                Feature oldFeature = entry.getValue();
-                int lastDotIndex = oldFeature.getNAME().lastIndexOf(".");
-                String subModelName = oldFeature.getNAME().substring(0, lastDotIndex);
-                String featureName = oldFeature.getNAME().substring(lastDotIndex + 1, oldFeature.getNAME().length());
+            if(entry.getValue().isSubmodelRoot()){
+                Feature featureInMainFeatureTree = entry.getValue();
+                Import relatedImport = featureInMainFeatureTree.getRelatedImport();
+                Feature featureInSubmodelFeatureTree = relatedImport.getFeatureModel().getRootFeature();
+                featureInMainFeatureTree.getChildren().addAll(featureInSubmodelFeatureTree.getChildren());
+                featureInMainFeatureTree.getAttributes().putAll(featureInSubmodelFeatureTree.getAttributes());
+                relatedImport.getFeatureModel().setRootFeature(featureInMainFeatureTree);
+                //TODO das alte Root Feature vom Submodell (newFeature) ist noch in den feature maps?
 
-                Import relatedImport = oldFeature.getRelatedImport();
-
-                Feature newFeature = relatedImport.getFeatureModel().getRootFeature();
-                newFeature.setNameSpace(oldFeature.getNameSpace());
-                oldFeature.getChildren().addAll(newFeature.getChildren());
-                oldFeature.getAttributes().putAll(newFeature.getAttributes());
-                relatedImport.getFeatureModel().setRootFeature(oldFeature);
             }
         }
     }
@@ -262,7 +258,7 @@ public class UVLModelFactory {
         for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
             Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName());
             if(referencedFeature == null){
-                throw new ParseError(0,0,"Feature is used in aggregate function " + expression.toString(false) + " but does not exist as feature in the tree!",null);
+                throw new ParseError(0,0,"Feature is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!",null);
             }else {
                 expression.setRootFeature(referencedFeature);
             }
@@ -272,7 +268,7 @@ public class UVLModelFactory {
             for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
                 Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName());
                 if(referencedFeature == null){
-                    throw new ParseError(0,0,"Feature is used in aggregate function " + expression.toString(false) + " but does not exist as feature in the tree!",null);
+                    throw new ParseError(0,0,"Feature is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!",null);
                 }else {
                     expression.setRootFeature(referencedFeature);
                 }

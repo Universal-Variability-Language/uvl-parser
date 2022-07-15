@@ -12,7 +12,7 @@ public class AvgAggregateFunctionExpression extends AggregateFunctionExpression{
     }
 
     @Override
-    public String toString(boolean withSubmodels){
-        return super.toString(withSubmodels, "avg");
+    public String toString(boolean withSubmodels, String currentAlias){
+        return super.toString(withSubmodels, "avg", currentAlias);
     }
 }

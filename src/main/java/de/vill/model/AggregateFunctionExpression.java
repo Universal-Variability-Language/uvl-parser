@@ -36,27 +36,23 @@ public class AggregateFunctionExpression extends Expression{
     }
 
     @Override
-    public String toString(boolean withSubmodels) {
-        return toString(withSubmodels, "aggregateFunction");
+    public String toString(boolean withSubmodels, String currentAlias) {
+        return toString(withSubmodels, "aggregateFunction", currentAlias);
     }
 
-    protected String toString(boolean withSubmodels, String functionName) {
+    protected String toString(boolean withSubmodels, String functionName, String currentAlias) {
         StringBuilder result = new StringBuilder();
         result.append(functionName+"(");
-        if(getRootFeature() != null && withSubmodels){
-            if(getRootFeature().isImported()){
-                result.append(getRootFeature().getNAME());
-                result.append(", ");
-            }else{
-                if(getRootFeature().getNameSpace() != null){
-                    result.append(getRootFeature().getNameSpace() + "." + getRootFeature().getNAME());
-                    result.append(", ");
-                }else {
-                    result.append(getRootFeature().getNAME());
-                    result.append(", ");
-                }
+
+        if(getRootFeature() != null){
+            if(withSubmodels){
+                result.append(getRootFeature().getFullReference());
+            }else {
+                result.append(getRootFeatureName());
             }
+            result.append(", ");
         }
+
         result.append(getAttributeName());
         result.append(")");
         return result.toString();

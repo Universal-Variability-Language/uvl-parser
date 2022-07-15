@@ -12,7 +12,7 @@ public class MinAggregateFunctionExpression extends AggregateFunctionExpression 
     }
 
     @Override
-    public String toString(boolean withSubmodels){
-        return super.toString(withSubmodels, "min");
+    public String toString(boolean withSubmodels, String currentAlias){
+        return super.toString(withSubmodels, "min", currentAlias);
     }
 }
