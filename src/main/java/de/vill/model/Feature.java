@@ -32,7 +32,14 @@ public class Feature {
     private final String featureName;
 
     public String getFullReference() {
-        String fullReference = nameSpace + "." + featureName + "." + "<UNIQUEID>";
+        String fullReference = "";
+        int idLength = String.valueOf(Integer.MAX_VALUE).length();
+        String id = String.format("%0" + idLength + "d", this.hashCode());
+        if(nameSpace.equals("")){
+            fullReference= featureName + "." + id;
+        }else {
+            fullReference= nameSpace + "." + featureName + "." + id;
+        }
 
         return fullReference.replace('.', '_');
     }
