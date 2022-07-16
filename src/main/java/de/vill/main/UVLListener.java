@@ -182,31 +182,25 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void exitAttribute(UVLParser.AttributeContext ctx) {
         if (ctx.value() == null){
-            Attribute<Boolean> attribute = new Attribute(ctx.key().getText());
-            attribute.setValue(true);
+            Attribute<Boolean> attribute = new Attribute(ctx.key().getText(), true);
             attributeStack.peek().put(ctx.key().getText(), attribute);
         }else if(ctx.value().BOOLEAN() != null){
-            Attribute<Boolean> attribute = new Attribute(ctx.key().getText());
-            attribute.setValue(Boolean.parseBoolean(ctx.value().getText()));
+            Attribute<Boolean> attribute = new Attribute(ctx.key().getText(), Boolean.parseBoolean(ctx.value().getText()));
             attributeStack.peek().put(ctx.key().getText(), attribute);
         }else if(ctx.value().INTEGER() != null){
-            Attribute<Integer> attribute = new Attribute(ctx.key().getText());
-            attribute.setValue(Integer.parseInt(ctx.value().getText()));
+            Attribute<Integer> attribute = new Attribute(ctx.key().getText(), Integer.parseInt(ctx.value().getText()));
             attributeStack.peek().put(ctx.key().getText(), attribute);
         }else if(ctx.value().STRING() != null) {
-            Attribute<String> attribute = new Attribute(ctx.key().getText());
-            attribute.setValue(ctx.value().getText());
+            Attribute<String> attribute = new Attribute(ctx.key().getText(), ctx.value().getText());
             attributeStack.peek().put(ctx.key().getText(), attribute);
         }else if(ctx.value().vector() != null) {
-            Attribute<List<String>> attribute = new Attribute(ctx.key().getText());
             String vectorString = ctx.value().getText();
             vectorString = vectorString.substring(1, vectorString.length() - 1);
-            attribute.setValue(Arrays.asList(vectorString.split(",")));
+            Attribute<List<String>> attribute = new Attribute(ctx.key().getText(), Arrays.asList(vectorString.split(",")));
             attributeStack.peek().put(ctx.key().getText(), attribute);
         }else if(ctx.value().attributes() != null){
             var attributes = attributeStack.pop();
-            Attribute<Map<String, Attribute>> attribute = new Attribute<>(ctx.key().getText());
-            attribute.setValue(attributes);
+            Attribute<Map<String, Attribute>> attribute = new Attribute<>(ctx.key().getText(), attributes);
             attributeStack.peek().put(ctx.key().getText(), attribute);
         }else {
             throw new ParseError(0,0,ctx.value().getText() + " is no value of any supported attribute type!", null);
