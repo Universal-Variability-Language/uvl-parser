@@ -175,7 +175,7 @@ public class UVLListener extends UVLBaseListener {
     @Override public void exitAttributes(UVLParser.AttributesContext ctx) {
         if(attributeStack.size() == 1){
             Feature feature = featureStack.peek();
-            feature.setAttributes(attributeStack.pop());
+            feature.getAttributes().putAll(attributeStack.pop());
         }
     }
 
