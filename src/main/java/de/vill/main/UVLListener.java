@@ -142,7 +142,7 @@ public class UVLListener extends UVLBaseListener {
         }
 
         featureStack.push(feature);
-        groupStack.peek().addFeature(feature);
+        groupStack.peek().getFeatures().add(feature);
         if (featureNamespace == null) {
             featureModel.getFeatureMap().put(featureName, feature);
         }else {
