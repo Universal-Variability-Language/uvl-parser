@@ -4,6 +4,8 @@ import de.vill.UVLBaseListener;
 import de.vill.UVLParser;
 import de.vill.exception.ParseError;
 import de.vill.model.*;
+import de.vill.model.constraint.*;
+import de.vill.model.expression.*;
 
 import java.util.*;
 

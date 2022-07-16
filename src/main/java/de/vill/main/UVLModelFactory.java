@@ -4,6 +4,9 @@ import de.vill.UVLLexer;
 import de.vill.UVLParser;
 import de.vill.exception.ParseError;
 import de.vill.model.*;
+import de.vill.model.constraint.LiteralConstraint;
+import de.vill.model.expression.AggregateFunctionExpression;
+import de.vill.model.expression.LiteralExpression;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 

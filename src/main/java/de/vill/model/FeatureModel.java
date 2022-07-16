@@ -1,6 +1,10 @@
 package de.vill.model;
 
 import de.vill.config.Configuration;
+import de.vill.model.constraint.Constraint;
+import de.vill.model.constraint.LiteralConstraint;
+import de.vill.model.expression.AggregateFunctionExpression;
+import de.vill.model.expression.LiteralExpression;
 import de.vill.util.Util;
 
 import java.util.*;

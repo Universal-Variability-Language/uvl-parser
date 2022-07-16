@@ -1,4 +1,4 @@
-package de.vill.model;
+package de.vill.model.expression;
 
 public class NumberExpression extends Expression{
     public int getNumber() {

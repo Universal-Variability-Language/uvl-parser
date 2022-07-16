@@ -1,4 +1,4 @@
-package de.vill.model;
+package de.vill.model.constraint;
 
 public class NotConstraint extends Constraint{
     private Constraint content;

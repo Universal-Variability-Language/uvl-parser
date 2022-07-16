@@ -1,4 +1,4 @@
-package de.vill.model;
+package de.vill.model.expression;
 
 public abstract class Expression {
     public String toString(){

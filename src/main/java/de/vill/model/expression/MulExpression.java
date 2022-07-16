@@ -1,27 +1,19 @@
-package de.vill.model;
+package de.vill.model.expression;
 
-public class ImplicationConstraint extends Constraint{
-    private Constraint left;
-    private Constraint right;
+public class MulExpression extends Expression {
+    private Expression left;
+    private Expression right;
 
-    public ImplicationConstraint(Constraint left, Constraint right){
+    public MulExpression(Expression left, Expression right){
         this.left = left;
         this.right = right;
-    }
-
-    public Constraint getLeft() {
-        return left;
-    }
-
-    public Constraint getRight() {
-        return right;
     }
 
     @Override
     public String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
         result.append(left.toString(withSubmodels, currentAlias));
-        result.append(" => ");
+        result.append(" * ");
         result.append(right.toString(withSubmodels, currentAlias));
         return result.toString();
     }

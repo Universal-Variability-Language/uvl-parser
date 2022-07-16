@@ -1,19 +1,27 @@
-package de.vill.model;
+package de.vill.model.constraint;
 
-public class LowerEquationConstraint extends Constraint{
-    private Expression left;
-    private Expression right;
+public class OrConstraint extends Constraint{
+    private Constraint left;
+    private Constraint right;
 
-    public LowerEquationConstraint(Expression left, Expression right){
+    public OrConstraint(Constraint left, Constraint right){
         this.left = left;
         this.right = right;
+    }
+
+    public Constraint getLeft() {
+        return left;
+    }
+
+    public Constraint getRight() {
+        return right;
     }
 
     @Override
     public String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
         result.append(left.toString(withSubmodels, currentAlias));
-        result.append(" < ");
+        result.append(" | ");
         result.append(right.toString(withSubmodels, currentAlias));
         return result.toString();
     }

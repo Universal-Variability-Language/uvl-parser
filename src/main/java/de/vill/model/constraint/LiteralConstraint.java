@@ -1,4 +1,7 @@
-package de.vill.model;
+package de.vill.model.constraint;
+
+import de.vill.model.Feature;
+import de.vill.model.Import;
 
 public class LiteralConstraint extends Constraint{
     private String literal;

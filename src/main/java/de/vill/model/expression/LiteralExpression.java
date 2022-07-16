@@ -1,4 +1,7 @@
-package de.vill.model;
+package de.vill.model.expression;
+
+import de.vill.model.Attribute;
+import de.vill.model.Feature;
 
 public class LiteralExpression extends Expression{
     public String getAttributeName() {

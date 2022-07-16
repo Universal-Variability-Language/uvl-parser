@@ -1,4 +1,4 @@
-package de.vill.model;
+package de.vill.model.constraint;
 
 public class ParenthesisConstraint extends Constraint{
     private Constraint content;

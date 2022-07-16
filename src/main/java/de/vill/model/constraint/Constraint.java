@@ -1,4 +1,4 @@
-package de.vill.model;
+package de.vill.model.constraint;
 
 public abstract class Constraint {
     @Override

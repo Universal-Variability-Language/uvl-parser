@@ -1,10 +1,10 @@
-package de.vill.model;
+package de.vill.model.constraint;
 
-public class EquivalenceConstraint extends Constraint{
+public class ImplicationConstraint extends Constraint{
     private Constraint left;
     private Constraint right;
 
-    public EquivalenceConstraint(Constraint left, Constraint right){
+    public ImplicationConstraint(Constraint left, Constraint right){
         this.left = left;
         this.right = right;
     }
@@ -21,7 +21,7 @@ public class EquivalenceConstraint extends Constraint{
     public String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
         result.append(left.toString(withSubmodels, currentAlias));
-        result.append(" <=> ");
+        result.append(" => ");
         result.append(right.toString(withSubmodels, currentAlias));
         return result.toString();
     }
