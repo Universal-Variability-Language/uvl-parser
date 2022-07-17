@@ -211,7 +211,7 @@ public class Feature {
         result.append(' ');
         result.append(cardinalityToString());
         result.append(attributesToString());
-        result.append(Configuration.NEWLINE);
+        result.append(Configuration.getNewlineSymbol());
 
         for (Group group : children) {
             result.append(Util.indentEachLine(group.toString(false, currentAlias)));
@@ -245,7 +245,7 @@ public class Feature {
          */
         if(!isSubmodelRoot() || withSubmodels) {
             result.append(attributesToString());
-            result.append(Configuration.NEWLINE);
+            result.append(Configuration.getNewlineSymbol());
 
             for (Group group : children) {
                 result.append(Util.indentEachLine(group.toString(withSubmodels, currentAlias)));

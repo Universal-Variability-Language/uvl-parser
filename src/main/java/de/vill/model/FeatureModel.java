@@ -181,36 +181,36 @@ public class FeatureModel {
         if(namespace != null) {
             result.append("namespace ");
             result.append(namespace);
-            result.append(Configuration.NEWLINE);
-            result.append(Configuration.NEWLINE);
+            result.append(Configuration.getNewlineSymbol());
+            result.append(Configuration.getNewlineSymbol());
         }
         if(imports.size() > 0 && !withSubmodels){
             result.append("imports");
-            result.append(Configuration.NEWLINE);
+            result.append(Configuration.getNewlineSymbol());
             for(Import importLine : imports){
-                result.append(Configuration.TABULATOR);
+                result.append(Configuration.getTabulatorSymbol());
                 result.append(importLine.getNamespace());
                 if(importLine.getAlias() != null){
                     result.append(" as ");
                     result.append(importLine.getAlias());
                 }
-                result.append(Configuration.NEWLINE);
+                result.append(Configuration.getNewlineSymbol());
             }
-            result.append(Configuration.NEWLINE);
+            result.append(Configuration.getNewlineSymbol());
         }
         if(rootFeature != null) {
             result.append("features");
-            result.append(Configuration.NEWLINE);
+            result.append(Configuration.getNewlineSymbol());
             result.append(Util.indentEachLine(getRootFeature().toStringAsRoot(currentAlias)));
-            result.append(Configuration.NEWLINE);
+            result.append(Configuration.getNewlineSymbol());
         }
         if(getOwnConstraints().size() > 0) {
             result.append("constraints");
-            result.append(Configuration.NEWLINE);
+            result.append(Configuration.getNewlineSymbol());
             for(Constraint constraint : ownConstraints){
-                result.append(Configuration.TABULATOR);
+                result.append(Configuration.getTabulatorSymbol());
                 result.append(constraint.toString(withSubmodels, currentAlias));
-                result.append(Configuration.NEWLINE);
+                result.append(Configuration.getNewlineSymbol());
             }
         }
         return result.toString();

@@ -114,7 +114,7 @@ public class Group {
                 result.append("]");
         }
 
-        result.append(Configuration.NEWLINE);
+        result.append(Configuration.getNewlineSymbol());
 
         for(Feature feature : features){
             result.append(Util.indentEachLine(feature.toString(withSubmodels, currentAlias)));

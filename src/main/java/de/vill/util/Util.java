@@ -5,11 +5,11 @@ import de.vill.config.Configuration;
 public class Util {
     public static String indentEachLine(String text){
         StringBuilder result = new StringBuilder();
-        String[] lines = text.split(Configuration.NEWLINE);
+        String[] lines = text.split(Configuration.getNewlineSymbol());
         for(String line : lines){
-            result.append(Configuration.TABULATOR);
+            result.append(Configuration.getTabulatorSymbol());
             result.append(line);
-            result.append(Configuration.NEWLINE);
+            result.append(Configuration.getNewlineSymbol());
         }
         return result.toString();
     }
