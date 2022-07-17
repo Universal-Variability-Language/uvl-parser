@@ -137,7 +137,7 @@ public class UVLListener extends UVLBaseListener {
                 }
             }
             if (feature.getRelatedImport() == null){
-                throw new ParseError(0,0,"Feature " + featureReference + " is imported, but there is no import named " + featureNamespace, null);
+                throw new ParseError("Feature " + featureReference + " is imported, but there is no import named " + featureNamespace);
             }
         }
 
@@ -203,7 +203,7 @@ public class UVLListener extends UVLBaseListener {
             Attribute<Map<String, Attribute>> attribute = new Attribute<>(ctx.key().getText(), attributes);
             attributeStack.peek().put(ctx.key().getText(), attribute);
         }else {
-            throw new ParseError(0,0,ctx.value().getText() + " is no value of any supported attribute type!", null);
+            throw new ParseError(ctx.value().getText() + " is no value of any supported attribute type!");
         }
     }
 
