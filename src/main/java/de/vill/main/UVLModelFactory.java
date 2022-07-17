@@ -82,21 +82,48 @@ public class UVLModelFactory {
      */
     public void dropLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop){}
 
-    private int getMaxLanguageLevel(Set<LanguageLevel> languageLevels){
-        int max = 1;
+    private LanguageLevel getMaxLanguageLevel(Set<LanguageLevel> languageLevels){
+        LanguageLevel max = LanguageLevel.SAT_LEVEL;
         for(LanguageLevel languageLevel : languageLevels){
-            if(languageLevel.getValue() > max){
-                max = languageLevel.getValue();
+            if(languageLevel.getValue() > max.getValue()){
+                max = languageLevel;
             }
         }
         return max;
     }
 
-    private List<LanguageLevel> getLanguageLevelsActualToRemoveInOrder(FeatureModel featureModel, Set<LanguageLevel> levelsToRemove){
-        return null;
-        //level direkt in der Reihenfolge, in der sie entfernt werden müssen
-        //falls ein major level entfernt wird auch darüberliegenden smt level entfernen
-        //falls ein major level entfernt wird, auch alle entsprechenden minor level entfernen
+    /**
+     * First Language Level in the list (index 0) should be removed first and so on. calculates based on a set levels
+     * that should be remove which levels actually needs to be removed. E.g. if a major level should be removed, all
+     * its corresponding minor levels must be removed too. Moreover the levels must be removed in the correct order,
+     * so the "highest" level must be removed first. Furthermore levels that are not used by the featuremodel must
+     * not be removed.
+     * @param featureModel The featuremodel that does used language levels
+     * @param levelsToRemove The levels that a user thinks should be removed.
+     * @return a list with the language levels that acutally need to be removed in the order of the list (first element of the list removed first)
+     */
+    private List<LanguageLevel> getActualLanguageLevelsToRemoveInOrder(FeatureModel featureModel, Set<LanguageLevel> levelsToRemove){
+        List<LanguageLevel> completeOrderedLevelsToRemove = new LinkedList<>();
+        while (!levelsToRemove.isEmpty()) {
+            LanguageLevel highestLevel = getMaxLanguageLevel(levelsToRemove);
+            if (LanguageLevel.isMajorLevel(highestLevel)) {
+                //highestLevel is major level
+                int numberCorrespondingMinorLevels = highestLevel.getValue()+1;
+                List<LanguageLevel> correspondingMinorLevels = LanguageLevel.valueOf(numberCorrespondingMinorLevels);
+                if(correspondingMinorLevels != null){
+                    correspondingMinorLevels.retainAll(featureModel.getUsedLanguageLevels());
+                    completeOrderedLevelsToRemove.addAll(correspondingMinorLevels);
+                }
+                completeOrderedLevelsToRemove.add(highestLevel);
+                levelsToRemove.remove(highestLevel);
+            } else {
+                //highestLevel is minor level
+                completeOrderedLevelsToRemove.add(highestLevel);
+                levelsToRemove.remove(highestLevel);
+            }
+        }
+
+        return completeOrderedLevelsToRemove;
     }
 
     /**
