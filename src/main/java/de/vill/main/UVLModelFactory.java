@@ -82,6 +82,23 @@ public class UVLModelFactory {
      */
     public void dropLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop){}
 
+    private int getMaxLanguageLevel(Set<LanguageLevel> languageLevels){
+        int max = 1;
+        for(LanguageLevel languageLevel : languageLevels){
+            if(languageLevel.getValue() > max){
+                max = languageLevel.getValue();
+            }
+        }
+        return max;
+    }
+
+    private List<LanguageLevel> getLanguageLevelsActualToRemoveInOrder(FeatureModel featureModel, Set<LanguageLevel> levelsToRemove){
+        return null;
+        //level direkt in der Reihenfolge, in der sie entfernt werden müssen
+        //falls ein major level entfernt wird auch darüberliegenden smt level entfernen
+        //falls ein major level entfernt wird, auch alle entsprechenden minor level entfernen
+    }
+
     /**
      * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified {@link UVLModelFactory#dropLanguageLevel(FeatureModel, Set)}.
      * It does that applying different conversion strategies, trying to keep as much information as possible. This means
