@@ -2,8 +2,7 @@ package de.vill.main;
 
 import de.vill.UVLLexer;
 import de.vill.UVLParser;
-import de.vill.conversion.DropGroupCardinality;
-import de.vill.conversion.IConversionStrategy;
+import de.vill.conversion.*;
 import de.vill.exception.ParseError;
 import de.vill.model.*;
 import de.vill.model.constraint.LiteralConstraint;
@@ -21,11 +20,20 @@ import java.util.function.Function;
 
 public class UVLModelFactory {
 
-    private final Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategies;
+    private final Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategiesDrop;
+    private final Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategiesConvert;
 
     public UVLModelFactory(){
-        conversionStrategies = new HashMap<>();
-        conversionStrategies.put(LanguageLevel.GROUP_CARDINALITY, DropGroupCardinality.class);
+        conversionStrategiesDrop = new HashMap<>();
+        conversionStrategiesDrop.put(LanguageLevel.GROUP_CARDINALITY, DropGroupCardinality.class);
+        conversionStrategiesDrop.put(LanguageLevel.FEATURE_CARDINALITY, DropFeatureCardinality.class);
+        conversionStrategiesDrop.put(LanguageLevel.AGGREGATE_FUNCTION, DropAggregateFunction.class);
+        conversionStrategiesDrop.put(LanguageLevel.SMT_LEVEL, DropSMTLevel.class);
+        conversionStrategiesConvert = new HashMap<>();
+        conversionStrategiesConvert.put(LanguageLevel.GROUP_CARDINALITY, ConvertGroupCardinality.class);
+        conversionStrategiesConvert.put(LanguageLevel.FEATURE_CARDINALITY, ConvertFeatureCardinality.class);
+        conversionStrategiesConvert.put(LanguageLevel.AGGREGATE_FUNCTION, ConvertAggregateFunction.class);
+        conversionStrategiesConvert.put(LanguageLevel.SMT_LEVEL, ConvertSMTLevel.class);
     }
 
     /**
@@ -96,7 +104,7 @@ public class UVLModelFactory {
             LanguageLevel levelToDropNow = levelsToDropActually.get(0);
             levelsToDropActually.remove(0);
             try {
-                IConversionStrategy conversionStrategy = conversionStrategies.get(levelToDropNow).getDeclaredConstructor().newInstance();
+                IConversionStrategy conversionStrategy = conversionStrategiesDrop.get(levelToDropNow).getDeclaredConstructor().newInstance();
                 conversionStrategy.convertFeatureModel(featureModel);
             }catch (Exception e){
                 System.err.println("Could not instantiate conversion strategy: " + e.getMessage());
