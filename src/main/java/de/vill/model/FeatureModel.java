@@ -31,6 +31,13 @@ public class FeatureModel {
     private final List<AggregateFunctionExpression> aggregateFunctionsWithRootFeature = new LinkedList<>();
 
     /**
+     * Be very careful when creating your own featuremodel to set all information in all objects.
+     * Especially when working with decomposed models it is important to set all namespaces etc. right. If you are not
+     * sure look in the {@link de.vill.main.UVLModelFactory} class how the feature model is assembled there.
+     */
+    public FeatureModel(){}
+
+    /**
      * Get a set with all in this feature used language levels (major and minor).
      * The returned set is no copy, therefore changing it will change the featuremodel.
      * @return the used language levels as set
