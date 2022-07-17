@@ -9,59 +9,41 @@ import de.vill.util.Util;
 
 import java.util.*;
 
+/**
+ * This class represents a feature model and all its sub featuremodels if the model is composed.
+ */
 public class FeatureModel {
-    private Feature rootFeature;
+    private final Set<LanguageLevel> usedLanguageLevels = new HashSet<>(){{add(LanguageLevel.SAT_LEVEL);}};
     private String namespace;
+    private final List<Import> imports = new LinkedList<>();
+    private Feature rootFeature;
+    private final Map<String, Feature> featureMap = new HashMap<>();
+    private final List<Constraint> ownConstraints = new LinkedList<>();
 
+    /*
+     * These three lists are just for performance. They contain all points where features are referenced
+     * e.g. in constraints or aggregatefunctions. The corresponding feature can not be set during parsing,
+     * because the feature may be in a submodel which is not parsed then. Therefore we strore all this objects to
+     * reference the features after everything is parsed without searching for them.
+     */
+    private final List<LiteralConstraint> literalConstraints = new LinkedList<>();
+    private final List<LiteralExpression> literalExpressions = new LinkedList<>();
+    private final List<AggregateFunctionExpression> aggregateFunctionsWithRootFeature = new LinkedList<>();
+
+    /**
+     * Get a set with all in this feature used language levels (major and minor).
+     * The returned set is no copy, therefore changing it will change the featuremodel.
+     * @return the used language levels as set
+     */
     public Set<LanguageLevel> getUsedLanguageLevels() {
         return usedLanguageLevels;
     }
 
-    private Set<LanguageLevel> usedLanguageLevels = new HashSet<>(){{add(LanguageLevel.SAT_LEVEL);}};
-
-    private List<Import> imports = new LinkedList<>();
-
-    public List<LiteralConstraint> getLiteralConstraints() {
-        return literalConstraints;
-    }
-
-    private List<LiteralConstraint> literalConstraints = new LinkedList<>();
-
-    public List<LiteralExpression> getLiteralExpressions() {
-        return literalExpressions;
-    }
-
-    private List<LiteralExpression> literalExpressions = new LinkedList<>();
-
-    public List<AggregateFunctionExpression> getAggregateFunctionsWithRootFeature() {
-        return aggregateFunctionsWithRootFeature;
-    }
-
-    private List<AggregateFunctionExpression> aggregateFunctionsWithRootFeature = new LinkedList<>();
-
-    private List<Constraint> constraints = new LinkedList<>();
-
-    private List<Constraint> ownConstraints = new LinkedList<>();
-    private Map<String, Feature> featureMap = new HashMap<>();
-
-    public List<Constraint> getConstraints() {
-        return constraints;
-    }
-    public List<Constraint> getOwnConstraints() {
-        return ownConstraints;
-    }
-
-    public Map<String, Feature> getFeatureMap() {
-        return featureMap;
-    }
-
-    public Feature getRootFeature() {
-        return rootFeature;
-    }
-
-    public void setRootFeature(Feature rootFeature) {
-        this.rootFeature = rootFeature;
-    }
+    /**
+     * Returns the namespace of the featuremodel. If no namespace is set, the featuremodel returns the name of
+     * the root feature.
+     * @return the namespace of the feature model
+     */
     public String getNamespace() {
         if (namespace == null){
             return rootFeature.getFeatureName();
@@ -69,11 +51,79 @@ public class FeatureModel {
             return namespace;
         }
     }
+
+    /**
+     * Setter for the namespace of the featuremodel.
+     * @param namespace Namespace of the featuremodel.
+     */
     public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
+
+    /**
+     * This method returns a list of the imports of the feature model. The list does not contain recursivly all
+     * imports (including imports of imported feature models), just the directly imported ones in this feature model.
+     * This list is no clone. Changing it will actually change the feature model.
+     * @return A list containing all imports of this feature model.
+     */
     public List<Import> getImports() {
         return imports;
+    }
+
+    /**
+     * Get the root feature of the feature model
+     * @return root feature
+     */
+    public Feature getRootFeature() {
+        return rootFeature;
+    }
+
+    /**
+     * Set the root feature of the feature model
+     * @param rootFeature the root feature
+     */
+    public void setRootFeature(Feature rootFeature) {
+        this.rootFeature = rootFeature;
+    }
+
+    /**
+     * This map contains all features of this featuremodel and recursivly all features of its imported submodels.
+     * This means in a decomposed feature model only the feature model object of the root feature model contains all
+     * features over all sub feature models in this map. The key is the reference with namespace and feature name viewed
+     * from this model (this means the key is how the feature is referenced from this feature model). Therefore
+     * in the root feature model the key for each feature is its complete reference from the root feature model.
+     * When adding or deleting features from this map the featuremodel gets inconsistent when not also adding / removing
+     * them from the feature tree.
+     * @return A map with all features of the feature model
+     */
+    public Map<String, Feature> getFeatureMap() {
+        return featureMap;
+    }
+
+    /**
+     * A list with all the constraints of this featuremodel. This does not contain the constraints of the imported
+     * sub feature models.
+     * @return A list of the constraints of this featuremodel.
+     */
+    public List<Constraint> getOwnConstraints() {
+        return ownConstraints;
+    }
+
+    /**
+     * A list will all constraints of this featuremodel and recursively of all its imported sub feature models. This list
+     * is not stored but gets calculated with every call. This means changing a constraint will have an effect to the feature model,
+     * but adding deleting constraints will have no effect. This must be done in the correspoding ownConstraint lists of the feature models.
+     * This means when calling this method on the root feature model it returns with all constraints of the decomposed
+     * feature model.
+     * @return a list will all constraints of this feature model.
+     */
+    public List<Constraint> getConstraints() {
+        var constraints = new LinkedList<Constraint>();
+        constraints.addAll(ownConstraints);
+        for(Import importLine : imports){
+            constraints.addAll(importLine.getFeatureModel().getConstraints());
+        }
+        return constraints;
     }
 
     /**
@@ -82,10 +132,44 @@ public class FeatureModel {
      */
     @Override
     public String toString(){
-        return toString("");
+        return toString(false, "");
     }
 
-    public String toString(String currentAlias){
+    /**
+     * Returns a single uvl feature model composed out of all submodels. To acoid naming conflicts all feature
+     * names are changed and a unique id is added. If you do not work with decomposed models do not this method for
+     * printing, use the other print methods instead!
+     * @return A single uvl representation of the composed model.
+     */
+    public String composedModelToString(){
+        return this.toString(true,"");
+    }
+
+    /**
+     * Prints the feature model and all it submodels to uvl according to its original decomposition. This method
+     * should be called on the root feature model.
+     * @return a map with namespaces of featuremodel and submodels as key and uvl strings as value
+     */
+    public Map<String, String> decomposedModelToString(){
+        return decomposedModelToString("");
+    }
+
+    private Map<String, String> decomposedModelToString(String currentAlias){
+        var models = new HashMap<String, String>();
+        models.put(getNamespace(), toString(false, currentAlias));
+        for(Import importLine : imports){
+            String newCurrentAlias;
+            if(currentAlias.equals("")){
+                newCurrentAlias = importLine.getAlias();
+            }else {
+                newCurrentAlias = currentAlias + "." + importLine.getAlias();
+            }
+            models.putAll(importLine.getFeatureModel().decomposedModelToString(newCurrentAlias));
+        }
+        return models;
+    }
+
+    private String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
         if(namespace != null) {
             result.append("namespace ");
@@ -93,7 +177,7 @@ public class FeatureModel {
             result.append(Configuration.NEWLINE);
             result.append(Configuration.NEWLINE);
         }
-        if(imports.size() > 0){
+        if(imports.size() > 0 && !withSubmodels){
             result.append("imports");
             result.append(Configuration.NEWLINE);
             for(Import importLine : imports){
@@ -118,7 +202,7 @@ public class FeatureModel {
             result.append(Configuration.NEWLINE);
             for(Constraint constraint : ownConstraints){
                 result.append(Configuration.TABULATOR);
-                result.append(constraint.toString(false, currentAlias));
+                result.append(constraint.toString(withSubmodels, currentAlias));
                 result.append(Configuration.NEWLINE);
             }
         }
@@ -126,59 +210,32 @@ public class FeatureModel {
     }
 
     /**
-     * WARNING: This method prints the composed model in a uvl LIKE syntax. The output is not valid UVL.
-     * This is because imported features are named with <namespace>.<featurename> but dots are not allowed
-     * in uvl names
-     * @return uvl LIKE string representing the UVL model
+     * This list exists just for performance reasons when building a decomposed feature model from several uvl files.
+     * This list does not have to be set, when building your own feature model. It is also not necessary to update
+     * this list when adding for example constraints.
+     * @return a list with all {@link LiteralConstraint} objects in the constraints of this feature model.
      */
-    public String composedModelToString(){
-        StringBuilder result = new StringBuilder();
-        if(namespace != null) {
-            result.append("namespace ");
-            result.append(namespace);
-            result.append(Configuration.NEWLINE);
-            result.append(Configuration.NEWLINE);
-        }
-        if(rootFeature != null) {
-            result.append("features");
-            result.append(Configuration.NEWLINE);
-            result.append(Util.indentEachLine(getRootFeature().toString()));
-            result.append(Configuration.NEWLINE);
-        }
-        if(getConstraints().size() > 0) {
-            result.append("constraints");
-            result.append(Configuration.NEWLINE);
-            for(Constraint constraint : constraints){
-                result.append(Configuration.TABULATOR);
-                result.append(constraint.toString(true, ""));
-                result.append(Configuration.NEWLINE);
-            }
-        }
-        return result.toString();
+    public List<LiteralConstraint> getLiteralConstraints() {
+        return literalConstraints;
     }
 
     /**
-     * Prints the feature model and all it submodels to uvl according to its original decomposition.
-     * @return a map with namespaces of featuremodel and submodels as key and uvl strings as value
+     * This list exists just for performance reasons when building a decomposed feature model from several uvl files.
+     * This list does not have to be set, when building your own feature model. It is also not necessary to update
+     * this list when adding for example constraints.
+     * @return a list with all {@link LiteralExpression} objects in the constraints of this feature model.
      */
-    public Map<String, String> decomposedModelToString(){
-        return decomposedModelToString("");
+    public List<LiteralExpression> getLiteralExpressions() {
+        return literalExpressions;
     }
 
-    private Map<String, String> decomposedModelToString(String currentAlias){
-        var models = new HashMap<String, String>();
-        models.put(getNamespace(), toString(currentAlias));
-
-        for(Import importLine : imports){
-            String newCurrentAlias;
-            if(currentAlias.equals("")){
-                newCurrentAlias = importLine.getAlias();
-            }else {
-                newCurrentAlias = currentAlias + "." + importLine.getAlias();
-            }
-            models.putAll(importLine.getFeatureModel().decomposedModelToString(newCurrentAlias));
-        }
-
-        return models;
+    /**
+     * This list exists just for performance reasons when building a decomposed feature model from several uvl files.
+     * This list does not have to be set, when building your own feature model. It is also not necessary to update
+     * this list when adding for example constraints.
+     * @return a list with all {@link AggregateFunctionExpression} objects in the constraints of this feature model.
+     */
+    public List<AggregateFunctionExpression> getAggregateFunctionsWithRootFeature() {
+        return aggregateFunctionsWithRootFeature;
     }
 }
