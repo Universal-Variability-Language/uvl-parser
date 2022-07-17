@@ -2,6 +2,8 @@ package de.vill.main;
 
 import de.vill.UVLLexer;
 import de.vill.UVLParser;
+import de.vill.conversion.DropGroupCardinality;
+import de.vill.conversion.IConversionStrategy;
 import de.vill.exception.ParseError;
 import de.vill.model.*;
 import de.vill.model.constraint.LiteralConstraint;
@@ -11,12 +13,20 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 
 public class UVLModelFactory {
+
+    private final Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategies;
+
+    public UVLModelFactory(){
+        conversionStrategies = new HashMap<>();
+        conversionStrategies.put(LanguageLevel.GROUP_CARDINALITY, DropGroupCardinality.class);
+    }
 
     /**
      * This method parses the givel text and returns a {@link FeatureModel} if everything is fine or throws a {@link ParseError} if something went wrong.
@@ -80,7 +90,22 @@ public class UVLModelFactory {
      * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
      * @param levelsToDrop All levels that should be removed from the feature model.
      */
-    public void dropLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop){}
+    public void dropLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop) {
+        List<LanguageLevel> levelsToDropActually = getActualLanguageLevelsToRemoveInOrder(featureModel, levelsToDrop);
+        while (!levelsToDropActually.isEmpty()){
+            LanguageLevel levelToDropNow = levelsToDropActually.get(0);
+            levelsToDropActually.remove(0);
+            try {
+                IConversionStrategy conversionStrategy = conversionStrategies.get(levelToDropNow).getDeclaredConstructor().newInstance();
+                conversionStrategy.convertFeatureModel(featureModel);
+            }catch (Exception e){
+                System.err.println("Could not instantiate conversion strategy: " + e.getMessage());
+            }
+
+        }
+    }
+
+
 
     private LanguageLevel getMaxLanguageLevel(Set<LanguageLevel> languageLevels){
         LanguageLevel max = LanguageLevel.SAT_LEVEL;
@@ -118,7 +143,9 @@ public class UVLModelFactory {
                 levelsToRemove.remove(highestLevel);
             } else {
                 //highestLevel is minor level
-                completeOrderedLevelsToRemove.add(highestLevel);
+                if(featureModel.getUsedLanguageLevels().contains(highestLevel)) {
+                    completeOrderedLevelsToRemove.add(highestLevel);
+                }
                 levelsToRemove.remove(highestLevel);
             }
         }
