@@ -207,7 +207,13 @@ public class FeatureModel {
         if(getOwnConstraints().size() > 0) {
             result.append("constraints");
             result.append(Configuration.getNewlineSymbol());
-            for(Constraint constraint : ownConstraints){
+            List<Constraint> constraintList;
+            if(withSubmodels){
+                constraintList = getConstraints();
+            }else{
+                constraintList = getOwnConstraints();
+            }
+            for(Constraint constraint : constraintList){
                 result.append(Configuration.getTabulatorSymbol());
                 result.append(constraint.toString(withSubmodels, currentAlias));
                 result.append(Configuration.getNewlineSymbol());

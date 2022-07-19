@@ -379,7 +379,8 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitConstraintLine(UVLParser.ConstraintLineContext ctx) {
-        featureModel.getConstraints().add(constraintStack.pop());
+        //featureModel.getConstraints().add(constraintStack.pop());
+        featureModel.getOwnConstraints().add(constraintStack.pop());
     }
 
     public FeatureModel getFeatureModel() {

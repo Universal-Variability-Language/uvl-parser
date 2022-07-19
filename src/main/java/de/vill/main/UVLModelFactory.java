@@ -213,7 +213,7 @@ public class UVLModelFactory {
         walker.walk(uvlListener, uvlParser.featureModel());
 
         FeatureModel featureModel = uvlListener.getFeatureModel();
-        featureModel.getOwnConstraints().addAll(featureModel.getConstraints());
+        //featureModel.getOwnConstraints().addAll(featureModel.getConstraints());
 
 
         visitedImports.put(featureModel.getNamespace(), null);
