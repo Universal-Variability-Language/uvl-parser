@@ -230,7 +230,7 @@ public class UVLModelFactory {
                     importLine.setFeatureModel(subModel);
                     subModel.getRootFeature().setRelatedImport(importLine);
                     visitedImports.put(importLine.getNamespace(), importLine);
-                    featureModel.getConstraints().addAll(subModel.getConstraints());
+                    featureModel.getUsedLanguageLevels().addAll(subModel.getUsedLanguageLevels());
 
                     for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
                         Feature feature = entry.getValue();

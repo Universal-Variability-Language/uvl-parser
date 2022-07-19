@@ -38,7 +38,8 @@ public class FeatureModel {
     public FeatureModel(){}
 
     /**
-     * Get a set with all in this feature used language levels (major and minor).
+     * Get a set with all in this featuremodel used language levels (major and minor).
+     * This list contains the levels used in this feature model and all its sub feature models
      * The returned set is no copy, therefore changing it will change the featuremodel.
      * @return the used language levels as set
      */
