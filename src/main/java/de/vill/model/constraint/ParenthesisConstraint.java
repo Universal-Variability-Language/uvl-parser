@@ -1,5 +1,8 @@
 package de.vill.model.constraint;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ParenthesisConstraint extends Constraint{
     private Constraint content;
 
@@ -18,5 +21,10 @@ public class ParenthesisConstraint extends Constraint{
         result.append(content.toString(withSubmodels, currentAlias));
         result.append(")");
         return result.toString();
+    }
+
+    @Override
+    public List<Constraint> getConstraintSubParts() {
+        return Arrays.asList(content);
     }
 }

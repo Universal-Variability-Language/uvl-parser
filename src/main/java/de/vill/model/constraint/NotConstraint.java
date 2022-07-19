@@ -1,5 +1,8 @@
 package de.vill.model.constraint;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class NotConstraint extends Constraint{
     private Constraint content;
 
@@ -17,5 +20,10 @@ public class NotConstraint extends Constraint{
         result.append("!");
         result.append(content.toString(withSubmodels, currentAlias));
         return result.toString();
+    }
+
+    @Override
+    public List<Constraint> getConstraintSubParts() {
+        return Arrays.asList(content);
     }
 }

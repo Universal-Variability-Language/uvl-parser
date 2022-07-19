@@ -3,6 +3,7 @@ package de.vill.conversion;
 import de.vill.model.FeatureModel;
 import de.vill.model.LanguageLevel;
 import de.vill.model.constraint.Constraint;
+import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.Expression;
 
 import java.util.Arrays;
@@ -36,6 +37,15 @@ public class DropAggregateFunction implements IConversionStrategy{
     }
 
     private boolean expressionContainsAggregateFunction(Expression expression){
+        if(expression instanceof AggregateFunctionExpression){
+            return true;
+        }else {
+            for(Expression subExpression : expression.getExpressionSubParts()){
+                if(expressionContainsAggregateFunction(subExpression)){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 }

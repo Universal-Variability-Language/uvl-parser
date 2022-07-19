@@ -3,6 +3,9 @@ package de.vill.model.constraint;
 import de.vill.model.Feature;
 import de.vill.model.Import;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class LiteralConstraint extends Constraint{
     private String literal;
 
@@ -54,5 +57,10 @@ public class LiteralConstraint extends Constraint{
         }else {
             return feature.getReferenceFromSpecificSubmodel(currentAlias);
         }
+    }
+
+    @Override
+    public List<Constraint> getConstraintSubParts() {
+        return Arrays.asList();
     }
 }

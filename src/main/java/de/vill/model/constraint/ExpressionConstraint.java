@@ -2,6 +2,9 @@ package de.vill.model.constraint;
 
 import de.vill.model.expression.Expression;
 
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class ExpressionConstraint extends Constraint{
     private Expression left;
     private Expression right;
@@ -21,5 +24,10 @@ public abstract class ExpressionConstraint extends Constraint{
         result.append(" ");
         result.append(right.toString(withSubmodels, currentAlias));
         return result.toString();
+    }
+
+    @Override
+    public List<Constraint> getConstraintSubParts() {
+        return Arrays.asList();
     }
 }
