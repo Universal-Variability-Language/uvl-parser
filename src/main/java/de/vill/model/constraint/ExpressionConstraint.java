@@ -30,4 +30,8 @@ public abstract class ExpressionConstraint extends Constraint{
     public List<Constraint> getConstraintSubParts() {
         return Arrays.asList();
     }
+
+    public List<Expression> getExpressionSubParts(){
+        return Arrays.asList(left, right);
+    }
 }
