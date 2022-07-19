@@ -3,6 +3,9 @@ package de.vill.model.expression;
 import de.vill.model.Attribute;
 import de.vill.model.Feature;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class LiteralExpression extends Expression{
     public String getAttributeName() {
         return attributeName;
@@ -47,5 +50,10 @@ public class LiteralExpression extends Expression{
         }else {
             return feature.getReferenceFromSpecificSubmodel(currentAlias) + "." + getAttributeName();
         }
+    }
+
+    @Override
+    public List<Expression> getExpressionSubParts() {
+        return Arrays.asList();
     }
 }

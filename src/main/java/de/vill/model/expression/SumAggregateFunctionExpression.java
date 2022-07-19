@@ -1,5 +1,8 @@
 package de.vill.model.expression;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SumAggregateFunctionExpression extends AggregateFunctionExpression{
 
 
@@ -14,5 +17,10 @@ public class SumAggregateFunctionExpression extends AggregateFunctionExpression{
     @Override
     public String toString(boolean withSubmodels, String currentAlias){
         return super.toString(withSubmodels, "sum", currentAlias);
+    }
+
+    @Override
+    public List<Expression> getExpressionSubParts() {
+        return Arrays.asList();
     }
 }

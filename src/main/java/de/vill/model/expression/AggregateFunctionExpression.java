@@ -2,6 +2,9 @@ package de.vill.model.expression;
 
 import de.vill.model.Feature;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class AggregateFunctionExpression extends Expression{
     public String getRootFeatureName() {
         return rootFeatureName;
@@ -40,6 +43,11 @@ public class AggregateFunctionExpression extends Expression{
     @Override
     public String toString(boolean withSubmodels, String currentAlias) {
         return toString(withSubmodels, "aggregateFunction", currentAlias);
+    }
+
+    @Override
+    public List<Expression> getExpressionSubParts() {
+        return Arrays.asList();
     }
 
     protected String toString(boolean withSubmodels, String functionName, String currentAlias) {

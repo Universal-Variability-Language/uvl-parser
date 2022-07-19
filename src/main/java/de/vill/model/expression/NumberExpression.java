@@ -1,5 +1,8 @@
 package de.vill.model.expression;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class NumberExpression extends Expression{
     public int getNumber() {
         return number;
@@ -21,6 +24,11 @@ public class NumberExpression extends Expression{
 
     public String toString(boolean withSubmodels, String currentAlias){
         return Integer.toString(number);
+    }
+
+    @Override
+    public List<Expression> getExpressionSubParts() {
+        return Arrays.asList();
     }
 
 }

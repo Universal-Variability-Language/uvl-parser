@@ -1,5 +1,8 @@
 package de.vill.model.expression;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DivExpression extends Expression {
     private Expression left;
     private Expression right;
@@ -16,5 +19,10 @@ public class DivExpression extends Expression {
         result.append(" / ");
         result.append(right.toString(withSubmodels, currentAlias));
         return result.toString();
+    }
+
+    @Override
+    public List<Expression> getExpressionSubParts() {
+        return Arrays.asList(left, right);
     }
 }
