@@ -194,9 +194,9 @@ INTEGER: '0' | [1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
 STRING: '"'~[\r?\n]*'"';
 
+LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
 MAJORLEVEL: 'SAT-level' | 'SMT-level';
 MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function';
-LANGUAGELEVEL: MAJORLEVEL '.' (MINORLEVEL | '*');
 
 REFERENCE: (ID '.')* ID;
 ID: [a-zA-Z][a-zA-Z0-9_-]*;

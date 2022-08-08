@@ -25,24 +25,27 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void exitIncludeLine(UVLParser.IncludeLineContext ctx){
         String[] levels = ctx.LANGUAGELEVEL().getText().split("\\.");
-        if(levels.length != 2){
-            throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
-        }
-
-        LanguageLevel majorLevel = LanguageLevel.getLevelByName(levels[0]);
-        List<LanguageLevel> minorLevels;
-        if(levels[1].equals("*")){
-            minorLevels = LanguageLevel.valueOf(majorLevel.getValue()+1);
-        }else {
-            minorLevels = new LinkedList<>();
-            minorLevels.add(LanguageLevel.getLevelByName(levels[1]));
-        }
-        for(LanguageLevel minorLevel : minorLevels) {
-            if (minorLevel.getValue() - 1 != majorLevel.getValue()) {
-                throw new ParseError("Minor language level " + minorLevel.getName() + " does not correspond to major language level " + majorLevel + " but to " + LanguageLevel.valueOf(minorLevel.getValue() - 1));
+        if(levels.length == 1){
+            LanguageLevel majorLevel = LanguageLevel.getLevelByName(levels[0]);
+            importedLanguageLevels.add(majorLevel);
+        }else if(levels.length == 2){
+            LanguageLevel majorLevel = LanguageLevel.getLevelByName(levels[0]);
+            List<LanguageLevel> minorLevels;
+            if(levels[1].equals("*")){
+                minorLevels = LanguageLevel.valueOf(majorLevel.getValue()+1);
+            }else {
+                minorLevels = new LinkedList<>();
+                minorLevels.add(LanguageLevel.getLevelByName(levels[1]));
             }
             importedLanguageLevels.add(majorLevel);
-            importedLanguageLevels.add(minorLevel);
+            for(LanguageLevel minorLevel : minorLevels) {
+                if (minorLevel.getValue() - 1 != majorLevel.getValue()) {
+                    throw new ParseError("Minor language level " + minorLevel.getName() + " does not correspond to major language level " + majorLevel + " but to " + LanguageLevel.valueOf(minorLevel.getValue() - 1));
+                }
+                importedLanguageLevels.add(minorLevel);
+            }
+        }else {
+            throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
         }
     }
 
