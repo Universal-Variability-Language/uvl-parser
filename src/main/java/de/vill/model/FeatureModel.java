@@ -179,6 +179,22 @@ public class FeatureModel {
 
     private String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
+        if(usedLanguageLevels.size() != 0){
+            result.append("include");
+            result.append(Configuration.getNewlineSymbol());
+            for(LanguageLevel languageLevel : getUsedLanguageLevels()){
+                result.append(Configuration.getTabulatorSymbol());
+                if(LanguageLevel.isMajorLevel(languageLevel)){
+                    result.append(languageLevel.getName());
+                }else {
+                    result.append(LanguageLevel.valueOf(languageLevel.getValue()-1).get(0).getName());
+                    result.append(".");
+                    result.append(languageLevel.getName());
+                }
+
+                result.append(Configuration.getNewlineSymbol());
+            }
+        }
         if(namespace != null) {
             result.append("namespace ");
             result.append(namespace);
