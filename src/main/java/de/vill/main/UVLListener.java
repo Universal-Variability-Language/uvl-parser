@@ -11,6 +11,7 @@ import java.util.*;
 
 public class UVLListener extends UVLBaseListener {
     private FeatureModel featureModel = new FeatureModel();
+    private Set<LanguageLevel> importedLanguageLevels = new HashSet<>();
     private Stack<Feature> featureStack = new Stack<>();
     private Stack<Group> groupStack = new Stack<>();
 
@@ -21,6 +22,29 @@ public class UVLListener extends UVLBaseListener {
     private Stack<Map<String,Attribute>> attributeStack = new Stack<>();
 
     private boolean featureCardinality = false;
+
+    @Override public void exitIncludeLine(UVLParser.IncludeLineContext ctx){
+        String[] levels = ctx.LANGUAGELEVEL().getText().split("\\.");
+        if(levels.length != 2){
+            throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
+        }
+
+        LanguageLevel majorLevel = LanguageLevel.getLevelByName(levels[0]);
+        List<LanguageLevel> minorLevels;
+        if(levels[1].equals("*")){
+            minorLevels = LanguageLevel.valueOf(majorLevel.getValue()+1);
+        }else {
+            minorLevels = new LinkedList<>();
+            minorLevels.add(LanguageLevel.getLevelByName(levels[1]));
+        }
+        for(LanguageLevel minorLevel : minorLevels) {
+            if (minorLevel.getValue() - 1 != majorLevel.getValue()) {
+                throw new ParseError("Minor language level " + minorLevel.getName() + " does not correspond to major language level " + majorLevel + " but to " + LanguageLevel.valueOf(minorLevel.getValue() - 1));
+            }
+            importedLanguageLevels.add(majorLevel);
+            importedLanguageLevels.add(minorLevel);
+        }
+    }
 
     @Override public void exitNamespace(UVLParser.NamespaceContext ctx) {
         featureModel.setNamespace(ctx.REFERENCE().getText());
@@ -387,10 +411,14 @@ public class UVLListener extends UVLBaseListener {
         return featureModel;
     }
 
-/*
+
     @Override public void exitFeatureModel(UVLParser.FeatureModelContext ctx) {
-        System.out.println("featuremodel");
+        if(!featureModel.getUsedLanguageLevels().equals(importedLanguageLevels)){
+            throw new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString());
+        }
     }
+
+    /*
 
     @Override public void exitFeatures(UVLParser.FeaturesContext ctx) {
         System.out.println("features");

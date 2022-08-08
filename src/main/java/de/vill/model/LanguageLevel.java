@@ -8,30 +8,43 @@ import java.util.List;
  * An enum that represents all possible language levels this uvl library supports.
  */
 public enum LanguageLevel {
-    GROUP_CARDINALITY(2),
-    FEATURE_CARDINALITY(4),
-    AGGREGATE_FUNCTION(4),
-    SAT_LEVEL(1),
-    SMT_LEVEL(3);
+    GROUP_CARDINALITY(2, "group-cardinality"),
+    FEATURE_CARDINALITY(4, "feature-cardinality"),
+    AGGREGATE_FUNCTION(4, "aggregate-function"),
+    SAT_LEVEL(1, "SAT-level"),
+    SMT_LEVEL(3, "SMT-level");
 
     private int value;
-    private static HashMap<Integer, List<LanguageLevel>> map = new HashMap<>();
 
-    LanguageLevel(int value) {
+    private String name;
+    private static HashMap<Integer, List<LanguageLevel>> valueMap = new HashMap<>();
+    private static HashMap<String, LanguageLevel> nameMap = new HashMap<>();
+
+    LanguageLevel(int value, String name) {
         this.value = value;
+        this.name = name;
     }
 
     static {
         for (LanguageLevel level : LanguageLevel.values()) {
-            if(!map.containsKey(level.value)){
-                map.put(level.value, new LinkedList<>());
+            if(!valueMap.containsKey(level.value)){
+                valueMap.put(level.value, new LinkedList<>());
             }
-            map.get(level.value).add(level);
+            valueMap.get(level.value).add(level);
+            nameMap.put(level.name, level);
         }
     }
 
     public static List<LanguageLevel> valueOf(int languageLevel) {
-        return (List<LanguageLevel>) map.get(languageLevel);
+        return (List<LanguageLevel>) valueMap.get(languageLevel);
+    }
+
+    public static LanguageLevel getLevelByName(String name){
+        return nameMap.get(name);
+    }
+
+    public String getName(){
+        return name;
     }
 
     public static boolean isMajorLevel(LanguageLevel languageLevel){
