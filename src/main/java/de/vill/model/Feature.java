@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+//TODO Feature cardinality als Group modelieren, damit man feature cardinality nicht direkt unter Gruppen hat (könnte aber Probleme beim printen machen?)
 /**
  * This class represents a feature of any kind (normal, numeric, abstract, ...).
  */
