@@ -11,7 +11,7 @@ import java.util.*;
 
 public class UVLListener extends UVLBaseListener {
     private FeatureModel featureModel = new FeatureModel();
-    private Set<LanguageLevel> importedLanguageLevels = new HashSet<>();
+    private Set<LanguageLevel> importedLanguageLevels = new HashSet<>(Arrays.asList(LanguageLevel.SAT_LEVEL));
     private Stack<Feature> featureStack = new Stack<>();
     private Stack<Group> groupStack = new Stack<>();
 
