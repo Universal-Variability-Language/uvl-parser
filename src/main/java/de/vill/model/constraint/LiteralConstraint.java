@@ -47,9 +47,6 @@ public class LiteralConstraint extends Constraint{
     }
 
     public String toString(boolean withSubmodels, String currentAlias){
-        if(getFeature().getFeatureName().equals("feature1")){
-            System.out.println("test");
-        }
         if(getFeature() == null){
             return getLiteral();
         }else if(withSubmodels){

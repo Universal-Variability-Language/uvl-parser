@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -144,14 +143,14 @@ public class UVLModelFactory {
                 int numberCorrespondingMinorLevels = highestLevel.getValue()+1;
                 List<LanguageLevel> correspondingMinorLevels = LanguageLevel.valueOf(numberCorrespondingMinorLevels);
                 if(correspondingMinorLevels != null){
-                    correspondingMinorLevels.retainAll(featureModel.getUsedLanguageLevels());
+                    correspondingMinorLevels.retainAll(featureModel.getUsedLanguageLevelsRecursively());
                     completeOrderedLevelsToRemove.addAll(correspondingMinorLevels);
                 }
                 completeOrderedLevelsToRemove.add(highestLevel);
                 levelsToRemove.remove(highestLevel);
             } else {
                 //highestLevel is minor level
-                if(featureModel.getUsedLanguageLevels().contains(highestLevel)) {
+                if(featureModel.getUsedLanguageLevelsRecursively().contains(highestLevel)) {
                     completeOrderedLevelsToRemove.add(highestLevel);
                 }
                 levelsToRemove.remove(highestLevel);
@@ -230,7 +229,6 @@ public class UVLModelFactory {
                     importLine.setFeatureModel(subModel);
                     subModel.getRootFeature().setRelatedImport(importLine);
                     visitedImports.put(importLine.getNamespace(), importLine);
-                    featureModel.getUsedLanguageLevels().addAll(subModel.getUsedLanguageLevels());
 
                     for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
                         Feature feature = entry.getValue();

@@ -40,6 +40,21 @@ public class FeatureModel {
     /**
      * Get a set with all in this featuremodel used language levels (major and minor).
      * This list contains the levels used in this feature model and all its sub feature models
+     * The returned set is a copy, therefore changing it will NOT change the featuremodel.
+     * @return the used language levels as set
+     */
+    public Set<LanguageLevel> getUsedLanguageLevelsRecursively() {
+        Set<LanguageLevel> languageLevels = new HashSet<>();
+        languageLevels.addAll(getUsedLanguageLevels());
+        for(Import importLine : imports){
+            languageLevels.addAll(importLine.getFeatureModel().getUsedLanguageLevelsRecursively());
+        }
+        return languageLevels;
+    }
+
+    /**
+     * Get a set with all in this featuremodel used language levels (major and minor).
+     * This list contains the levels used in this feature model but not the ones used in submodels.
      * The returned set is no copy, therefore changing it will change the featuremodel.
      * @return the used language levels as set
      */
@@ -182,6 +197,12 @@ public class FeatureModel {
         if(usedLanguageLevels.size() != 0){
             result.append("include");
             result.append(Configuration.getNewlineSymbol());
+            Set<LanguageLevel> levelsToPrint;
+            if(withSubmodels){
+                levelsToPrint = getUsedLanguageLevelsRecursively();
+            }else {
+                levelsToPrint = getUsedLanguageLevels();
+            }
             for(LanguageLevel languageLevel : getUsedLanguageLevels()){
                 result.append(Configuration.getTabulatorSymbol());
                 if(LanguageLevel.isMajorLevel(languageLevel)){
@@ -191,9 +212,9 @@ public class FeatureModel {
                     result.append(".");
                     result.append(languageLevel.getName());
                 }
-
                 result.append(Configuration.getNewlineSymbol());
             }
+            result.append(Configuration.getNewlineSymbol());
         }
         if(namespace != null) {
             result.append("namespace ");
