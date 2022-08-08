@@ -92,7 +92,9 @@ tokens { INDENT, DEDENT }
   }
 }
 
-featureModel: namespace? NEWLINE? imports? NEWLINE? features? NEWLINE? constraints? EOF;
+featureModel: includes? NEWLINE? namespace? NEWLINE? imports? NEWLINE? features? NEWLINE? constraints? EOF;
+
+includes: 'include' NEWLINE INDENT (LANGUAGELEVEL NEWLINE)* DEDENT;
 
 namespace: 'namespace' REFERENCE;
 
@@ -191,8 +193,12 @@ INTEGER: '0' | [1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
 STRING: '"'~[\r?\n]*'"';
 
+MAJORLEVEL: 'SAT-level' | 'SMT-level';
+MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function';
+LANGUAGELEVEL: MAJORLEVEL '.' (MINORLEVEL | '*');
+
 REFERENCE: (ID '.')* ID;
-ID: [a-zA-Z][a-zA-Z0-9_]*;
+ID: [a-zA-Z][a-zA-Z0-9_-]*;
 
 COMMA: ',';
 
