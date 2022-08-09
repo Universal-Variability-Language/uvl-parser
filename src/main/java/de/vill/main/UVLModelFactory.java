@@ -173,9 +173,9 @@ public class UVLModelFactory {
      * This method takes a {@link FeatureModel} and transforms it so that it only uses the specified {@link LanguageLevel}.
      * It just inverts the Set and calls {@link UVLModelFactory#dropLanguageLevel(FeatureModel, Set)}.
      * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
-     * @param levelsToDrop All levels that can stay in the feature model.
+     * @param supportedLanguageLevel All levels that can stay in the feature model.
      */
-    public void dropExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop, Set<LanguageLevel> supportedLanguageLevel){
+    public void dropExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> supportedLanguageLevel){
         Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
         allLevels.removeAll(supportedLanguageLevel);
 
@@ -186,9 +186,9 @@ public class UVLModelFactory {
      * This method takes a {@link FeatureModel} and transforms it so that it only uses the specified {@link LanguageLevel}.
      * It just inverts the Set and calls {@link UVLModelFactory#convertLanguageLevel(FeatureModel, Set)}.
      * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
-     * @param levelsToDrop All levels that can stay in the feature model.
+     * @param supportedLanguageLevel All levels that can stay in the feature model.
      */
-    public void convertExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop, Set<LanguageLevel> supportedLanguageLevel){
+    public void convertExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> supportedLanguageLevel){
         Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
         allLevels.removeAll(supportedLanguageLevel);
 
