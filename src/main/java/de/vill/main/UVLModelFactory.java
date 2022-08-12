@@ -90,7 +90,9 @@ public class UVLModelFactory {
 
     //TODO If the level set is not consistent e.g. remove SMT_LEVEL but the feature model has AGGREGATE_FUNCTION level? -> remove automatically all related constraints (auch in der BA schrieben (In conversion strats chaper diskutieren))
     /**
-     * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified {@link LanguageLevel}.
+     * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified
+     * {@link LanguageLevel}. This method applies the conversion strategy on the featuremodel and on all
+     * submodels that import the corresponding language level.
      * It does that by removing the concepts of the level without any conversion strategies. This means information
      * is lost and the configuration space of the feature model will most likely change. It can be used, if the actual
      * conversion strategies are not performant enough.
@@ -98,20 +100,64 @@ public class UVLModelFactory {
      * @param levelsToDrop All levels that should be removed from the feature model.
      */
     public void dropLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop) {
-        List<LanguageLevel> levelsToDropActually = getActualLanguageLevelsToRemoveInOrder(featureModel, levelsToDrop);
-        while (!levelsToDropActually.isEmpty()){
-            LanguageLevel levelToDropNow = levelsToDropActually.get(0);
-            levelsToDropActually.remove(0);
+        convertFeatureModel(featureModel,levelsToDrop, conversionStrategiesDrop);
+    }
+
+    /**
+     * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified
+     * {@link UVLModelFactory#dropLanguageLevel(FeatureModel, Set)}. This method applies the conversion strategy on the
+     * featuremodel and on all submodels that import the corresponding language level.
+     * It does that applying different conversion strategies, trying to keep as much information as possible. This means
+     * that the conversion can take a long time and my not be feasible for large models. If so try to just drop the levels instead.
+     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
+     * @param levelsToConvert All levels that should be removed from the feature model.
+     */
+    public void convertLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToConvert){
+        convertFeatureModel(featureModel, levelsToConvert, conversionStrategiesConvert);
+    }
+
+    /**
+     * This method takes a {@link FeatureModel} and transforms it so that it only uses the specified {@link LanguageLevel}.
+     * It just inverts the Set and calls {@link UVLModelFactory#dropLanguageLevel(FeatureModel, Set)}.
+     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
+     * @param supportedLanguageLevel All levels that can stay in the feature model.
+     */
+    public void dropExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> supportedLanguageLevel){
+        Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
+        allLevels.removeAll(supportedLanguageLevel);
+
+        dropLanguageLevel(featureModel, allLevels);
+    }
+
+    /**
+     * This method takes a {@link FeatureModel} and transforms it so that it only uses the specified {@link LanguageLevel}.
+     * It just inverts the Set and calls {@link UVLModelFactory#convertLanguageLevel(FeatureModel, Set)}.
+     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
+     * @param supportedLanguageLevel All levels that can stay in the feature model.
+     */
+    public void convertExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> supportedLanguageLevel){
+        Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
+        allLevels.removeAll(supportedLanguageLevel);
+
+        convertLanguageLevel(featureModel, allLevels);
+    }
+
+    private void convertFeatureModel(FeatureModel featureModel, Set<LanguageLevel> levelsToRemove, Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategies){
+        List<LanguageLevel> levelsToRemoveActually = getActualLanguageLevelsToRemoveInOrder(featureModel, levelsToRemove);
+        while (!levelsToRemoveActually.isEmpty()){
+            LanguageLevel levelToDropNow = levelsToRemoveActually.get(0);
+            levelsToRemoveActually.remove(0);
             try {
-                IConversionStrategy conversionStrategy = conversionStrategiesDrop.get(levelToDropNow).getDeclaredConstructor().newInstance();
+                IConversionStrategy conversionStrategy = conversionStrategies.get(levelToDropNow).getDeclaredConstructor().newInstance();
                 conversionStrategy.convertFeatureModel(featureModel);
+                for(Import importLine : featureModel.getImports()){
+                    convertFeatureModel(importLine.getFeatureModel(), levelsToRemove, conversionStrategies);
+                }
             }catch (Exception e){
                 System.err.println("Could not instantiate conversion strategy: " + e.getMessage());
             }
-
         }
     }
-
 
 
     private LanguageLevel getMaxLanguageLevel(Set<LanguageLevel> languageLevels){
@@ -158,41 +204,6 @@ public class UVLModelFactory {
         }
 
         return completeOrderedLevelsToRemove;
-    }
-
-    /**
-     * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified {@link UVLModelFactory#dropLanguageLevel(FeatureModel, Set)}.
-     * It does that applying different conversion strategies, trying to keep as much information as possible. This means
-     * that the conversion can take a long time and my not be feasible for large models. If so try to just drop the levels instead.
-     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
-     * @param levelsToDrop All levels that should be removed from the feature model.
-     */
-    public void convertLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop){}
-
-    /**
-     * This method takes a {@link FeatureModel} and transforms it so that it only uses the specified {@link LanguageLevel}.
-     * It just inverts the Set and calls {@link UVLModelFactory#dropLanguageLevel(FeatureModel, Set)}.
-     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
-     * @param supportedLanguageLevel All levels that can stay in the feature model.
-     */
-    public void dropExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> supportedLanguageLevel){
-        Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
-        allLevels.removeAll(supportedLanguageLevel);
-
-        dropLanguageLevel(featureModel, allLevels);
-    }
-
-    /**
-     * This method takes a {@link FeatureModel} and transforms it so that it only uses the specified {@link LanguageLevel}.
-     * It just inverts the Set and calls {@link UVLModelFactory#convertLanguageLevel(FeatureModel, Set)}.
-     * @param featureModel A reference to the feature model which should be transformed. The method operates directly on this object, not on a clone!
-     * @param supportedLanguageLevel All levels that can stay in the feature model.
-     */
-    public void convertExceptAcceptedLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> supportedLanguageLevel){
-        Set<LanguageLevel> allLevels = new HashSet<>(Arrays.asList(LanguageLevel.values()));
-        allLevels.removeAll(supportedLanguageLevel);
-
-        convertLanguageLevel(featureModel, allLevels);
     }
 
     private FeatureModel parseFeatureModelWithImports(String text, Function<String, String> fileLoader, Map<String, Import> visitedImports){
