@@ -102,10 +102,7 @@ namespace: 'namespace' REFERENCE;
 imports: 'imports' NEWLINE INDENT importLine* DEDENT;
 importLine: ns=REFERENCE ('as' alias=REFERENCE)? NEWLINE;
 
-//TODO add possibility for multiple root features
 features: 'features' NEWLINE INDENT feature DEDENT;
-
-//rootFeature: REFERENCE NEWLINE INDENT group+ DEDENT;
 
 group
     : ORGROUP groupSpec          # OrGroup
