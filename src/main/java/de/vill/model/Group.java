@@ -18,8 +18,7 @@ public class Group {
         ALTERNATIVE,
         MANDATORY,
         OPTIONAL,
-        GROUP_CARDINALITY,
-        FEATURE_CARDINALITY
+        GROUP_CARDINALITY
     }
     /// The type of the group (if type is GROUP_CARDINALITY or FEATURE_CARDINALITY lower and upper bound must be set!)
     public final GroupType GROUPTYPE;
@@ -106,19 +105,12 @@ public class Group {
             case GROUP_CARDINALITY:
                 result.append(getCardinalityAsSting());
                 break;
-            case FEATURE_CARDINALITY:
-                StringBuilder featureString = new StringBuilder(features.get(0).toString(withSubmodels, currentAlias));
-                int indexEndFeatureName = featureString.indexOf(" ");
-                featureString.insert(indexEndFeatureName, "cardinality " + getCardinalityAsSting());
-                result.append(featureString);
-                break;
         }
-        if(!GROUPTYPE.equals(GroupType.FEATURE_CARDINALITY)) {
-            result.append(Configuration.getNewlineSymbol());
 
-            for (Feature feature : features) {
-                result.append(Util.indentEachLine(feature.toString(withSubmodels, currentAlias)));
-            }
+        result.append(Configuration.getNewlineSymbol());
+
+        for (Feature feature : features) {
+            result.append(Util.indentEachLine(feature.toString(withSubmodels, currentAlias)));
         }
 
         return result.toString();
