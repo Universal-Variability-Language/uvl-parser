@@ -150,8 +150,10 @@ public class UVLModelFactory {
             try {
                 IConversionStrategy conversionStrategy = conversionStrategies.get(levelToDropNow).getDeclaredConstructor().newInstance();
                 conversionStrategy.convertFeatureModel(featureModel);
+                featureModel.getUsedLanguageLevels().removeAll(conversionStrategy.getLevelsToBeRemoved());
                 for(Import importLine : featureModel.getImports()){
                     convertFeatureModel(importLine.getFeatureModel(), levelsToRemove, conversionStrategies);
+                    featureModel.getUsedLanguageLevels().removeAll(conversionStrategy.getLevelsToBeRemoved());
                 }
             }catch (Exception e){
                 System.err.println("Could not instantiate conversion strategy: " + e.getMessage());
