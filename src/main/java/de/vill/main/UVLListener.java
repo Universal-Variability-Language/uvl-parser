@@ -122,7 +122,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
-        Group group = new Group(Group.GroupType.CARDINALITY);
+        Group group = new Group(Group.GroupType.GROUP_CARDINALITY);
         group.setLowerBound(ctx.lowerBound.getText());
         if(ctx.upperBound != null) {
             group.setUpperBound(ctx.upperBound.getText());

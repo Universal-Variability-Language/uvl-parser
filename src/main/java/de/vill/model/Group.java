@@ -18,9 +18,10 @@ public class Group {
         ALTERNATIVE,
         MANDATORY,
         OPTIONAL,
-        CARDINALITY
+        GROUP_CARDINALITY,
+        FEATURE_CARDINALITY
     }
-    /// The type of the group (if type is cardinality lower and upper bound must be set!)
+    /// The type of the group (if type is GROUP_CARDINALITY or FEATURE_CARDINALITY lower and upper bound must be set!)
     public final GroupType GROUPTYPE;
     private final List<Feature> features;
     private String lowerBound;
@@ -102,24 +103,38 @@ public class Group {
             case MANDATORY:
                 result.append("mandatory");
                 break;
-            case CARDINALITY:
-                result.append("[");
-                if(getLowerBound().equals(getUpperBound())){
-                    result.append(getLowerBound());
-                } else {
-                    result.append(getLowerBound());
-                    result.append("..");
-                    result.append(getUpperBound());
-                }
-                result.append("]");
+            case GROUP_CARDINALITY:
+                result.append(getCardinalityAsSting());
+                break;
+            case FEATURE_CARDINALITY:
+                StringBuilder featureString = new StringBuilder(features.get(0).toString(withSubmodels, currentAlias));
+                int indexEndFeatureName = featureString.indexOf(" ");
+                featureString.insert(indexEndFeatureName, "cardinality " + getCardinalityAsSting());
+                result.append(featureString);
+                break;
+        }
+        if(!GROUPTYPE.equals(GroupType.FEATURE_CARDINALITY)) {
+            result.append(Configuration.getNewlineSymbol());
+
+            for (Feature feature : features) {
+                result.append(Util.indentEachLine(feature.toString(withSubmodels, currentAlias)));
+            }
         }
 
-        result.append(Configuration.getNewlineSymbol());
+        return result.toString();
+    }
 
-        for(Feature feature : features){
-            result.append(Util.indentEachLine(feature.toString(withSubmodels, currentAlias)));
+    private String getCardinalityAsSting(){
+        StringBuilder result = new StringBuilder();
+        result.append("[");
+        if(getLowerBound().equals(getUpperBound())){
+            result.append(getLowerBound());
+        } else {
+            result.append(getLowerBound());
+            result.append("..");
+            result.append(getUpperBound());
         }
-
+        result.append("]");
         return result.toString();
     }
 }
