@@ -3,18 +3,18 @@ package de.vill.model.expression;
 import java.util.Arrays;
 import java.util.List;
 
-public class NumberExpression extends Expression{
-    public double getNumber() {
+public class NumberExpression<T extends Number> extends Expression{
+    public T getNumber() {
         return number;
     }
 
-    public void setNumber(double number) {
+    public void setNumber(T number) {
         this.number = number;
     }
 
-    private double number;
+    private T number;
 
-    public NumberExpression(double number){
+    public NumberExpression(T number){
         this.number = number;
     }
 
@@ -23,7 +23,7 @@ public class NumberExpression extends Expression{
     }
 
     public String toString(boolean withSubmodels, String currentAlias){
-        return Double.toString(number);
+        return number.toString();
     }
 
     @Override
