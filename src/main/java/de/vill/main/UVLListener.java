@@ -217,6 +217,9 @@ public class UVLListener extends UVLBaseListener {
         }else if(ctx.value().INTEGER() != null){
             Attribute<Integer> attribute = new Attribute(ctx.key().getText(), Integer.parseInt(ctx.value().getText()));
             attributeStack.peek().put(ctx.key().getText(), attribute);
+        }else if(ctx.value().FLOAT() != null){
+            Attribute<Double> attribute = new Attribute(ctx.key().getText(), Double.parseDouble(ctx.value().getText()));
+            attributeStack.peek().put(ctx.key().getText(), attribute);
         }else if(ctx.value().STRING() != null) {
             Attribute<String> attribute = new Attribute(ctx.key().getText(), ctx.value().getText());
             attributeStack.peek().put(ctx.key().getText(), attribute);

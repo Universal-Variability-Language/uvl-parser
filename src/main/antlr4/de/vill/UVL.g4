@@ -127,7 +127,7 @@ attribute: key (value)?;
 
 key: REFERENCE;
 //TODO Add Float and Constraints as possible attribute
-value: BOOLEAN | INTEGER | STRING | attributes | vector;
+value: BOOLEAN | FLOAT | INTEGER | STRING | attributes | vector;
 vector: OPEN_BRACK (value COMMA?)* CLOSE_BRACK;
 
 constraints: 'constraints' NEWLINE INDENT constraintLine* DEDENT;
