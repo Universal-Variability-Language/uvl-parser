@@ -318,6 +318,11 @@ public class UVLListener extends UVLBaseListener {
         expressionStack.push(expression);
     }
 
+    @Override public void exitFloatLiteralExpression(UVLParser.FloatLiteralExpressionContext ctx) {
+        Expression expression = new NumberExpression(Double.parseDouble(ctx.FLOAT().getText()));
+        expressionStack.push(expression);
+    }
+
     @Override public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
         LiteralExpression expression = new LiteralExpression(ctx.REFERENCE().getText());
         expressionStack.push(expression);

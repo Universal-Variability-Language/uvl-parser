@@ -151,9 +151,9 @@ equation
     | expression GREATER expression     # GreaterEquation
     ;
 
-//TODO Add float for expressions
 expression:
-    INTEGER                                 # IntegerLiteralExpression
+    FLOAT                                   # FloatLiteralExpression
+    | INTEGER                               # IntegerLiteralExpression
     | aggregateFunction                     # AggregateFunctionExpression
     | REFERENCE                             # AttributeLiteralExpression
     | OPEN_PAREN expression CLOSE_PAREN     # BracketExpression
@@ -190,7 +190,8 @@ MUL: '*';
 ADD: '+';
 SUB: '-';
 
-INTEGER: '0' | [1-9][0-9]*;
+FLOAT: [+-]?[0-9]*[.][0-9]+;
+INTEGER: '0' | [-+]?[1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
 STRING: '"'~[\r?\n]*'"';
 

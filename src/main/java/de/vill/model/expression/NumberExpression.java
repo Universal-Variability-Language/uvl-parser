@@ -4,17 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class NumberExpression extends Expression{
-    public int getNumber() {
+    public double getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(double number) {
         this.number = number;
     }
 
-    private int number;
+    private double number;
 
-    public NumberExpression(int number){
+    public NumberExpression(double number){
         this.number = number;
     }
 
@@ -23,7 +23,7 @@ public class NumberExpression extends Expression{
     }
 
     public String toString(boolean withSubmodels, String currentAlias){
-        return Integer.toString(number);
+        return Double.toString(number);
     }
 
     @Override
