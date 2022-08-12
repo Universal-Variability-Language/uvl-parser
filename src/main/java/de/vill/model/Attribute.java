@@ -43,6 +43,9 @@ public class Attribute<T> {
         if(value == null){
             //should never be the case but who knows...
             return "";
+        }else if(value instanceof Double){
+            //double to string
+            result.append(Double.toString((Double) value));
         }else if (value instanceof Integer){
             //integer to string
             result.append(Integer.toString((Integer) value));
