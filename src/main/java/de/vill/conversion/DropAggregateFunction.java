@@ -26,14 +26,7 @@ public class DropAggregateFunction implements IConversionStrategy{
 
     @Override
     public void convertFeatureModel(FeatureModel featureModel) {
-        removeRecursivelyAllAggregateFunctions(featureModel);
-    }
-
-    private void removeRecursivelyAllAggregateFunctions(FeatureModel featureModel){
         featureModel.getOwnConstraints().removeIf(x -> constraintContainsAggregateFunction(x));
-        for(Import importLine : featureModel.getImports()){
-            removeRecursivelyAllAggregateFunctions(importLine.getFeatureModel());
-        }
     }
 
     private boolean constraintContainsAggregateFunction(Constraint constraint){
