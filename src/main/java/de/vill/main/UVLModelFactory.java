@@ -204,6 +204,8 @@ public class UVLModelFactory {
                 levelsToRemove.remove(highestLevel);
             }
         }
+        //SAT-level can not be removed
+        completeOrderedLevelsToRemove.remove(LanguageLevel.SAT_LEVEL);
 
         return completeOrderedLevelsToRemove;
     }
