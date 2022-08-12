@@ -223,6 +223,9 @@ public class UVLListener extends UVLBaseListener {
         }else if(ctx.value().STRING() != null) {
             Attribute<String> attribute = new Attribute(ctx.key().getText(), ctx.value().getText());
             attributeStack.peek().put(ctx.key().getText(), attribute);
+        }else if(ctx.value().constraint() != null){
+            //add constraint to constraint list instead of attributes (makes everything easier but information whether constraint was in list or in attribute gets lost
+            featureModel.getOwnConstraints().add(constraintStack.pop());
         }else if(ctx.value().vector() != null) {
             String vectorString = ctx.value().getText();
             vectorString = vectorString.substring(1, vectorString.length() - 1);
