@@ -319,13 +319,18 @@ public class UVLListener extends UVLBaseListener {
         constraintStack.push(constraint);
     }
 
+    @Override public void exitBracketExpression(UVLParser.BracketExpressionContext ctx) {
+        ParenthesisExpression expression = new ParenthesisExpression(expressionStack.pop());
+        expressionStack.push(expression);
+    }
+
     @Override public void exitIntegerLiteralExpression(UVLParser.IntegerLiteralExpressionContext ctx) {
-        Expression expression = new NumberExpression<Integer>(Integer.parseInt(ctx.INTEGER().getText()));
+        Expression expression = new NumberExpression(Integer.parseInt(ctx.INTEGER().getText()));
         expressionStack.push(expression);
     }
 
     @Override public void exitFloatLiteralExpression(UVLParser.FloatLiteralExpressionContext ctx) {
-        Expression expression = new NumberExpression<Double>(Double.parseDouble(ctx.FLOAT().getText()));
+        Expression expression = new NumberExpression(Double.parseDouble(ctx.FLOAT().getText()));
         expressionStack.push(expression);
     }
 
