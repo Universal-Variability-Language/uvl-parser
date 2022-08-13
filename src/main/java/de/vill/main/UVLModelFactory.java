@@ -100,7 +100,7 @@ public class UVLModelFactory {
      * @param levelsToDrop All levels that should be removed from the feature model.
      */
     public void dropLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToDrop) {
-        convertFeatureModel(featureModel,levelsToDrop, conversionStrategiesDrop);
+        convertFeatureModel(featureModel, featureModel,levelsToDrop, conversionStrategiesDrop);
     }
 
     /**
@@ -113,7 +113,7 @@ public class UVLModelFactory {
      * @param levelsToConvert All levels that should be removed from the feature model.
      */
     public void convertLanguageLevel(FeatureModel featureModel, Set<LanguageLevel> levelsToConvert){
-        convertFeatureModel(featureModel, levelsToConvert, conversionStrategiesConvert);
+        convertFeatureModel(featureModel, featureModel, levelsToConvert, conversionStrategiesConvert);
     }
 
     /**
@@ -142,17 +142,17 @@ public class UVLModelFactory {
         convertLanguageLevel(featureModel, allLevels);
     }
 
-    private void convertFeatureModel(FeatureModel featureModel, Set<LanguageLevel> levelsToRemove, Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategies){
+    private void convertFeatureModel(FeatureModel rootFeatureModel, FeatureModel featureModel, Set<LanguageLevel> levelsToRemove, Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategies){
         List<LanguageLevel> levelsToRemoveActually = getActualLanguageLevelsToRemoveInOrder(featureModel, levelsToRemove);
         while (!levelsToRemoveActually.isEmpty()){
             LanguageLevel levelToDropNow = levelsToRemoveActually.get(0);
             levelsToRemoveActually.remove(0);
             try {
                 IConversionStrategy conversionStrategy = conversionStrategies.get(levelToDropNow).getDeclaredConstructor().newInstance();
-                conversionStrategy.convertFeatureModel(featureModel);
+                conversionStrategy.convertFeatureModel(rootFeatureModel, featureModel);
                 featureModel.getUsedLanguageLevels().removeAll(conversionStrategy.getLevelsToBeRemoved());
                 for(Import importLine : featureModel.getImports()){
-                    convertFeatureModel(importLine.getFeatureModel(), levelsToRemove, conversionStrategies);
+                    convertFeatureModel(rootFeatureModel, importLine.getFeatureModel(), levelsToRemove, conversionStrategies);
                     featureModel.getUsedLanguageLevels().removeAll(conversionStrategy.getLevelsToBeRemoved());
                 }
             }catch (Exception e){
