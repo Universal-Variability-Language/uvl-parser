@@ -160,9 +160,7 @@ expression:
     ;
 
 aggregateFunction
-    : 'min' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # MinAggregateFunction
-    | 'max' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # MaxAggregateFunction
-    | 'sum' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # SumAggregateFunction
+    : 'sum' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # SumAggregateFunction
     | 'avg' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # AvgAggregateFunction
     ;
 

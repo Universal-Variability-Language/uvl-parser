@@ -368,28 +368,6 @@ public class UVLListener extends UVLBaseListener {
         expressionStack.push(expression);
     }
 
-    @Override public void exitMinAggregateFunction(UVLParser.MinAggregateFunctionContext ctx) {
-        AggregateFunctionExpression expression;
-        if(ctx.REFERENCE().size() > 1) {
-            expression = new MinAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
-            featureModel.getAggregateFunctionsWithRootFeature().add(expression);
-        }else {
-            expression = new MinAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
-        }
-        expressionStack.push(expression);
-    }
-
-    @Override public void exitMaxAggregateFunction(UVLParser.MaxAggregateFunctionContext ctx) {
-        AggregateFunctionExpression expression;
-        if(ctx.REFERENCE().size() > 1) {
-            expression = new MaxAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
-            featureModel.getAggregateFunctionsWithRootFeature().add(expression);
-        }else {
-            expression = new MaxAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
-        }
-        expressionStack.push(expression);
-    }
-
     @Override public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
         if(ctx.REFERENCE().size() > 1) {
