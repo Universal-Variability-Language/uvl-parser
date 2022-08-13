@@ -26,5 +26,14 @@ public class AddExpression extends Expression{
         return Arrays.asList(left, right);
     }
 
+    @Override
+    public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
+        if(left == oldSubExpression){
+            left = newSubExpression;
+        } else if (right == oldSubExpression) {
+            right = newSubExpression;
+        }
+    }
+
 
 }

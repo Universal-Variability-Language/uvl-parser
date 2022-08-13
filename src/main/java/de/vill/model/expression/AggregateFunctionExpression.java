@@ -50,6 +50,11 @@ public class AggregateFunctionExpression extends Expression{
         return Arrays.asList();
     }
 
+    @Override
+    public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
+
+    }
+
     protected String toString(boolean withSubmodels, String functionName, String currentAlias) {
         StringBuilder result = new StringBuilder();
         result.append(functionName+"(");

@@ -1,5 +1,6 @@
 package de.vill.model.constraint;
 
+import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.Expression;
 
 import java.util.Arrays;
@@ -33,5 +34,13 @@ public abstract class ExpressionConstraint extends Constraint{
 
     public List<Expression> getExpressionSubParts(){
         return Arrays.asList(left, right);
+    }
+
+    public void replaceExpressionSubPart(AggregateFunctionExpression oldSubExpression, Expression newSubExpression) {
+        if(left == oldSubExpression){
+            left = newSubExpression;
+        } else if (right == oldSubExpression) {
+            right = newSubExpression;
+        }
     }
 }

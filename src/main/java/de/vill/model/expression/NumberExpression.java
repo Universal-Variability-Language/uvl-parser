@@ -31,4 +31,9 @@ public class NumberExpression<T extends Number> extends Expression{
         return Arrays.asList();
     }
 
+    @Override
+    public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
+
+    }
+
 }

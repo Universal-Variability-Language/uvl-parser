@@ -56,4 +56,9 @@ public class LiteralExpression extends Expression{
     public List<Expression> getExpressionSubParts() {
         return Arrays.asList();
     }
+
+    @Override
+    public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
+
+    }
 }

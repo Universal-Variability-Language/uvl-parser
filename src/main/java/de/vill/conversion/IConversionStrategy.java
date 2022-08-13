@@ -8,6 +8,6 @@ import java.util.Set;
 public interface IConversionStrategy {
     Set<LanguageLevel> getLevelsToBeRemoved();
     Set<LanguageLevel> getTargetLevelsOfConversion();
-    void convertFeatureModel(FeatureModel featureModel);
+    void convertFeatureModel(FeatureModel rootFeatureModel, FeatureModel featureModel);
 
 }
