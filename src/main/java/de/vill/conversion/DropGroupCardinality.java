@@ -21,7 +21,7 @@ public class DropGroupCardinality implements IConversionStrategy{
     }
 
     @Override
-    public void convertFeatureModel(FeatureModel featureModel) {
+    public void convertFeatureModel(FeatureModel rootFeatureModel, FeatureModel featureModel) {
         removeGroupCardinalityRecursively(featureModel.getRootFeature());
     }
 

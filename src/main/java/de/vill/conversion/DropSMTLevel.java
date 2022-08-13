@@ -22,7 +22,7 @@ public class DropSMTLevel implements IConversionStrategy{
     }
 
     @Override
-    public void convertFeatureModel(FeatureModel featureModel) {
+    public void convertFeatureModel(FeatureModel rootFeatureModel, FeatureModel featureModel) {
         featureModel.getOwnConstraints().removeIf(x -> constraintContainsEquation(x));
     }
 
