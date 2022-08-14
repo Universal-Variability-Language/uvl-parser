@@ -58,4 +58,27 @@ public class TestUVLModelFactory {
             fail();
         }
     }
+
+    /*
+    @Test
+    public void testPrintComposedModel() {
+        try {
+            Configuration.setNewlineSymbol("\n");
+            Configuration.setTabulatorSymbol("\t");
+            Path filePath = Path.of("./src/test/resources/composition_root.uvl");
+            String content = Files.readString(filePath);
+            UVLModelFactory uvlModelFactory = new UVLModelFactory();
+            FeatureModel featureModel = uvlModelFactory.parse(content, "./src/test/resources/");
+
+            filePath = Path.of("./src/test/resources/composedModel.uvl");
+            content = Files.readString(filePath);
+            assertEquals(content, featureModel.composedModelToString());
+            System.out.println(featureModel.composedModelToString());
+
+        }catch (IOException e){
+            fail();
+        }
+    }
+
+     */
 }

@@ -1,6 +1,6 @@
 include
-	SAT-level.group-cardinality
 	SAT-level
+	SAT-level.group-cardinality
 
 namespace composition_root
 
