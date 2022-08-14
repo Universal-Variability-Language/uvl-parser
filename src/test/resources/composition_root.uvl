@@ -8,7 +8,7 @@ imports
 	composition_sub1
 
 features
-	Computercomposition_root
+	Computer
 		optional
 			RAM-module
 		mandatory
