@@ -1,0 +1,24 @@
+include
+	SAT-level
+
+namespace composition_sub1
+
+imports
+	composition_sub1_sub1 as fmIntel
+	composition_sub1_sub2
+
+features
+	CPU
+		mandatory
+			brand
+				alternative
+					fmIntel.Intel
+					composition_sub1_sub2.AMD
+			architecture
+				alternative
+					Bit64
+					Bit32
+
+constraints
+	Bit64 => fmIntel.Intel
+	fmIntel.feature1 & fmIntel.feature2 <=> (Bit64) | !composition_sub1_sub2.feature2

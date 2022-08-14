@@ -1,0 +1,16 @@
+include
+	SAT-level
+
+namespace composition_sub1_sub2
+
+features
+	AMD
+		mandatory
+			feature1
+			feature2
+				alternative
+					feature3
+					feature4
+
+constraints
+	feature1 & feature2 <=> (feature1 | feature2) & feature4
