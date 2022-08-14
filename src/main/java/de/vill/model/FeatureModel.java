@@ -228,7 +228,7 @@ public class FeatureModel {
             for(Import importLine : imports){
                 result.append(Configuration.getTabulatorSymbol());
                 result.append(importLine.getNamespace());
-                if(importLine.getAlias() != null){
+                if(!importLine.getAlias().equals(importLine.getNamespace())){
                     result.append(" as ");
                     result.append(importLine.getAlias());
                 }

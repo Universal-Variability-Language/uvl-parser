@@ -208,7 +208,6 @@ public class Feature {
     public String toStringAsRoot(String currentAlias){
         StringBuilder result = new StringBuilder();
         result.append(getFeatureName());
-        result.append(' ');
         result.append(cardinalityToString());
         result.append(attributesToString());
         result.append(Configuration.getNewlineSymbol());
@@ -235,7 +234,6 @@ public class Feature {
         }else{
             result.append(getReferenceFromSpecificSubmodel(currentAlias));
         }
-        result.append(' ');
         result.append(cardinalityToString());
 
         /*
@@ -277,7 +275,7 @@ public class Feature {
     private String cardinalityToString(){
         StringBuilder result = new StringBuilder();
         if(!(upperBound == null & lowerBound == null)){
-            result.append("cardinality [");
+            result.append(" cardinality [");
             if(getLowerBound().equals(getUpperBound())){
                 result.append(getLowerBound());
             } else {
@@ -293,7 +291,7 @@ public class Feature {
     private String attributesToString(){
         StringBuilder result = new StringBuilder();
         if(!attributes.isEmpty()){
-            result.append("{");
+            result.append(" {");
             attributes.forEach((k, v) -> {
                 result.append(k);
                 result.append(' ');
