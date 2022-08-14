@@ -239,7 +239,11 @@ public class FeatureModel {
         if(rootFeature != null) {
             result.append("features");
             result.append(Configuration.getNewlineSymbol());
-            result.append(Util.indentEachLine(getRootFeature().toStringAsRoot(currentAlias)));
+            if(withSubmodels){
+                result.append(Util.indentEachLine(getRootFeature().toString(withSubmodels, currentAlias)));
+            }else {
+                result.append(Util.indentEachLine(getRootFeature().toStringAsRoot(currentAlias)));
+            }
             result.append(Configuration.getNewlineSymbol());
         }
         if(getOwnConstraints().size() > 0) {
