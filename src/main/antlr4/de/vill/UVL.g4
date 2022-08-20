@@ -187,7 +187,7 @@ SUB: '-';
 FLOAT: [+-]?[0-9]*[.][0-9]+;
 INTEGER: '0' | [-+]?[1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
-STRING: '"'~[\r?\n]*'"';
+STRING: '"'~[\r?\n"]*'"';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
 MAJORLEVEL: 'SAT-level' | 'SMT-level';
