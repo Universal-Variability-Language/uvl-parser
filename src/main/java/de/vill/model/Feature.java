@@ -296,8 +296,9 @@ public class Feature {
                 result.append(k);
                 result.append(' ');
                 result.append(v);
-                result.append(',');
+                result.append(", ");
             });
+            result.deleteCharAt(result.length() - 1);
             result.deleteCharAt(result.length() - 1);
             result.append("}");
         }
