@@ -27,7 +27,11 @@ public class Feature {
      * @param name The name of the feature (without namespace information)
      */
     public Feature (String name){
-        this.featureName = name;
+        if(name.charAt(0) == '\''){
+            this.featureName = name.substring(1,name.length()-1);
+        }else {
+            this.featureName = name;
+        }
         children = new LinkedList<>();
         attributes = new HashMap<>();
     }
@@ -135,10 +139,10 @@ public class Feature {
         String id = String.format("%0" + idLength + "d", this.hashCode());
         if(nameSpace.equals("")){
             //this case means, the feature is in the root feature model (meaning it is no imported submodel) and therefore needs no namespace
-            fullReference= featureName + "." + id;
+            fullReference= featureNameToString() + "." + id;
         }else {
             //this case means, the feature is in a imported sub feature model and therefore needs a namespace to be unique
-            fullReference= nameSpace + "." + featureName + "." + id;
+            fullReference= nameSpace + "." + featureNameToString() + "." + id;
         }
         return fullReference.replace('.', '_');
     }
@@ -207,7 +211,8 @@ public class Feature {
      */
     public String toStringAsRoot(String currentAlias){
         StringBuilder result = new StringBuilder();
-        result.append(getFeatureName());
+
+        result.append(featureNameToString());
         result.append(cardinalityToString());
         result.append(attributesToString());
         result.append(Configuration.getNewlineSymbol());
@@ -263,12 +268,12 @@ public class Feature {
         //get the complete namespace (from root model to feature) and remove the currentAlias from its beginning -> this must not be referenced because the one referencing is already in this scope
         String currentNamespace = getNameSpace().substring(currentAlias.length());
         if(currentNamespace.equals("")){
-            return getFeatureName();
+            return featureNameToString();
         }else {
             if(currentNamespace.charAt(0) == '.'){
                 currentNamespace = currentNamespace.substring(1);
             }
-            return currentNamespace + "." + getFeatureName();
+            return currentNamespace + "." + featureNameToString();
         }
     }
 
@@ -301,6 +306,18 @@ public class Feature {
             result.deleteCharAt(result.length() - 1);
             result.deleteCharAt(result.length() - 1);
             result.append("}");
+        }
+        return result.toString();
+    }
+
+    private String featureNameToString(){
+        StringBuilder result = new StringBuilder();
+        if(getFeatureName().contains(" ")){
+            result.append("\'");
+            result.append(getFeatureName());
+            result.append("\'");
+        }else {
+            result.append(getFeatureName());
         }
         return result.toString();
     }

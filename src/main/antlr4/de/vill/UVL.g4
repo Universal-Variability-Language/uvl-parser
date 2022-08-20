@@ -194,7 +194,9 @@ MAJORLEVEL: 'SAT-level' | 'SMT-level';
 MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function';
 
 REFERENCE: (ID '.')* ID;
-ID: [a-zA-Z][a-zA-Z0-9_-]*;
+ID: ID_NOT_SPACED | ID_SPACED;
+ID_SPACED: '\'' ID_NOT_SPACED (SPACES ID_NOT_SPACED)* '\'';
+ID_NOT_SPACED: [a-zA-Z][a-zA-Z0-9_-]*;
 
 COMMA: ',';
 
