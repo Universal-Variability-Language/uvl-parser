@@ -139,10 +139,18 @@ public class Feature {
         String id = String.format("%0" + idLength + "d", this.hashCode());
         if(nameSpace.equals("")){
             //this case means, the feature is in the root feature model (meaning it is no imported submodel) and therefore needs no namespace
-            fullReference= featureNameToString() + "." + id;
+            if(getFeatureName().contains(" ")) {
+                fullReference = "\'" + getFeatureName() + "." + id + "\'";
+            }else {
+                fullReference = getFeatureName() + "." + id;
+            }
         }else {
             //this case means, the feature is in a imported sub feature model and therefore needs a namespace to be unique
-            fullReference= nameSpace + "." + featureNameToString() + "." + id;
+            if(getFeatureName().contains(" ")){
+                fullReference = "\'" + nameSpace + "." + featureNameToString() + "." + id + "\'";
+            }else {
+                fullReference = nameSpace + "." + featureNameToString() + "." + id;
+            }
         }
         return fullReference.replace('.', '_');
     }
@@ -273,7 +281,11 @@ public class Feature {
             if(currentNamespace.charAt(0) == '.'){
                 currentNamespace = currentNamespace.substring(1);
             }
-            return currentNamespace + "." + featureNameToString();
+            if(getFeatureName().contains(" ")){
+                return "\'" + currentNamespace + "." + getFeatureName() + "\'";
+            }else {
+                return currentNamespace + "." + featureNameToString();
+            }
         }
     }
 
