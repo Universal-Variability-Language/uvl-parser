@@ -6,6 +6,8 @@ import de.vill.model.Feature;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.vill.util.Util.addNecessaryQuotes;
+
 public class LiteralExpression extends Expression{
     public String getAttributeName() {
         return attributeName;
@@ -44,11 +46,11 @@ public class LiteralExpression extends Expression{
 
     public String toString(boolean withSubmodels, String currentAlias){
         if(getFeature() == null){
-            return getAttributeName();
+            return addNecessaryQuotes(getAttributeName());
         }else if(withSubmodels){
-            return getFeature().getFullReference() + "." + getAttributeName();
+            return addNecessaryQuotes(getFeature().getFullReference() + "." + getAttributeName());
         }else {
-            return feature.getReferenceFromSpecificSubmodel(currentAlias) + "." + getAttributeName();
+            return addNecessaryQuotes(feature.getReferenceFromSpecificSubmodel(currentAlias) + "." + getAttributeName());
         }
     }
 

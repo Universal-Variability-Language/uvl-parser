@@ -6,6 +6,8 @@ import de.vill.model.Import;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.vill.util.Util.addNecessaryQuotes;
+
 public class LiteralConstraint extends Constraint{
     private String literal;
 
@@ -48,11 +50,11 @@ public class LiteralConstraint extends Constraint{
 
     public String toString(boolean withSubmodels, String currentAlias){
         if(getFeature() == null){
-            return getLiteral();
+            return addNecessaryQuotes(getLiteral());
         }else if(withSubmodels){
-            return getFeature().getFullReference();
+            return addNecessaryQuotes(getFeature().getFullReference());
         }else {
-            return feature.getReferenceFromSpecificSubmodel(currentAlias);
+            return addNecessaryQuotes(feature.getReferenceFromSpecificSubmodel(currentAlias));
         }
     }
 

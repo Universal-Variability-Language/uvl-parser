@@ -5,6 +5,8 @@ import de.vill.model.Feature;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.vill.util.Util.addNecessaryQuotes;
+
 public class AggregateFunctionExpression extends Expression{
     public String getRootFeatureName() {
         return rootFeatureName;
@@ -61,14 +63,14 @@ public class AggregateFunctionExpression extends Expression{
 
         if(getRootFeature() != null){
             if(withSubmodels){
-                result.append(getRootFeature().getFullReference());
+                result.append(addNecessaryQuotes(getRootFeature().getFullReference()));
             }else {
-                result.append(getRootFeatureName());
+                result.append(addNecessaryQuotes(getRootFeatureName()));
             }
             result.append(", ");
         }
 
-        result.append(getAttributeName());
+        result.append(addNecessaryQuotes(getAttributeName()));
         result.append(")");
         return result.toString();
     }

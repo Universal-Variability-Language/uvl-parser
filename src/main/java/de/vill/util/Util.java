@@ -13,4 +13,23 @@ public class Util {
         }
         return result.toString();
     }
+
+    public static String addNecessaryQuotes(String reference){
+        String[] parts = reference.split("\\.");
+        StringBuilder result = new StringBuilder();
+        for(String part : parts){
+            if(part.contains(" ")){
+                result.append("'");
+                result.append(part);
+                result.append("'");
+            }else {
+                result.append(part);
+            }
+            result.append(".");
+        }
+        if (result.length() > 0) {
+            result.setLength(result.length() - 1);
+        }
+        return result.toString();
+    }
 }

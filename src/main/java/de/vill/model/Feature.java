@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static de.vill.util.Util.addNecessaryQuotes;
 //TODO Feature cardinality als Group modelieren, damit man feature cardinality nicht direkt unter Gruppen hat (könnte aber Probleme beim printen machen?)
 /**
  * This class represents a feature of any kind (normal, numeric, abstract, ...).
@@ -139,18 +141,10 @@ public class Feature {
         String id = String.format("%0" + idLength + "d", this.hashCode());
         if(nameSpace.equals("")){
             //this case means, the feature is in the root feature model (meaning it is no imported submodel) and therefore needs no namespace
-            if(getFeatureName().contains(" ")) {
-                fullReference = "\'" + getFeatureName() + "." + id + "\'";
-            }else {
-                fullReference = getFeatureName() + "." + id;
-            }
+            fullReference = getFeatureName() + "." + id;
         }else {
             //this case means, the feature is in a imported sub feature model and therefore needs a namespace to be unique
-            if(getFeatureName().contains(" ")){
-                fullReference = "\'" + nameSpace + "." + featureNameToString() + "." + id + "\'";
-            }else {
-                fullReference = nameSpace + "." + featureNameToString() + "." + id;
-            }
+            fullReference = nameSpace + "." + getFeatureName() + "." + id;
         }
         return fullReference.replace('.', '_');
     }
@@ -220,7 +214,7 @@ public class Feature {
     public String toStringAsRoot(String currentAlias){
         StringBuilder result = new StringBuilder();
 
-        result.append(featureNameToString());
+        result.append(addNecessaryQuotes(getFeatureName()));
         result.append(cardinalityToString());
         result.append(attributesToString());
         result.append(Configuration.getNewlineSymbol());
@@ -243,9 +237,9 @@ public class Feature {
     public String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
         if(withSubmodels){
-            result.append(getFullReference());
+            result.append(addNecessaryQuotes(getFullReference()));
         }else{
-            result.append(getReferenceFromSpecificSubmodel(currentAlias));
+            result.append(addNecessaryQuotes(getReferenceFromSpecificSubmodel(currentAlias)));
         }
         result.append(cardinalityToString());
 
@@ -276,16 +270,14 @@ public class Feature {
         //get the complete namespace (from root model to feature) and remove the currentAlias from its beginning -> this must not be referenced because the one referencing is already in this scope
         String currentNamespace = getNameSpace().substring(currentAlias.length());
         if(currentNamespace.equals("")){
-            return featureNameToString();
+            return getFeatureName();
         }else {
             if(currentNamespace.charAt(0) == '.'){
                 currentNamespace = currentNamespace.substring(1);
             }
-            if(getFeatureName().contains(" ")){
-                return "\'" + currentNamespace + "." + getFeatureName() + "\'";
-            }else {
-                return currentNamespace + "." + featureNameToString();
-            }
+
+            return currentNamespace + "." + getFeatureName();
+
         }
     }
 
@@ -310,7 +302,8 @@ public class Feature {
         if(!attributes.isEmpty()){
             result.append(" {");
             attributes.forEach((k, v) -> {
-                result.append(k);
+                result.append(addNecessaryQuotes(k));
+
                 result.append(' ');
                 result.append(v);
                 result.append(", ");
@@ -318,18 +311,6 @@ public class Feature {
             result.deleteCharAt(result.length() - 1);
             result.deleteCharAt(result.length() - 1);
             result.append("}");
-        }
-        return result.toString();
-    }
-
-    private String featureNameToString(){
-        StringBuilder result = new StringBuilder();
-        if(getFeatureName().contains(" ")){
-            result.append("\'");
-            result.append(getFeatureName());
-            result.append("\'");
-        }else {
-            result.append(getFeatureName());
         }
         return result.toString();
     }

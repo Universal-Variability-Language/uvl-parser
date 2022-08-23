@@ -294,7 +294,7 @@ public class UVLModelFactory {
         var subModelList = createSubModelList(featureModel);
         var literalConstraints = featureModel.getLiteralConstraints();
         for(LiteralConstraint constraint : literalConstraints){
-            Feature referencedFeature = featureModel.getFeatureMap().get(constraint.getLiteral());
+            Feature referencedFeature = featureModel.getFeatureMap().get(constraint.getLiteral().replace("\'", ""));
             if(referencedFeature == null){
                 throw new ParseError("Feature " + constraint + " is referenced in a constraint in" + featureModel.getNamespace() + " but does not exist as feature in the tree!");
             }else {
@@ -304,7 +304,7 @@ public class UVLModelFactory {
         for(FeatureModel subModel : subModelList){
             literalConstraints = subModel.getLiteralConstraints();
             for(LiteralConstraint constraint : literalConstraints){
-                Feature referencedFeature = subModel.getFeatureMap().get(constraint.getLiteral());
+                Feature referencedFeature = subModel.getFeatureMap().get(constraint.getLiteral().replace("\'", ""));
                 if(referencedFeature == null){
                     throw new ParseError("Feature " + constraint + " is referenced in a constraint in" + subModel.getNamespace() + " but does not exist as feature in the tree!");
                 }else {
@@ -320,8 +320,8 @@ public class UVLModelFactory {
         for(LiteralExpression expression : literalExpressions){
             String reference = expression.getAttributeName();
             String[] referenceParts = reference.split("\\.");
-            String attributeName = referenceParts[referenceParts.length-1];
-            String featureName = reference.substring(0, reference.length()-attributeName.length()-1);
+            String attributeName = referenceParts[referenceParts.length-1].replace("\'", "");
+            String featureName = reference.substring(0, reference.length()-attributeName.length()-1).replace("\'", "");
             expression.setAttributeName(attributeName);
             Feature referencedFeature = featureModel.getFeatureMap().get(featureName);
             if(referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null){
@@ -335,8 +335,8 @@ public class UVLModelFactory {
             for(LiteralExpression expression : literalExpressions){
                 String reference = expression.getAttributeName();
                 String[] referenceParts = reference.split("\\.");
-                String attributeName = referenceParts[referenceParts.length-1];
-                String featureName = reference.substring(0, reference.length()-attributeName.length()-1);
+                String attributeName = referenceParts[referenceParts.length-1].replace("\'", "");
+                String featureName = reference.substring(0, reference.length()-attributeName.length()-1).replace("\'", "");
                 expression.setAttributeName(attributeName);
                 Feature referencedFeature = subModel.getFeatureMap().get(featureName);
                 if(referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null){
@@ -352,7 +352,7 @@ public class UVLModelFactory {
         var subModelList = createSubModelList(featureModel);
         var aggregateFunctionExpressions = featureModel.getAggregateFunctionsWithRootFeature();
         for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
-            Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName());
+            Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName().replace("\'", ""));
             if(referencedFeature == null){
                 throw new ParseError("Feature is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!");
             }else {
@@ -362,7 +362,7 @@ public class UVLModelFactory {
         for(FeatureModel subModel : subModelList){
             aggregateFunctionExpressions = subModel.getAggregateFunctionsWithRootFeature();
             for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
-                Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName());
+                Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName().replace("\'", ""));
                 if(referencedFeature == null){
                     throw new ParseError("Feature is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!");
                 }else {

@@ -9,6 +9,8 @@ import de.vill.util.Util;
 
 import java.util.*;
 
+import static de.vill.util.Util.addNecessaryQuotes;
+
 /**
  * This class represents a feature model and all its sub featuremodels if the model is composed.
  */
@@ -218,7 +220,7 @@ public class FeatureModel {
         }
         if(namespace != null) {
             result.append("namespace ");
-            result.append(namespace);
+            result.append(addNecessaryQuotes(namespace));
             result.append(Configuration.getNewlineSymbol());
             result.append(Configuration.getNewlineSymbol());
         }
@@ -227,10 +229,10 @@ public class FeatureModel {
             result.append(Configuration.getNewlineSymbol());
             for(Import importLine : imports){
                 result.append(Configuration.getTabulatorSymbol());
-                result.append(importLine.getNamespace());
+                result.append(addNecessaryQuotes(importLine.getNamespace()));
                 if(!importLine.getAlias().equals(importLine.getNamespace())){
                     result.append(" as ");
-                    result.append(importLine.getAlias());
+                    result.append(addNecessaryQuotes(importLine.getAlias()));
                 }
                 result.append(Configuration.getNewlineSymbol());
             }
