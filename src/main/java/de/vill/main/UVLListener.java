@@ -50,15 +50,15 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitNamespace(UVLParser.NamespaceContext ctx) {
-        featureModel.setNamespace(ctx.REFERENCE().getText());
+        featureModel.setNamespace(ctx.REFERENCE().getText().replace("\'", ""));
     }
 
     @Override public void exitImportLine(UVLParser.ImportLineContext ctx) {
         Import importLine;
         if(ctx.alias != null){
-            importLine = new Import(ctx.ns.getText(), ctx.alias.getText());
+            importLine = new Import(ctx.ns.getText().replace("\'", ""), ctx.alias.getText().replace("\'", ""));
         }else{
-            importLine = new Import(ctx.ns.getText(), null);
+            importLine = new Import(ctx.ns.getText().replace("\'", ""), null);
         }
         featureModel.getImports().add(importLine);
     }
@@ -142,7 +142,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterFeature(UVLParser.FeatureContext ctx) {
-        String featureReference = ctx.REFERENCE().getText();
+        String featureReference = ctx.REFERENCE().getText().replace("\'", "");
         String[] featureReferenceParts = featureReference.split("\\.");
         String featureName;
         String featureNamespace;
@@ -153,6 +153,7 @@ public class UVLListener extends UVLBaseListener {
             featureName = featureReferenceParts[0];
             featureNamespace = null;
         }
+
         Feature feature = new Feature(featureName);
         if(featureNamespace != null) {
             feature.setNameSpace(featureNamespace);
@@ -208,40 +209,47 @@ public class UVLListener extends UVLBaseListener {
 
 
     @Override public void exitAttribute(UVLParser.AttributeContext ctx) {
+        String attributeName = "";
+        if(ctx.key().getText().charAt(0) == '\''){
+            attributeName = ctx.key().getText().substring(1,ctx.key().getText().length()-1);
+        }else {
+            attributeName = ctx.key().getText();
+        }
+
         if (ctx.value() == null){
-            Attribute<Boolean> attribute = new Attribute(ctx.key().getText(), true);
-            attributeStack.peek().put(ctx.key().getText(), attribute);
+            Attribute<Boolean> attribute = new Attribute(attributeName, true);
+            attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().BOOLEAN() != null){
-            Attribute<Boolean> attribute = new Attribute(ctx.key().getText(), Boolean.parseBoolean(ctx.value().getText()));
-            attributeStack.peek().put(ctx.key().getText(), attribute);
+            Attribute<Boolean> attribute = new Attribute(attributeName, Boolean.parseBoolean(ctx.value().getText()));
+            attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().INTEGER() != null){
-            Attribute<Integer> attribute = new Attribute(ctx.key().getText(), Integer.parseInt(ctx.value().getText()));
-            attributeStack.peek().put(ctx.key().getText(), attribute);
+            Attribute<Integer> attribute = new Attribute(attributeName, Integer.parseInt(ctx.value().getText()));
+            attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().FLOAT() != null){
-            Attribute<Double> attribute = new Attribute(ctx.key().getText(), Double.parseDouble(ctx.value().getText()));
-            attributeStack.peek().put(ctx.key().getText(), attribute);
+            Attribute<Double> attribute = new Attribute(attributeName, Double.parseDouble(ctx.value().getText()));
+            attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().STRING() != null) {
-            Attribute<String> attribute = new Attribute(ctx.key().getText(), ctx.value().getText());
-            attributeStack.peek().put(ctx.key().getText(), attribute);
+            Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText());
+            attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().constraint() != null){
             //add constraint to constraint list instead of attributes (makes everything easier but information whether constraint was in list or in attribute gets lost
             featureModel.getOwnConstraints().add(constraintStack.pop());
         }else if(ctx.value().vector() != null) {
             String vectorString = ctx.value().getText();
             vectorString = vectorString.substring(1, vectorString.length() - 1);
-            Attribute<List<String>> attribute = new Attribute(ctx.key().getText(), Arrays.asList(vectorString.split(",")));
-            attributeStack.peek().put(ctx.key().getText(), attribute);
+            Attribute<List<String>> attribute = new Attribute(attributeName, Arrays.asList(vectorString.split(",")));
+            attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().attributes() != null){
             var attributes = attributeStack.pop();
-            Attribute<Map<String, Attribute>> attribute = new Attribute<>(ctx.key().getText(), attributes);
-            attributeStack.peek().put(ctx.key().getText(), attribute);
+            Attribute<Map<String, Attribute>> attribute = new Attribute<>(attributeName, attributes);
+            attributeStack.peek().put(attributeName, attribute);
         }else {
             throw new ParseError(ctx.value().getText() + " is no value of any supported attribute type!");
         }
     }
 
     @Override public void exitLiteralConstraint(UVLParser.LiteralConstraintContext ctx) {
-        String featureReference = ctx.REFERENCE().getText();
+        String featureReference = ctx.REFERENCE().getText().replace("\'", "");
 
         var constraint = new LiteralConstraint(featureReference);
 
@@ -335,7 +343,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
-        LiteralExpression expression = new LiteralExpression(ctx.REFERENCE().getText());
+        LiteralExpression expression = new LiteralExpression(ctx.REFERENCE().getText().replace("\'", ""));
         expressionStack.push(expression);
         featureModel.getLiteralExpressions().add(expression);
     }
@@ -371,10 +379,10 @@ public class UVLListener extends UVLBaseListener {
     @Override public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
         if(ctx.REFERENCE().size() > 1) {
-            expression = new SumAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+            expression = new SumAggregateFunctionExpression(ctx.REFERENCE().get(0).getText().replace("\'", ""), ctx.REFERENCE().get(1).getText().replace("\'", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
-            expression = new SumAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
+            expression = new SumAggregateFunctionExpression(ctx.REFERENCE().get(0).getText().replace("\'", ""));
         }
         expressionStack.push(expression);
     }
@@ -382,10 +390,10 @@ public class UVLListener extends UVLBaseListener {
     @Override public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
         if(ctx.REFERENCE().size() > 1) {
-            expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText(), ctx.REFERENCE().get(1).getText());
+            expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText().replace("\'", ""), ctx.REFERENCE().get(1).getText().replace("\'", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
-            expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText());
+            expression = new AvgAggregateFunctionExpression(ctx.REFERENCE().get(0).getText().replace("\'", ""));
         }
         expressionStack.push(expression);
     }
