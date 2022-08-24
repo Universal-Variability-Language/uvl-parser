@@ -1,5 +1,7 @@
 package de.vill.model;
 
+import de.vill.model.constraint.Constraint;
+
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +62,10 @@ public class Attribute<T> {
                 result.append(' ');
                 result.append(v);
                 result.append(',');
+                result.append(' ');
             });
             //remove comma after last entry
+            result.deleteCharAt(result.length() - 1);
             result.deleteCharAt(result.length() - 1);
             result.append("}");
         }else if(value instanceof List){
@@ -69,13 +73,16 @@ public class Attribute<T> {
             result.append("[");
             for(Object item : (List)value){
                 result.append(item);
-                result.append(",");
+                result.append(", ");
             }
+            result.deleteCharAt(result.length()-1);
             result.deleteCharAt(result.length()-1);
             result.append("]");
         } else if (value instanceof String) {
             //should never be the case
             result.append((String)value);
+        } else if (value instanceof Constraint) {
+            result.append(((Constraint)value).toString());
         }
         return result.toString();
     }

@@ -19,9 +19,9 @@ public class Util {
         StringBuilder result = new StringBuilder();
         for(String part : parts){
             if(part.contains(" ")){
-                result.append("'");
+                result.append("\"");
                 result.append(part);
-                result.append("'");
+                result.append("\"");
             }else {
                 result.append(part);
             }
