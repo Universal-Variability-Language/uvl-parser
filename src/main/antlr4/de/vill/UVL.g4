@@ -97,10 +97,10 @@ featureModel: includes? NEWLINE? namespace? NEWLINE? imports? NEWLINE? features?
 includes: 'include' NEWLINE INDENT includeLine* DEDENT;
 includeLine: LANGUAGELEVEL NEWLINE;
 
-namespace: 'namespace' REFERENCE;
+namespace: 'namespace' referecne;
 
 imports: 'imports' NEWLINE INDENT importLine* DEDENT;
-importLine: ns=REFERENCE ('as' alias=REFERENCE)? NEWLINE;
+importLine: ns=referecne ('as' alias=referecne)? NEWLINE;
 
 features: 'features' NEWLINE INDENT feature DEDENT;
 
@@ -114,17 +114,27 @@ group
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
-feature: REFERENCE featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
+feature: referecne featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
 
 featureCardinality: 'cardinality' OPEN_BRACK lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? CLOSE_BRACK;
 
 attributes: OPEN_BRACE (attribute (COMMA attribute)*)? CLOSE_BRACE;
 
-attribute: key (value)?;
+attribute
+    : valueAttribute
+    | constraintAttribute;
 
-key: REFERENCE;
-value: BOOLEAN | FLOAT | INTEGER | STRING | constraint | attributes | vector;
-vector: OPEN_BRACK (value COMMA?)* CLOSE_BRACK;
+valueAttribute: key value?;
+
+key: id;
+value: BOOLEAN | FLOAT | INTEGER | string | attributes | vector;
+vector: OPEN_BRACK (value (COMMA value)*)? CLOSE_BRACK;
+
+constraintAttribute
+    : 'constraint' constraint               # SingleConstraintAttribute
+    | 'constraints' constraintList          # ListConstraintAttribute
+    ;
+constraintList: OPEN_BRACK (constraint (COMMA constraint)*)? CLOSE_BRACK;
 
 constraints: 'constraints' NEWLINE INDENT constraintLine* DEDENT;
 
@@ -132,7 +142,7 @@ constraintLine: constraint NEWLINE;
 
 constraint
     : equation                              # EquationConstraint
-    | REFERENCE                             # LiteralConstraint
+    | referecne                             # LiteralConstraint
     | OPEN_PAREN constraint CLOSE_PAREN      # ParenthesisConstraint
     | NOT constraint                        # NotConstraint
     | constraint AND constraint             # AndConstraint
@@ -151,7 +161,7 @@ expression:
     FLOAT                                   # FloatLiteralExpression
     | INTEGER                               # IntegerLiteralExpression
     | aggregateFunction                     # AggregateFunctionExpression
-    | REFERENCE                             # AttributeLiteralExpression
+    | referecne                             # AttributeLiteralExpression
     | OPEN_PAREN expression CLOSE_PAREN     # BracketExpression
     | expression ADD expression             # AddExpression
     | expression SUB expression             # SubExpression
@@ -160,9 +170,16 @@ expression:
     ;
 
 aggregateFunction
-    : 'sum' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # SumAggregateFunction
-    | 'avg' OPEN_PAREN (REFERENCE COMMA)? REFERENCE CLOSE_PAREN    # AvgAggregateFunction
+    : 'sum' OPEN_PAREN (referecne COMMA)? referecne CLOSE_PAREN    # SumAggregateFunction
+    | 'avg' OPEN_PAREN (referecne COMMA)? referecne CLOSE_PAREN    # AvgAggregateFunction
     ;
+
+string
+    : ID_SPACED
+    | STRING;
+
+referecne: (id '.')* id;
+id: ID_NOT_SPACED | ID_SPACED;
 
 ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
@@ -187,16 +204,15 @@ SUB: '-';
 FLOAT: [+-]?[0-9]*[.][0-9]+;
 INTEGER: '0' | [-+]?[1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
-STRING: '"'~[\r?\n"]*'"';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
 MAJORLEVEL: 'SAT-level' | 'SMT-level';
 MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function';
 
-REFERENCE: (ID '.')* ID;
-ID: ID_NOT_SPACED | ID_SPACED;
-ID_SPACED: '\'' ID_NOT_SPACED (SPACES ID_NOT_SPACED)* '\'';
+ID_SPACED: '"' ID_NOT_SPACED (SPACES ID_NOT_SPACED)* '"';
 ID_NOT_SPACED: [a-zA-Z][a-zA-Z0-9_-]*;
+
+STRING: '"'~[\r?\n"]*'"';
 
 COMMA: ',';
 
