@@ -127,7 +127,7 @@ public class FeatureModel {
 
     /**
      * A list with all the constraints of this featuremodel. This does not contain the constraints of the imported
-     * sub feature models.
+     * sub feature models or constraints in feature attribtues.
      * @return A list of the constraints of this featuremodel.
      */
     public List<Constraint> getOwnConstraints() {
@@ -135,8 +135,38 @@ public class FeatureModel {
     }
 
     /**
-     * A list will all constraints of this featuremodel and recursively of all its imported sub feature models. This list
-     * is not stored but gets calculated with every call. This means changing a constraint will have an effect to the feature model,
+     * A list with all the constraints of that are part of feature attributes of features in this featuremodel.
+     * This does not contain the constraints of the imported features of sub feature models.
+     * @return A list of the constraints of featureattributes in this featuremodel.
+     */
+    public List<Constraint> getFeatureConstraints(){
+        return getFeatureConstraints(getRootFeature());
+    }
+
+    private List<Constraint> getFeatureConstraints(Feature feature){
+        List<Constraint> featureConstraints = new LinkedList<>();
+        Attribute<Constraint> featureConstraint = feature.getAttributes().get("constraint");
+        Attribute<List<Constraint>> featureConstraintList = feature.getAttributes().get("constraints");
+        if(featureConstraint != null){
+            featureConstraints.add(featureConstraint.getValue());
+        }
+        if(featureConstraintList != null){
+            featureConstraints.addAll(featureConstraintList.getValue());
+        }
+        for(Group childGroup : feature.getChildren()){
+            for(Feature childFeature : childGroup.getFeatures()){
+                if(!childFeature.isSubmodelRoot()) {
+                    featureConstraints.addAll(getFeatureConstraints(childFeature));
+                }
+            }
+        }
+        return featureConstraints;
+    }
+
+    /**
+     * A list will all constraints of this featuremodel and recursively of all its imported sub feature models.
+     * This inclues constraints in feature attributes. This list is not stored but gets calculated with every call.
+     * This means changing a constraint will have an effect to the feature model,
      * but adding deleting constraints will have no effect. This must be done in the correspoding ownConstraint lists of the feature models.
      * This means when calling this method on the root feature model it returns with all constraints of the decomposed
      * feature model.
@@ -145,6 +175,7 @@ public class FeatureModel {
     public List<Constraint> getConstraints() {
         var constraints = new LinkedList<Constraint>();
         constraints.addAll(ownConstraints);
+        constraints.addAll(getFeatureConstraints());
         for(Import importLine : imports){
             constraints.addAll(importLine.getFeatureModel().getConstraints());
         }
@@ -248,21 +279,27 @@ public class FeatureModel {
             }
             result.append(Configuration.getNewlineSymbol());
         }
-        if(getOwnConstraints().size() > 0) {
+
+        List<Constraint> constraintList;
+        if(withSubmodels){
+            constraintList = new LinkedList<>();
+            constraintList.addAll(ownConstraints);
+            for(Import importLine : imports){
+                constraintList.addAll(importLine.getFeatureModel().getOwnConstraints());
+            }
+        }else{
+            constraintList = getOwnConstraints();
+        }
+        if(constraintList.size() > 0) {
             result.append("constraints");
             result.append(Configuration.getNewlineSymbol());
-            List<Constraint> constraintList;
-            if(withSubmodels){
-                constraintList = getConstraints();
-            }else{
-                constraintList = getOwnConstraints();
-            }
-            for(Constraint constraint : constraintList){
+            for (Constraint constraint : constraintList) {
                 result.append(Configuration.getTabulatorSymbol());
                 result.append(constraint.toString(withSubmodels, currentAlias));
                 result.append(Configuration.getNewlineSymbol());
             }
         }
+
         return result.toString();
     }
 
