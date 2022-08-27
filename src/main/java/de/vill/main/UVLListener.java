@@ -218,13 +218,13 @@ public class UVLListener extends UVLBaseListener {
             Attribute<Boolean> attribute = new Attribute(attributeName, Boolean.parseBoolean(ctx.value().getText()));
             attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().INTEGER() != null){
-            Attribute<Integer> attribute = new Attribute(attributeName, Integer.parseInt(ctx.value().getText()));
+            Attribute<Integer> attribute = new Attribute(attributeName, Long.parseLong(ctx.value().getText()));
             attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().FLOAT() != null){
             Attribute<Double> attribute = new Attribute(attributeName, Double.parseDouble(ctx.value().getText()));
             attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().string() != null) {
-            Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText());
+            Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText().replace("\"", ""));
             attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().vector() != null) {
             String vectorString = ctx.value().getText();
