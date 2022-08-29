@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestUVLModelFactory {
-
+/*
     @Test
     public void testParseComposedModel() {
         try {
@@ -59,7 +59,7 @@ public class TestUVLModelFactory {
         }
     }
 
-    /*
+
     @Test
     public void testPrintComposedModel() {
         try {
@@ -80,5 +80,7 @@ public class TestUVLModelFactory {
         }
     }
 
-     */
+
+
+ */
 }
