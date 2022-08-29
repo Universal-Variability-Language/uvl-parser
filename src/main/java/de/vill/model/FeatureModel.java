@@ -21,6 +21,7 @@ public class FeatureModel {
     private Feature rootFeature;
     private final Map<String, Feature> featureMap = new HashMap<>();
     private final List<Constraint> ownConstraints = new LinkedList<>();
+    private boolean explicitLanguageLevels = false;
 
     /*
      * These three lists are just for performance. They contain all points where features are referenced
@@ -183,6 +184,23 @@ public class FeatureModel {
     }
 
     /**
+     * Boolean whether the used language levels are explicitly imported or not
+     * @return true if all levels must be explicitly imported, fales if not
+     */
+    public boolean isExplicitLanguageLevels() {
+        return explicitLanguageLevels;
+    }
+
+    /**
+     * Boolean whether the used language levels are explicitly imported or not.
+     * This determines if the used levels are printed in the toSring method
+     * @param explicitLanguageLevels true if all levels must be explicitly imported, fales if not
+     */
+    public void setExplicitLanguageLevels(boolean explicitLanguageLevels) {
+        this.explicitLanguageLevels = explicitLanguageLevels;
+    }
+
+    /**
      * Prints the current featuremodel without composing it with the other models.
      * @return the uvl representation of the current model without submodels
      */
@@ -227,7 +245,7 @@ public class FeatureModel {
 
     private String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
-        if(usedLanguageLevels.size() != 0){
+        if(explicitLanguageLevels && usedLanguageLevels.size() != 0){
             result.append("include");
             result.append(Configuration.getNewlineSymbol());
             Set<LanguageLevel> levelsToPrint;

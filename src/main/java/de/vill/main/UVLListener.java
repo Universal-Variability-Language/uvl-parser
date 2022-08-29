@@ -23,6 +23,10 @@ public class UVLListener extends UVLBaseListener {
 
     private boolean featureCardinality = false;
 
+    @Override public void enterIncludes(UVLParser.IncludesContext ctx) {
+        featureModel.setExplicitLanguageLevels(true);
+    }
+
     @Override public void exitIncludeLine(UVLParser.IncludeLineContext ctx){
         String[] levels = ctx.LANGUAGELEVEL().getText().split("\\.");
         if(levels.length == 1){
@@ -425,7 +429,7 @@ public class UVLListener extends UVLBaseListener {
 
 
     @Override public void exitFeatureModel(UVLParser.FeatureModelContext ctx) {
-        if(!featureModel.getUsedLanguageLevels().equals(importedLanguageLevels)){
+        if(featureModel.isExplicitLanguageLevels() && !featureModel.getUsedLanguageLevels().equals(importedLanguageLevels)){
             throw new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString());
         }
     }
