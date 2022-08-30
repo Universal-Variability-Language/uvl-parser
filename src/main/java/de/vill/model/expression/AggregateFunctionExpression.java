@@ -4,6 +4,7 @@ import de.vill.model.Feature;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static de.vill.util.Util.addNecessaryQuotes;
 
@@ -55,6 +56,12 @@ public class AggregateFunctionExpression extends Expression{
     @Override
     public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
 
+    }
+
+    @Override
+    public double evaluate(Set<Feature> selectedFeatures) {
+        //TODO not necessary for now
+        return 0;
     }
 
     protected String toString(boolean withSubmodels, String functionName, String currentAlias) {
