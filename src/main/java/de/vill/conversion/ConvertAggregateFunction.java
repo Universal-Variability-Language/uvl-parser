@@ -112,10 +112,12 @@ public class ConvertAggregateFunction implements IConversionStrategy{
         if(attributes.size() == 0){
             return new NumberExpression(0);
         }else {
-            //TODO n ist falsch, da ja nur die ausgewählten aufsummiert werden -> vielleicht jedem ein attribute count 1 zuweißen und dass dann aufsummieren?
-            Expression n = new NumberExpression(attributes.size());
+            for(Feature feature : attributes){
+                feature.getAttributes().put("avg_counter__", new Attribute<Long>("avg_counter__", 1L));
+            }
+            Expression n = getSum(new LinkedList<>(attributes), "avg_counter__");
             Expression sum = getSum(attributes, attributeName);
-            Expression avg = new DivExpression(new ParenthesisExpression(sum), n);
+            Expression avg = new ParenthesisExpression(new DivExpression(new ParenthesisExpression(sum), new ParenthesisExpression(n)));
 
             return avg;
         }
