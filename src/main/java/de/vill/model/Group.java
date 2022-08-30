@@ -21,7 +21,7 @@ public class Group {
         GROUP_CARDINALITY
     }
     /// The type of the group (if type is GROUP_CARDINALITY or FEATURE_CARDINALITY lower and upper bound must be set!)
-    public final GroupType GROUPTYPE;
+    public GroupType GROUPTYPE;
     private final List<Feature> features;
     private String lowerBound;
     private String upperBound;
