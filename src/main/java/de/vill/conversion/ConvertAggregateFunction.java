@@ -25,6 +25,7 @@ public class ConvertAggregateFunction implements IConversionStrategy{
     public void convertFeatureModel(FeatureModel rootFeatureModel, FeatureModel featureModel) {
         this.rootFeatureModel = rootFeatureModel;
         featureModel.getOwnConstraints().forEach(x -> searchAggregateFunctionInConstraint(x));
+        traverseFeatures(featureModel.getRootFeature());
     }
 
     private void searchAggregateFunctionInConstraint(Constraint constraint){
@@ -52,43 +53,6 @@ public class ConvertAggregateFunction implements IConversionStrategy{
             }
         }
     }
-
-
-/*
-    private boolean constraintContainsAggregateFunction(Constraint constraint){
-        if(constraint instanceof ExpressionConstraint){
-            for (Expression subExpression : ((ExpressionConstraint) constraint).getExpressionSubParts()){
-                if(expressionContainsAggregateFunction(subExpression)){
-                    return true;
-                }
-            }
-        }else {
-            for (Constraint subConstraint : constraint.getConstraintSubParts()){
-                if(constraintContainsAggregateFunction(subConstraint)){
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    //TODO
-    private AggregateFunctionExpression expressionContainsAggregateFunction(Expression expression){
-        if(expression instanceof AggregateFunctionExpression){
-            return (AggregateFunctionExpression) expression;
-        }else {
-            for(Expression subExpression : expression.getExpressionSubParts()){
-                AggregateFunctionExpression aggregateFunctionExpression = expressionContainsAggregateFunction(subExpression);
-                if(aggregateFunctionExpression != null){
-                    replaceAggregateFunctionInConstraint(subExpression, aggregateFunctionExpression);
-                }
-            }
-        }
-        return null;
-    }
-
- */
 
     private void replaceAggregateFunctionInExpression(Expression parentExpression, AggregateFunctionExpression aggregateFunctionExpression){
         Feature rootFeature;
@@ -148,6 +112,7 @@ public class ConvertAggregateFunction implements IConversionStrategy{
         if(attributes.size() == 0){
             return new NumberExpression(0);
         }else {
+            //TODO n ist falsch, da ja nur die ausgewählten aufsummiert werden -> vielleicht jedem ein attribute count 1 zuweißen und dass dann aufsummieren?
             Expression n = new NumberExpression(attributes.size());
             Expression sum = getSum(attributes, attributeName);
             Expression avg = new DivExpression(new ParenthesisExpression(sum), n);
@@ -160,7 +125,7 @@ public class ConvertAggregateFunction implements IConversionStrategy{
     private List<Feature> collectAttributes(Feature feature, String attributeName){
         List<Feature> result = new LinkedList<>();
         if(feature.getAttributes().containsKey(attributeName)){
-            if(feature.getAttributes().get(attributeName).getValue() instanceof Double || feature.getAttributes().get(attributeName).getValue() instanceof Integer) {
+            if(feature.getAttributes().get(attributeName).getValue() instanceof Double || feature.getAttributes().get(attributeName).getValue() instanceof Integer || feature.getAttributes().get(attributeName).getValue() instanceof Long) {
                 result.add(feature);
             }
         }
@@ -171,4 +136,34 @@ public class ConvertAggregateFunction implements IConversionStrategy{
         }
         return  result;
     }
+
+    private void traverseFeatures(Feature feature){
+        if(!feature.isSubmodelRoot()) {
+            removeAggregateFunctionFromAttributes(feature);
+            for (Group group : feature.getChildren()) {
+                for (Feature subFeature : group.getFeatures()) {
+                    traverseFeatures(subFeature);
+                }
+            }
+        }
+    }
+
+    private void removeAggregateFunctionFromAttributes(Feature feature){
+        Attribute attributeConstraint = feature.getAttributes().get("constraint");
+        Attribute attributeConstraintList = feature.getAttributes().get("constraints");
+        if(attributeConstraint != null){
+            if(attributeConstraint.getValue() instanceof Constraint){
+                searchAggregateFunctionInConstraint((Constraint) attributeConstraint.getValue());
+            }
+        }
+        if(attributeConstraintList != null && attributeConstraintList.getValue() instanceof List<?>){
+            List<Object> newConstraintList = new LinkedList<>();
+            for(Object constraint : (List<?>)attributeConstraintList.getValue()){
+                if(constraint instanceof Constraint){
+                    searchAggregateFunctionInConstraint((Constraint) constraint);
+                }
+            }
+        }
+    }
+
 }
