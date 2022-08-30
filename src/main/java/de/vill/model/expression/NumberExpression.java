@@ -1,7 +1,10 @@
 package de.vill.model.expression;
 
+import de.vill.model.Feature;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class NumberExpression extends Expression{
     public double getNumber() {
@@ -37,6 +40,11 @@ public class NumberExpression extends Expression{
     @Override
     public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
 
+    }
+
+    @Override
+    public double evaluate(Set<Feature> selectedFeatures) {
+        return number;
     }
 
 }

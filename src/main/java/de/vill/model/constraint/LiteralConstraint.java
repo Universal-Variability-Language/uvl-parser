@@ -62,4 +62,9 @@ public class LiteralConstraint extends Constraint{
     public List<Constraint> getConstraintSubParts() {
         return Arrays.asList();
     }
+
+    @Override
+    public void replaceConstraintSubPart(Constraint oldSubConstraint, Constraint newSubConstraint) {
+        // no sub constraints
+    }
 }

@@ -5,6 +5,7 @@ import de.vill.model.Feature;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static de.vill.util.Util.addNecessaryQuotes;
 
@@ -62,5 +63,17 @@ public class LiteralExpression extends Expression{
     @Override
     public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
 
+    }
+
+    @Override
+    public double evaluate(Set<Feature> selectedFeatures) {
+        Object attributeValue = feature.getAttributes().get(attributeName).getValue();
+        if(attributeValue instanceof Integer){
+            return ((Integer) attributeValue).doubleValue();
+        }else if(attributeValue instanceof Long){
+            return ((Long) attributeValue).doubleValue();
+        }else {
+            return (double) attributeValue;
+        }
     }
 }

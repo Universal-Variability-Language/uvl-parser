@@ -33,4 +33,13 @@ public class ImplicationConstraint extends Constraint{
     public List<Constraint> getConstraintSubParts() {
         return Arrays.asList(left, right);
     }
+
+    @Override
+    public void replaceConstraintSubPart(Constraint oldSubConstraint, Constraint newSubConstraint) {
+        if(left == oldSubConstraint){
+            left = newSubConstraint;
+        } else if (right == oldSubConstraint) {
+            right = newSubConstraint;
+        }
+    }
 }

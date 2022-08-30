@@ -27,4 +27,11 @@ public class ParenthesisConstraint extends Constraint{
     public List<Constraint> getConstraintSubParts() {
         return Arrays.asList(content);
     }
+
+    @Override
+    public void replaceConstraintSubPart(Constraint oldSubConstraint, Constraint newSubConstraint) {
+        if(content == oldSubConstraint){
+            content = newSubConstraint;
+        }
+    }
 }

@@ -1,10 +1,12 @@
 package de.vill.model.expression;
 
+import de.vill.model.Feature;
 import de.vill.model.constraint.ParenthesisConstraint;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class ParenthesisExpression extends Expression{
     private Expression content;
@@ -32,5 +34,10 @@ public class ParenthesisExpression extends Expression{
         if(content == oldSubExpression){
             content = newSubExpression;
         }
+    }
+
+    @Override
+    public double evaluate(Set<Feature> selectedFeatures) {
+        return content.evaluate(selectedFeatures);
     }
 }

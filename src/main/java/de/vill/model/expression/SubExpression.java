@@ -1,7 +1,10 @@
 package de.vill.model.expression;
 
+import de.vill.model.Feature;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class SubExpression extends Expression{
     private Expression left;
@@ -33,5 +36,22 @@ public class SubExpression extends Expression{
         } else if (right == oldSubExpression) {
             right = newSubExpression;
         }
+    }
+
+    @Override
+    public double evaluate(Set<Feature> selectedFeatures) {
+        double leftResult;
+        if(left instanceof LiteralExpression && !selectedFeatures.contains(((LiteralExpression) left).getFeature())){
+            leftResult = 0;
+        }else {
+            leftResult = left.evaluate(selectedFeatures);
+        }
+        double rightResult;
+        if(right instanceof LiteralExpression && !selectedFeatures.contains(((LiteralExpression) right).getFeature())){
+            rightResult = 0;
+        }else {
+            rightResult = right.evaluate(selectedFeatures);
+        }
+        return leftResult + rightResult;
     }
 }
