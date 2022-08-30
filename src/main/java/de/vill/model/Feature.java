@@ -1,6 +1,7 @@
 package de.vill.model;
 
 import de.vill.config.Configuration;
+import de.vill.model.constraint.Constraint;
 import de.vill.util.Util;
 
 import java.util.HashMap;
@@ -216,7 +217,7 @@ public class Feature {
 
         result.append(addNecessaryQuotes(getFeatureName()));
         result.append(cardinalityToString());
-        result.append(attributesToString());
+        result.append(attributesToString(false, currentAlias));
         result.append(Configuration.getNewlineSymbol());
 
         for (Group group : children) {
@@ -249,7 +250,7 @@ public class Feature {
         or the toStringAsRoot method if the featuremodels should be printed separately
          */
         if(!isSubmodelRoot() || withSubmodels) {
-            result.append(attributesToString());
+            result.append(attributesToString(withSubmodels, currentAlias));
             result.append(Configuration.getNewlineSymbol());
 
             for (Group group : children) {
@@ -297,7 +298,7 @@ public class Feature {
         return result.toString();
     }
 
-    private String attributesToString(){
+    private String attributesToString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
         if(!attributes.isEmpty()){
             result.append(" {");
@@ -305,7 +306,7 @@ public class Feature {
                 result.append(addNecessaryQuotes(k));
 
                 result.append(' ');
-                result.append(v);
+                result.append(v.toString(withSubmodels, currentAlias));
                 result.append(", ");
             });
             result.deleteCharAt(result.length() - 1);

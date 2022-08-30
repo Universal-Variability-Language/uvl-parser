@@ -40,7 +40,7 @@ public class Attribute<T> {
      * Returns a uvl representation of the attribute as string (different for the possible types of the value)
      * @return attribute as string
      */
-    public String toString(){
+    public String toString(boolean withSubmodels, String currentAlias){
         StringBuilder result = new StringBuilder();
         if(value == null){
             //should never be the case but who knows...
@@ -72,7 +72,11 @@ public class Attribute<T> {
             //vector (list) of attributes to string
             result.append("[");
             for(Object item : (List)value){
-                result.append(item);
+                if(item instanceof Constraint){
+                    result.append(((Constraint) item).toString(withSubmodels, currentAlias));
+                }else {
+                    result.append(item);
+                }
                 result.append(", ");
             }
             result.deleteCharAt(result.length()-1);
@@ -83,7 +87,7 @@ public class Attribute<T> {
             result.append((String)value);
             result.append("\"");
         } else if (value instanceof Constraint) {
-            result.append(((Constraint)value).toString());
+            result.append(((Constraint)value).toString(withSubmodels, currentAlias));
         }
         return result.toString();
     }
