@@ -236,7 +236,7 @@ public class UVLListener extends UVLBaseListener {
             Attribute<List<String>> attribute = new Attribute(attributeName, Arrays.asList(vectorString.split(",")));
             attributeStack.peek().put(attributeName, attribute);
         }else if(ctx.value().attributes() != null){
-            var attributes = attributeStack.pop();
+            Map<String, Attribute> attributes = attributeStack.pop();
             Attribute<Map<String, Attribute>> attribute = new Attribute<>(attributeName, attributes);
             attributeStack.peek().put(attributeName, attribute);
         }else {
@@ -262,7 +262,7 @@ public class UVLListener extends UVLBaseListener {
     @Override public void exitLiteralConstraint(UVLParser.LiteralConstraintContext ctx) {
         String featureReference = ctx.referecne().getText().replace("\"", "");
 
-        var constraint = new LiteralConstraint(featureReference);
+        LiteralConstraint constraint = new LiteralConstraint(featureReference);
 
         if(featureReference.contains(".")){
             int lastDotIndex = featureReference.lastIndexOf(".");

@@ -15,7 +15,7 @@ import static de.vill.util.Util.addNecessaryQuotes;
  * This class represents a feature model and all its sub featuremodels if the model is composed.
  */
 public class FeatureModel {
-    private final Set<LanguageLevel> usedLanguageLevels = new HashSet<>(){{add(LanguageLevel.SAT_LEVEL);}};
+    private final Set<LanguageLevel> usedLanguageLevels = new HashSet<LanguageLevel>(){{add(LanguageLevel.SAT_LEVEL);}};
     private String namespace;
     private final List<Import> imports = new LinkedList<>();
     private Feature rootFeature;
@@ -174,7 +174,7 @@ public class FeatureModel {
      * @return a list will all constraints of this feature model.
      */
     public List<Constraint> getConstraints() {
-        var constraints = new LinkedList<Constraint>();
+        List<Constraint> constraints = new LinkedList<Constraint>();
         constraints.addAll(ownConstraints);
         constraints.addAll(getFeatureConstraints());
         for(Import importLine : imports){
@@ -229,7 +229,7 @@ public class FeatureModel {
     }
 
     private Map<String, String> decomposedModelToString(String currentAlias){
-        var models = new HashMap<String, String>();
+        Map<String, String> models = new HashMap<String, String>();
         models.put(getNamespace(), toString(false, currentAlias));
         for(Import importLine : imports){
             String newCurrentAlias;

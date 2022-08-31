@@ -5,6 +5,7 @@ import de.vill.UVLParser;
 import de.vill.conversion.*;
 import de.vill.exception.ParseError;
 import de.vill.model.*;
+import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.LiteralConstraint;
 import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.LiteralExpression;
@@ -282,7 +283,7 @@ public class UVLModelFactory {
     }
 
     private List<FeatureModel> createSubModelList(FeatureModel featureModel){
-        var subModelList = new LinkedList<FeatureModel>();
+        List<FeatureModel> subModelList = new LinkedList<FeatureModel>();
         for(Import importLine : featureModel.getImports()){
             subModelList.add(importLine.getFeatureModel());
             subModelList.addAll(createSubModelList(importLine.getFeatureModel()));
@@ -291,8 +292,8 @@ public class UVLModelFactory {
     }
 
     private void referenceFeaturesInConstraints(FeatureModel featureModel){
-        var subModelList = createSubModelList(featureModel);
-        var literalConstraints = featureModel.getLiteralConstraints();
+        List<FeatureModel> subModelList = createSubModelList(featureModel);
+        List<LiteralConstraint> literalConstraints = featureModel.getLiteralConstraints();
         for(LiteralConstraint constraint : literalConstraints){
             Feature referencedFeature = featureModel.getFeatureMap().get(constraint.getLiteral().replace("\'", ""));
             if(referencedFeature == null){
@@ -315,8 +316,8 @@ public class UVLModelFactory {
     }
 
     private void referenceAttributesInConstraints(FeatureModel featureModel){
-        var subModelList = createSubModelList(featureModel);
-        var literalExpressions = featureModel.getLiteralExpressions();
+        List<FeatureModel> subModelList = createSubModelList(featureModel);
+        List<LiteralExpression> literalExpressions = featureModel.getLiteralExpressions();
         for(LiteralExpression expression : literalExpressions){
             String reference = expression.getAttributeName();
             String[] referenceParts = reference.split("\\.");
@@ -349,8 +350,8 @@ public class UVLModelFactory {
     }
 
     private void referenceRootFeaturesInAggregateFunctions(FeatureModel featureModel){
-        var subModelList = createSubModelList(featureModel);
-        var aggregateFunctionExpressions = featureModel.getAggregateFunctionsWithRootFeature();
+        List<FeatureModel> subModelList = createSubModelList(featureModel);
+        List<AggregateFunctionExpression> aggregateFunctionExpressions = featureModel.getAggregateFunctionsWithRootFeature();
         for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
             Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName().replace("\'", ""));
             if(referencedFeature == null){
