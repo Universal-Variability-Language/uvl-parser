@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 
@@ -240,8 +241,8 @@ public class UVLModelFactory {
             }else {
                 try {
                     String path = fileLoader.apply(importLine.getNamespace());
-                    Path filePath = Path.of(path);
-                    String content = Files.readString(filePath);
+                    Path filePath = Paths.get(path);
+                    String content = new String(Files.readAllBytes(filePath));
                     FeatureModel subModel = parseFeatureModelWithImports(content, fileLoader, visitedImports);
                     importLine.setFeatureModel(subModel);
                     subModel.getRootFeature().setRelatedImport(importLine);
