@@ -60,7 +60,11 @@ public class Attribute<T> {
             ((Map<?, ?>) value).forEach((k, v) -> {
                 result.append(k);
                 result.append(' ');
-                result.append(v);
+                if(v instanceof Attribute){
+                    result.append(((Attribute) v).toString(withSubmodels, currentAlias));
+                }else {
+                    result.append(v);
+                }
                 result.append(',');
                 result.append(' ');
             });
