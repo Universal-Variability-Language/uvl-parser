@@ -127,12 +127,17 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void enterCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
         Group group = new Group(Group.GroupType.GROUP_CARDINALITY);
-        group.setLowerBound(ctx.lowerBound.getText());
-        if(ctx.upperBound != null) {
-            group.setUpperBound(ctx.upperBound.getText());
-        } else {
-            group.setUpperBound(ctx.lowerBound.getText());
+        String lowerBound;
+        String upperBound;
+        if(ctx.getText().contains("..")){
+            lowerBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[0];
+            upperBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[1];
+        }else {
+            lowerBound = ctx.getText().replace("[", "").replace("]", "");
+            upperBound = lowerBound;
         }
+        group.setLowerBound(lowerBound);
+        group.setUpperBound(upperBound);
 
         Feature feature = featureStack.peek();
         feature.addChildren(group);
@@ -188,13 +193,22 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
-        Feature feature = featureStack.peek();
-        feature.setLowerBound(ctx.lowerBound.getText());
-        if(ctx.upperBound != null) {
-            feature.setUpperBound(ctx.upperBound.getText());
+        String lowerBound;
+        String upperBound;
+        if(ctx.getText().contains("..")){
+            lowerBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[0];
+            upperBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[1];
         }else {
-            feature.setUpperBound(ctx.lowerBound.getText());
+            lowerBound = ctx.getText().replace("[", "").replace("]", "");
+            upperBound = lowerBound;
         }
+        if(upperBound.equals("*")){
+            throw new ParseError("Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")");
+        }
+
+        Feature feature = featureStack.peek();
+        feature.setLowerBound(lowerBound);
+        feature.setUpperBound(upperBound);
 
         featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
         featureModel.getUsedLanguageLevels().add(LanguageLevel.FEATURE_CARDINALITY);

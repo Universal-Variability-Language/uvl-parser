@@ -109,14 +109,14 @@ group
     | ALTERNATIVE groupSpec # AlternativeGroup
     | OPTIONAL groupSpec    # OptionalGroup
     | MANDATORY groupSpec   # MandatoryGroup
-    | OPEN_BRACK lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? CLOSE_BRACK groupSpec    # CardinalityGroup
+    | CARDINALITY groupSpec    # CardinalityGroup
     ;
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
 feature: referecne featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
 
-featureCardinality: 'cardinality' OPEN_BRACK lowerBound=INTEGER ('..' upperBound=(INTEGER | '*'))? CLOSE_BRACK;
+featureCardinality: 'cardinality' CARDINALITY;
 
 attributes: OPEN_BRACE (attribute (COMMA attribute)*)? CLOSE_BRACE;
 
@@ -185,6 +185,7 @@ ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
 OPTIONAL: 'optional';
 MANDATORY: 'mandatory';
+CARDINALITY: OPEN_BRACK INTEGER ('..' (INTEGER | '*'))? CLOSE_BRACK;
 
 NOT: '!';
 AND: '&';
@@ -209,11 +210,6 @@ LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
 MAJORLEVEL: 'SAT-level' | 'SMT-level';
 MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function';
 
-ID_SPACED: '"' ID_NOT_SPACED (SPACES ID_NOT_SPACED)* '"';
-ID_NOT_SPACED: [a-zA-Z][a-zA-Z0-9_-]*;
-
-STRING: '"'~[\r?\n"]*'"';
-
 COMMA: ',';
 
 OPEN_PAREN : '(' {this.opened += 1;};
@@ -224,6 +220,11 @@ OPEN_BRACE : '{' {this.opened += 1;};
 CLOSE_BRACE : '}' {this.opened -= 1;};
 OPEN_COMMENT: '/*' {this.opened += 1;};
 CLOSE_COMMENT: '*/' {this.opened -= 1;};
+
+ID_SPACED: '"' ID_NOT_SPACED (SPACES ID_NOT_SPACED)* '"';
+ID_NOT_SPACED: ([a-zA-Z0-9_-] | '§' | '%' | '/' | '=' | '?' | '\\' | '´' | '`' | '*' | '#' | '\'' | 'ä' | 'ü' | 'ö' | ';' | '°' | '^')*;
+
+STRING: '"'~[\r?\n"]*'"';
 
 NEWLINE
  : ( {atStartOfInput()}?   SPACES
