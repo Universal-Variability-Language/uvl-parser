@@ -64,22 +64,22 @@ public class Example {
 
         //safe a single uvl model (this ignores any submodels)
         String uvlModel = featureModel.toString();
-        Path filePath = Path.of("test_singleModel.uvl");
-        Files.writeString(filePath, uvlModel);
+        Path filePath = Paths.get("test_singleModel.uvl");
+        Files.write(filePath, uvlModel.getBytes());
 
         //safe a decomposed uvl model with all its submodels to individual files
         Map<String, String> modelList = featureModel.decomposedModelToString();
         for(Map.Entry<String, String> uvlSubModel : modelList.entrySet()) {
             //safe submodel in sub directory directory with namespace as name
             Files.createDirectories(Paths.get("./subModels/"));
-            filePath = Path.of("./subModels/" + uvlSubModel.getKey() + ".uvl");
-            Files.writeString(filePath, uvlSubModel.getValue());
+            filePath = Paths.get("./subModels/" + uvlSubModel.getKey() + ".uvl");
+            Files.write(filePath, uvlSubModel.getValue().getBytes());
         }
 
         //create a single uvl representation from a decomposed model and safe it to a single file
         uvlModel = featureModel.composedModelToString();
-        filePath = Path.of("test_composedModel.uvl");
-        Files.writeString(filePath, uvlModel);
+        filePath = Paths.get("test_composedModel.uvl");
+        Files.write(filePath, uvlModel.getBytes());
     }
 
     /**
@@ -89,8 +89,8 @@ public class Example {
      * @throws IOException for io exceptions while loading the file content
      */
     private static FeatureModel loadUVLFeatureModelFromFile(String path) throws IOException {
-        Path filePath = Path.of(path);
-        String content = Files.readString(filePath);
+        Path filePath = Paths.get(path);
+        String content = new String(Files.readAllBytes(filePath));
         UVLModelFactory uvlModelFactory = new UVLModelFactory();
         FeatureModel featureModel = uvlModelFactory.parse(content);
         return featureModel;
@@ -104,8 +104,8 @@ public class Example {
      * @throws IOException for io exceptions while loading the file content
      */
     private static FeatureModel loadUVLFeatureModelFromDirectory(String rootModelPath, String subModelDir) throws IOException {
-        Path filePath = Path.of(rootModelPath);
-        String content = Files.readString(filePath);
+        Path filePath = Paths.get(rootModelPath);
+        String content = new String(Files.readAllBytes(filePath));
         UVLModelFactory uvlModelFactory = new UVLModelFactory();
         FeatureModel featureModel = uvlModelFactory.parse(content, subModelDir);
         return featureModel;
@@ -119,8 +119,8 @@ public class Example {
      * @throws IOException for io exceptions while loading the file content
      */
     private static FeatureModel loadUVLFeatureModelWithSpecificPaths(String rootModelPath, Map<String, String> subModelPaths) throws IOException {
-        Path filePath = Path.of(rootModelPath);
-        String content = Files.readString(filePath);
+        Path filePath = Paths.get(rootModelPath);
+        String content = new String(Files.readAllBytes(filePath));
         UVLModelFactory uvlModelFactory = new UVLModelFactory();
         FeatureModel featureModel = uvlModelFactory.parse(content, subModelPaths);
         return featureModel;
