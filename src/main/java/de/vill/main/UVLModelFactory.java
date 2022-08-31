@@ -298,7 +298,7 @@ public class UVLModelFactory {
         for(LiteralConstraint constraint : literalConstraints){
             Feature referencedFeature = featureModel.getFeatureMap().get(constraint.getLiteral().replace("\'", ""));
             if(referencedFeature == null){
-                throw new ParseError("Feature " + constraint + " is referenced in a constraint in" + featureModel.getNamespace() + " but does not exist as feature in the tree!");
+                throw new ParseError("Feature " + constraint + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!");
             }else {
                 constraint.setFeature(referencedFeature);
             }
@@ -308,7 +308,7 @@ public class UVLModelFactory {
             for(LiteralConstraint constraint : literalConstraints){
                 Feature referencedFeature = subModel.getFeatureMap().get(constraint.getLiteral().replace("\'", ""));
                 if(referencedFeature == null){
-                    throw new ParseError("Feature " + constraint + " is referenced in a constraint in" + subModel.getNamespace() + " but does not exist as feature in the tree!");
+                    throw new ParseError("Feature " + constraint + " is referenced in a constraint in " + subModel.getNamespace() + " but does not exist as feature in the tree!");
                 }else {
                     constraint.setFeature(referencedFeature);
                 }
