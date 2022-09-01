@@ -4,6 +4,7 @@ import de.vill.UVLLexer;
 import de.vill.UVLParser;
 import de.vill.conversion.*;
 import de.vill.exception.ParseError;
+import de.vill.exception.ParseErrorList;
 import de.vill.model.*;
 import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.LiteralConstraint;
@@ -23,6 +24,8 @@ public class UVLModelFactory {
 
     private final Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategiesDrop;
     private final Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategiesConvert;
+
+    private final List<ParseError> errorList = new LinkedList<>();
 
     public UVLModelFactory(){
         conversionStrategiesDrop = new HashMap<>();
@@ -223,13 +226,15 @@ public class UVLModelFactory {
         uvlLexer.addErrorListener(new BaseErrorListener(){
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                throw new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to: " + msg, e);
+                errorList.add(new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to: " + msg, e));
+                //throw new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to: " + msg, e);
             }
         });
         uvlParser.addErrorListener(new BaseErrorListener(){
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                throw new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to " + msg, e);
+                errorList.add(new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to " + msg, e));
+                //throw new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to " + msg, e);
             }
         });
 
@@ -237,9 +242,19 @@ public class UVLModelFactory {
         UVLListener uvlListener = new UVLListener();
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(uvlListener, uvlParser.featureModel());
+        FeatureModel featureModel = null;
 
-        FeatureModel featureModel = uvlListener.getFeatureModel();
-        //featureModel.getOwnConstraints().addAll(featureModel.getConstraints());
+        try {
+            featureModel = uvlListener.getFeatureModel();
+        }catch (ParseErrorList e){
+            errorList.addAll(e.getErrorList());
+        }
+
+        if(errorList.size() > 0){
+            ParseErrorList parseErrorList = new ParseErrorList("Multiple Errors occurred during parsing!");
+            parseErrorList.getErrorList().addAll(errorList);
+            throw parseErrorList;
+        }
 
 
         visitedImports.put(featureModel.getNamespace(), null);

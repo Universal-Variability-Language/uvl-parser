@@ -3,6 +3,7 @@ package de.vill.main;
 import de.vill.UVLBaseListener;
 import de.vill.UVLParser;
 import de.vill.exception.ParseError;
+import de.vill.exception.ParseErrorList;
 import de.vill.model.*;
 import de.vill.model.constraint.*;
 import de.vill.model.expression.*;
@@ -22,6 +23,8 @@ public class UVLListener extends UVLBaseListener {
     private Stack<Map<String,Attribute>> attributeStack = new Stack<>();
 
     private boolean featureCardinality = false;
+
+    private List<ParseError> errorList = new LinkedList<>();
 
     @Override public void enterIncludes(UVLParser.IncludesContext ctx) {
         featureModel.setExplicitLanguageLevels(true);
@@ -49,7 +52,8 @@ public class UVLListener extends UVLBaseListener {
                 importedLanguageLevels.add(minorLevel);
             }
         }else {
-            throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
+            errorList.add(new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText()));
+            //throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
         }
     }
 
@@ -174,7 +178,8 @@ public class UVLListener extends UVLBaseListener {
                 }
             }
             if (feature.getRelatedImport() == null){
-                throw new ParseError("Feature " + featureReference + " is imported, but there is no import named " + featureNamespace);
+                errorList.add(new ParseError("Feature " + featureReference + " is imported, but there is no import named " + featureNamespace));
+                //throw new ParseError("Feature " + featureReference + " is imported, but there is no import named " + featureNamespace);
             }
         }
 
@@ -203,7 +208,8 @@ public class UVLListener extends UVLBaseListener {
             upperBound = lowerBound;
         }
         if(upperBound.equals("*")){
-            throw new ParseError("Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")");
+            errorList.add(new ParseError("Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")"));
+            //throw new ParseError("Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")");
         }
 
         Feature feature = featureStack.peek();
@@ -254,7 +260,8 @@ public class UVLListener extends UVLBaseListener {
             Attribute<Map<String, Attribute>> attribute = new Attribute<>(attributeName, attributes);
             attributeStack.peek().put(attributeName, attribute);
         }else {
-            throw new ParseError(ctx.value().getText() + " is no value of any supported attribute type!");
+            errorList.add(new ParseError(ctx.value().getText() + " is no value of any supported attribute type!"));
+            //throw new ParseError(ctx.value().getText() + " is no value of any supported attribute type!");
         }
     }
 
@@ -438,13 +445,19 @@ public class UVLListener extends UVLBaseListener {
     }
 
     public FeatureModel getFeatureModel() {
+        if(errorList.size() > 0){
+            ParseErrorList parseErrorList = new ParseErrorList("Multiple Errors occurred during parsing!");
+            parseErrorList.getErrorList().addAll(errorList);
+            throw parseErrorList;
+        }
         return featureModel;
     }
 
 
     @Override public void exitFeatureModel(UVLParser.FeatureModelContext ctx) {
         if(featureModel.isExplicitLanguageLevels() && !featureModel.getUsedLanguageLevels().equals(importedLanguageLevels)){
-            throw new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString());
+            errorList.add(new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString()));
+            //throw new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString());
         }
     }
 
