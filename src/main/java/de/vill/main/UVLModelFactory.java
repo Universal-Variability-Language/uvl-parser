@@ -217,13 +217,22 @@ public class UVLModelFactory {
         UVLLexer uvlLexer = new UVLLexer(CharStreams.fromString(text));
         CommonTokenStream tokens = new CommonTokenStream(uvlLexer);
         UVLParser uvlParser = new UVLParser(tokens);
+        uvlParser.removeErrorListener(ConsoleErrorListener.INSTANCE);
+        uvlLexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
 
+        uvlLexer.addErrorListener(new BaseErrorListener(){
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                throw new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to: " + msg, e);
+            }
+        });
         uvlParser.addErrorListener(new BaseErrorListener(){
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
                 throw new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to " + msg, e);
             }
         });
+
 
         UVLListener uvlListener = new UVLListener();
         ParseTreeWalker walker = new ParseTreeWalker();
