@@ -175,11 +175,11 @@ aggregateFunction
     ;
 
 string
-    : ID_SPACED
+    : ID_NOT_STRICT
     | STRING;
 
 referecne: (id '.')* id;
-id: ID_NOT_SPACED | ID_SPACED;
+id: ID_STRICT | ID_NOT_STRICT;
 
 ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
@@ -221,8 +221,8 @@ CLOSE_BRACE : '}' {this.opened -= 1;};
 OPEN_COMMENT: '/*' {this.opened += 1;};
 CLOSE_COMMENT: '*/' {this.opened -= 1;};
 
-ID_SPACED: '"' ID_NOT_SPACED (SPACES ID_NOT_SPACED)* '"';
-ID_NOT_SPACED: ([a-zA-Z0-9_-] | '§' | '%' | '/' | '=' | '?' | '\\' | '´' | '`' | '*' | '#' | '\'' | 'ä' | 'ü' | 'ö' | ';' | '°' | '^')*;
+ID_NOT_STRICT: '"'~[\r\n".]+'"';
+ID_STRICT: [a-zA-Z]([a-zA-Z0-9_] | '#' | '§' | '%' | '?' | '\\' | '´' | '`' | '\'' | 'ä' | 'ü' | 'ö' | ';' | '°' | '^' | 'ß')*;
 
 STRING: '"'~[\r?\n"]*'"';
 

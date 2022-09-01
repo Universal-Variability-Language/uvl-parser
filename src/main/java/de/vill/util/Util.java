@@ -18,7 +18,7 @@ public class Util {
         String[] parts = reference.split("\\.");
         StringBuilder result = new StringBuilder();
         for(String part : parts){
-            if(part.contains(" ")){
+            if(!part.matches("[a-zA-Z][a-zA-Z0-9_]*")){
                 result.append("\"");
                 result.append(part);
                 result.append("\"");
