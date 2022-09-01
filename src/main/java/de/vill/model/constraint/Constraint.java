@@ -6,6 +6,15 @@ import de.vill.model.expression.Expression;
 import java.util.List;
 
 public abstract class Constraint {
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    private int lineNumber;
     @Override
     public String toString(){
         return toString(true, "");

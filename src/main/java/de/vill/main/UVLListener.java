@@ -7,6 +7,7 @@ import de.vill.exception.ParseErrorList;
 import de.vill.model.*;
 import de.vill.model.constraint.*;
 import de.vill.model.expression.*;
+import org.antlr.v4.runtime.Token;
 
 import java.util.*;
 
@@ -68,6 +69,9 @@ public class UVLListener extends UVLBaseListener {
         }else{
             importLine = new Import(ctx.ns.getText().replace("\"", ""), null);
         }
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        importLine.setLineNumber(line);
         featureModel.getImports().add(importLine);
     }
 
@@ -298,16 +302,25 @@ public class UVLListener extends UVLBaseListener {
         }
         featureModel.getLiteralConstraints().add(constraint);
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitParenthesisConstraint(UVLParser.ParenthesisConstraintContext ctx) {
         Constraint constraint = new ParenthesisConstraint(constraintStack.pop());
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitNotConstraint(UVLParser.NotConstraintContext ctx) {
         Constraint constraint = new NotConstraint(constraintStack.pop());
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitAndConstraint(UVLParser.AndConstraintContext ctx) {
@@ -315,6 +328,9 @@ public class UVLListener extends UVLBaseListener {
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new AndConstraint(leftConstraint, rightConstraint);
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitOrConstraint(UVLParser.OrConstraintContext ctx) {
@@ -322,6 +338,9 @@ public class UVLListener extends UVLBaseListener {
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new OrConstraint(leftConstraint, rightConstraint);
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitImplicationConstraint(UVLParser.ImplicationConstraintContext ctx) {
@@ -329,6 +348,9 @@ public class UVLListener extends UVLBaseListener {
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new ImplicationConstraint(leftConstraint, rightConstraint);
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitEquivalenceConstraint(UVLParser.EquivalenceConstraintContext ctx) {
@@ -336,6 +358,9 @@ public class UVLListener extends UVLBaseListener {
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new EquivalenceConstraint(leftConstraint, rightConstraint);
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitEqualEquation(UVLParser.EqualEquationContext ctx) {
@@ -343,6 +368,9 @@ public class UVLListener extends UVLBaseListener {
         Expression left = expressionStack.pop();
         Constraint constraint = new EqualEquationConstraint(left, right);
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitLowerEquation(UVLParser.LowerEquationContext ctx) {
@@ -350,6 +378,9 @@ public class UVLListener extends UVLBaseListener {
         Expression left = expressionStack.pop();
         Constraint constraint = new LowerEquationConstraint(left, right);
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitGreaterEquation(UVLParser.GreaterEquationContext ctx) {
@@ -357,27 +388,42 @@ public class UVLListener extends UVLBaseListener {
         Expression left = expressionStack.pop();
         Constraint constraint = new GreaterEquationConstraint(left, right);
         constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
     }
 
     @Override public void exitBracketExpression(UVLParser.BracketExpressionContext ctx) {
         ParenthesisExpression expression = new ParenthesisExpression(expressionStack.pop());
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitIntegerLiteralExpression(UVLParser.IntegerLiteralExpressionContext ctx) {
         Expression expression = new NumberExpression(Integer.parseInt(ctx.INTEGER().getText()));
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitFloatLiteralExpression(UVLParser.FloatLiteralExpressionContext ctx) {
         Expression expression = new NumberExpression(Double.parseDouble(ctx.FLOAT().getText()));
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
         LiteralExpression expression = new LiteralExpression(ctx.referecne().getText().replace("\"", ""));
         expressionStack.push(expression);
         featureModel.getLiteralExpressions().add(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitAddExpression(UVLParser.AddExpressionContext ctx) {
@@ -385,6 +431,9 @@ public class UVLListener extends UVLBaseListener {
         Expression left = expressionStack.pop();
         Expression expression = new AddExpression(left, right);
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitSubExpression(UVLParser.SubExpressionContext ctx) {
@@ -392,6 +441,9 @@ public class UVLListener extends UVLBaseListener {
         Expression left = expressionStack.pop();
         Expression expression = new SubExpression(left, right);
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitMulExpression(UVLParser.MulExpressionContext ctx) {
@@ -399,6 +451,9 @@ public class UVLListener extends UVLBaseListener {
         Expression left = expressionStack.pop();
         Expression expression = new MulExpression(left, right);
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitDivExpresssion(UVLParser.DivExpresssionContext ctx) {
@@ -406,28 +461,37 @@ public class UVLListener extends UVLBaseListener {
         Expression left = expressionStack.pop();
         Expression expression = new DivExpression(left, right);
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
         if(ctx.referecne().size() > 1) {
-            expression = new SumAggregateFunctionExpression(ctx.referecne().get(0).getText().replace("\"", ""), ctx.referecne().get(1).getText().replace("\"", ""));
+            expression = new SumAggregateFunctionExpression(ctx.referecne().get(1).getText().replace("\"", ""), ctx.referecne().get(0).getText().replace("\"", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
             expression = new SumAggregateFunctionExpression(ctx.referecne().get(0).getText().replace("\"", ""));
         }
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
         if(ctx.referecne().size() > 1) {
-            expression = new AvgAggregateFunctionExpression(ctx.referecne().get(0).getText().replace("\"", ""), ctx.referecne().get(1).getText().replace("\"", ""));
+            expression = new AvgAggregateFunctionExpression(ctx.referecne().get(1).getText().replace("\"", ""), ctx.referecne().get(0).getText().replace("\"", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
             expression = new AvgAggregateFunctionExpression(ctx.referecne().get(0).getText().replace("\"", ""));
         }
         expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override public void enterAggregateFunctionExpression(UVLParser.AggregateFunctionExpressionContext ctx) {

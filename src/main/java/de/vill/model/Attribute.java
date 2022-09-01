@@ -12,6 +12,16 @@ import java.util.Map;
  * @param <T> The type of the value
  */
 public class Attribute<T> {
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    private int line;
     private final String name;
     private final T value;
 

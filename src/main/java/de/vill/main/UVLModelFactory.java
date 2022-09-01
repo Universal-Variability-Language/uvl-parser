@@ -261,7 +261,7 @@ public class UVLModelFactory {
 
         for(Import importLine : featureModel.getImports()){
             if(visitedImports.containsKey(importLine.getNamespace()) && visitedImports.get(importLine.getNamespace()) == null){
-                throw new ParseError("Cyclic import detected! " + "The import of " + importLine.getNamespace() + " in " + featureModel.getNamespace() + " creates a cycle");
+                throw new ParseError("Cyclic import detected! " + "The import of " + importLine.getNamespace() + " in " + featureModel.getNamespace() + " creates a cycle", importLine.getLineNumber());
             }else {
                 try {
                     String path = fileLoader.apply(importLine.getNamespace());
@@ -284,7 +284,7 @@ public class UVLModelFactory {
                         }
                     }
                 } catch (IOException e) {
-                    throw new ParseError("Could not resolve import: " + e.getMessage());
+                    throw new ParseError("Could not resolve import: " + e.getMessage(), importLine.getLineNumber());
                 }
             }
         }
@@ -322,7 +322,7 @@ public class UVLModelFactory {
         for(LiteralConstraint constraint : literalConstraints){
             Feature referencedFeature = featureModel.getFeatureMap().get(constraint.getLiteral().replace("\'", ""));
             if(referencedFeature == null){
-                throw new ParseError("Feature " + constraint + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!");
+                throw new ParseError("Feature " + constraint + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!", constraint.getLineNumber());
             }else {
                 constraint.setFeature(referencedFeature);
             }
@@ -332,7 +332,7 @@ public class UVLModelFactory {
             for(LiteralConstraint constraint : literalConstraints){
                 Feature referencedFeature = subModel.getFeatureMap().get(constraint.getLiteral().replace("\'", ""));
                 if(referencedFeature == null){
-                    throw new ParseError("Feature " + constraint + " is referenced in a constraint in " + subModel.getNamespace() + " but does not exist as feature in the tree!");
+                    throw new ParseError("Feature " + constraint + " is referenced in a constraint in " + subModel.getNamespace() + " but does not exist as feature in the tree!", constraint.getLineNumber());
                 }else {
                     constraint.setFeature(referencedFeature);
                 }
@@ -351,7 +351,7 @@ public class UVLModelFactory {
             expression.setAttributeName(attributeName);
             Feature referencedFeature = featureModel.getFeatureMap().get(featureName);
             if(referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null){
-                throw new ParseError("Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!");
+                throw new ParseError("Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!", expression.getLineNumber());
             }else {
                 expression.setFeature(referencedFeature);
             }
@@ -366,7 +366,7 @@ public class UVLModelFactory {
                 expression.setAttributeName(attributeName);
                 Feature referencedFeature = subModel.getFeatureMap().get(featureName);
                 if(referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null){
-                    throw new ParseError("Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + subModel.getNamespace() + " but does not exist as feature in the tree!");
+                    throw new ParseError("Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + subModel.getNamespace() + " but does not exist as feature in the tree!", expression.getLineNumber());
                 }else {
                     expression.setFeature(referencedFeature);
                 }
@@ -380,7 +380,7 @@ public class UVLModelFactory {
         for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
             Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName().replace("\'", ""));
             if(referencedFeature == null){
-                throw new ParseError("Feature is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!");
+                throw new ParseError("Feature " + expression.getRootFeatureName() + " is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!", expression.getLineNumber());
             }else {
                 expression.setRootFeature(referencedFeature);
             }
@@ -390,7 +390,7 @@ public class UVLModelFactory {
             for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
                 Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName().replace("\'", ""));
                 if(referencedFeature == null){
-                    throw new ParseError("Feature is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!");
+                    throw new ParseError("Feature " + expression.getRootFeatureName() + " is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!", expression.getLineNumber());
                 }else {
                     expression.setRootFeature(referencedFeature);
                 }

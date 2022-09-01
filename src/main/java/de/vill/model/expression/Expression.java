@@ -6,6 +6,15 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Expression {
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    private int lineNumber;
     public String toString(){
         return toString(true, "");
     }

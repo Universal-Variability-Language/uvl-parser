@@ -14,4 +14,14 @@ public class ParseError extends RuntimeException{
     public ParseError(String errorMessage) {
         super(errorMessage);
     }
+
+    public ParseError(String errorMessage, int line) {
+        super(errorMessage);
+        this.line = line;
+    }
+
+    @Override
+    public String toString() {
+        return getMessage() + " at line " + getLine();
+    }
 }

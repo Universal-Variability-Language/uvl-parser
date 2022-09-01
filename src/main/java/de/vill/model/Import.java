@@ -9,6 +9,16 @@ public class Import {
     private final String alias;
     private FeatureModel featureModel;
 
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    private int lineNumber;
+
     /**
      * The constructor of the Import class that sets its name and its optional alias.
      * The alias is used to reference the same submodel in different parts.
