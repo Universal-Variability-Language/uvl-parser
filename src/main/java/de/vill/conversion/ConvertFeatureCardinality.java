@@ -21,7 +21,6 @@ public class ConvertFeatureCardinality implements IConversionStrategy{
 
     @Override
     public void convertFeatureModel(FeatureModel rootFeatureModel, FeatureModel featureModel) {
-        //TODO feature map konsistent halten
         traverseFeatures(featureModel.getRootFeature(), featureModel);
     }
 
@@ -33,7 +32,6 @@ public class ConvertFeatureCardinality implements IConversionStrategy{
                     subTreeFeatures.addAll(getFeatureFromSubTree(group));
                 }
                 List<Constraint> constraintsToClone = getConstraintsOnSubTree(featureModel, subTreeFeatures);
-                featureModel.getOwnConstraints().removeAll(constraintsToClone);
 
                 removeFeatureCardinality(feature, featureModel, constraintsToClone);
             }
@@ -143,7 +141,6 @@ public class ConvertFeatureCardinality implements IConversionStrategy{
     }
 
     private void adaptConstraint(Feature subTreeRoot, Constraint constraint, Map<String,Feature> featureReplacementMap){
-        //TODO FALSCH: nicht nur LiteralFeature ändern, sondern ganzes Constrant ändern mit Implikatino und nicht Constraint ändern sondern clonen und original am Schluss entfernen (nachdem alle clone erstellt wurden)
         List<Constraint> subParts = constraint.getConstraintSubParts();
         for(Constraint subPart : subParts){
             if(subPart instanceof LiteralConstraint){
@@ -157,6 +154,14 @@ public class ConvertFeatureCardinality implements IConversionStrategy{
                 }
             }else {
                 adaptConstraint(subTreeRoot, subPart, featureReplacementMap);
+            }
+        }
+    }
+
+    private void updateFeatureMap(FeatureModel featureModel, Feature oldSubTree, Feature newSubTree){
+        for(Group group : oldSubTree.getChildren()){
+            for(Feature subFeature : group.getFeatures()){
+                featureModel.getFeatureMap().put(subFeature.getFullReference(), subFeature);
             }
         }
     }
