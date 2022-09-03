@@ -26,5 +26,6 @@ public abstract class Constraint {
 
     public abstract void replaceConstraintSubPart(Constraint oldSubConstraint, Constraint newSubConstraint);
 
+    public abstract Constraint clone();
 
 }

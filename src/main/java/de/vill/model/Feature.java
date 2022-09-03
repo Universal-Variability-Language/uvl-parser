@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 import static de.vill.util.Util.addNecessaryQuotes;
-//TODO Feature cardinality als Group modelieren, damit man feature cardinality nicht direkt unter Gruppen hat (könnte aber Probleme beim printen machen?)
 /**
  * This class represents a feature of any kind (normal, numeric, abstract, ...).
  */
 public class Feature {
-    private final String featureName;
+    public void setFeatureName(String featureName) {
+        this.featureName = featureName;
+    }
+
+    private String featureName;
     private String nameSpace = "";
     private Import relatedImport;
     private String lowerBound;
@@ -314,6 +317,20 @@ public class Feature {
             result.append("}");
         }
         return result.toString();
+    }
+
+    public Feature clone(){
+        Feature feature = new Feature(getFeatureName());
+        feature.setNameSpace(getNameSpace());
+        feature.setLowerBound(getLowerBound());
+        feature.setUpperBound(getUpperBound());
+        feature.setSubmodelRoot(isSubmodelRoot);
+        feature.setRelatedImport(getRelatedImport());
+        feature.getAttributes().putAll(getAttributes());
+        for(Group group : getChildren()){
+            feature.getChildren().add(group.clone());
+        }
+        return feature;
     }
 
 

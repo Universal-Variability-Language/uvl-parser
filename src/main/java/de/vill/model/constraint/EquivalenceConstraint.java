@@ -42,4 +42,9 @@ public class EquivalenceConstraint extends Constraint{
             right = newSubConstraint;
         }
     }
+
+    @Override
+    public Constraint clone() {
+        return new EquivalenceConstraint(left.clone(), right.clone());
+    }
 }

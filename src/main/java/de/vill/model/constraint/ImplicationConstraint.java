@@ -42,4 +42,9 @@ public class ImplicationConstraint extends Constraint{
             right = newSubConstraint;
         }
     }
+
+    @Override
+    public Constraint clone() {
+        return new ImplicationConstraint(left.clone(), right.clone());
+    }
 }

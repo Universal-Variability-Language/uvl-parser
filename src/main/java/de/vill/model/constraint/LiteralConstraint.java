@@ -67,4 +67,13 @@ public class LiteralConstraint extends Constraint{
     public void replaceConstraintSubPart(Constraint oldSubConstraint, Constraint newSubConstraint) {
         // no sub constraints
     }
+
+    @Override
+    public Constraint clone() {
+        LiteralConstraint newConstraint = new LiteralConstraint(getLiteral());
+        newConstraint.setFeature(getFeature());
+        newConstraint.setNameSpace(getNameSpace());
+        newConstraint.setRelatedImport(getRelatedImport());
+        return newConstraint;
+    }
 }

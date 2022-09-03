@@ -34,4 +34,9 @@ public class ParenthesisConstraint extends Constraint{
             content = newSubConstraint;
         }
     }
+
+    @Override
+    public Constraint clone() {
+        return new ParenthesisConstraint(content.clone());
+    }
 }

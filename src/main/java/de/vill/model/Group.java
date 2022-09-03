@@ -129,4 +129,14 @@ public class Group {
         result.append("]");
         return result.toString();
     }
+
+    public Group clone(){
+        Group group = new Group(GROUPTYPE);
+        group.setUpperBound(getUpperBound());
+        group.setLowerBound(getLowerBound());
+        for(Feature feature : getFeatures()){
+            group.getFeatures().add(feature.clone());
+        }
+        return group;
+    }
 }

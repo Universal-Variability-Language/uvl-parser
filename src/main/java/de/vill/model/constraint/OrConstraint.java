@@ -42,4 +42,9 @@ public class OrConstraint extends Constraint{
             right = newSubConstraint;
         }
     }
+
+    @Override
+    public Constraint clone() {
+        return new OrConstraint(left.clone(), right.clone());
+    }
 }

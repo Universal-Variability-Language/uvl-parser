@@ -33,4 +33,9 @@ public class NotConstraint extends Constraint{
             content = newSubConstraint;
         }
     }
+
+    @Override
+    public Constraint clone() {
+        return new NotConstraint(content.clone());
+    }
 }

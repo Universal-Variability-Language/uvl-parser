@@ -42,4 +42,9 @@ public class AndConstraint extends Constraint{
             right = newSubConstraint;
         }
     }
+
+    @Override
+    public Constraint clone() {
+        return new AndConstraint(left.clone(), right.clone());
+    }
 }

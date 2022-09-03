@@ -75,4 +75,10 @@ public abstract class ExpressionConstraint extends Constraint{
         }
         return false;
     }
+
+    @Override
+    public Constraint clone() {
+        //TODO implement clone method in expressions and clone them here
+        return new EqualEquationConstraint(left, right);
+    }
 }
