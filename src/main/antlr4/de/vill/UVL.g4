@@ -97,10 +97,10 @@ featureModel: includes? NEWLINE? namespace? NEWLINE? imports? NEWLINE? features?
 includes: 'include' NEWLINE INDENT includeLine* DEDENT;
 includeLine: LANGUAGELEVEL NEWLINE;
 
-namespace: 'namespace' referecne;
+namespace: 'namespace' reference;
 
 imports: 'imports' NEWLINE INDENT importLine* DEDENT;
-importLine: ns=referecne ('as' alias=referecne)? NEWLINE;
+importLine: ns=reference ('as' alias=reference)? NEWLINE;
 
 features: 'features' NEWLINE INDENT feature DEDENT;
 
@@ -114,7 +114,7 @@ group
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
-feature: referecne featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
+feature: reference featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
 
 featureCardinality: 'cardinality' CARDINALITY;
 
@@ -142,7 +142,7 @@ constraintLine: constraint NEWLINE;
 
 constraint
     : equation                              # EquationConstraint
-    | referecne                             # LiteralConstraint
+    | reference                             # LiteralConstraint
     | OPEN_PAREN constraint CLOSE_PAREN      # ParenthesisConstraint
     | NOT constraint                        # NotConstraint
     | constraint AND constraint             # AndConstraint
@@ -161,7 +161,7 @@ expression:
     FLOAT                                   # FloatLiteralExpression
     | INTEGER                               # IntegerLiteralExpression
     | aggregateFunction                     # AggregateFunctionExpression
-    | referecne                             # AttributeLiteralExpression
+    | reference                             # AttributeLiteralExpression
     | OPEN_PAREN expression CLOSE_PAREN     # BracketExpression
     | expression ADD expression             # AddExpression
     | expression SUB expression             # SubExpression
@@ -170,15 +170,15 @@ expression:
     ;
 
 aggregateFunction
-    : 'sum' OPEN_PAREN (referecne COMMA)? referecne CLOSE_PAREN    # SumAggregateFunction
-    | 'avg' OPEN_PAREN (referecne COMMA)? referecne CLOSE_PAREN    # AvgAggregateFunction
+    : 'sum' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # SumAggregateFunction
+    | 'avg' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # AvgAggregateFunction
     ;
 
 string
     : ID_NOT_STRICT
     | STRING;
 
-referecne: (id '.')* id;
+reference: (id '.')* id;
 id: ID_STRICT | ID_NOT_STRICT;
 
 ORGROUP: 'or';

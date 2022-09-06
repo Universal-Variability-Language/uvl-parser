@@ -59,7 +59,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitNamespace(UVLParser.NamespaceContext ctx) {
-        featureModel.setNamespace(ctx.referecne().getText().replace("\"", ""));
+        featureModel.setNamespace(ctx.reference().getText().replace("\"", ""));
     }
 
     @Override public void exitImportLine(UVLParser.ImportLineContext ctx) {
@@ -159,7 +159,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void enterFeature(UVLParser.FeatureContext ctx) {
-        String featureReference = ctx.referecne().getText().replace("\"", "");
+        String featureReference = ctx.reference().getText().replace("\"", "");
         String[] featureReferenceParts = featureReference.split("\\.");
         String featureName;
         String featureNamespace;
@@ -285,7 +285,7 @@ public class UVLListener extends UVLBaseListener {
 
 
     @Override public void exitLiteralConstraint(UVLParser.LiteralConstraintContext ctx) {
-        String featureReference = ctx.referecne().getText().replace("\"", "");
+        String featureReference = ctx.reference().getText().replace("\"", "");
 
         LiteralConstraint constraint = new LiteralConstraint(featureReference);
 
@@ -418,7 +418,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
-        LiteralExpression expression = new LiteralExpression(ctx.referecne().getText().replace("\"", ""));
+        LiteralExpression expression = new LiteralExpression(ctx.reference().getText().replace("\"", ""));
         expressionStack.push(expression);
         featureModel.getLiteralExpressions().add(expression);
         Token t = ctx.getStart();
@@ -468,11 +468,11 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
-        if(ctx.referecne().size() > 1) {
-            expression = new SumAggregateFunctionExpression(ctx.referecne().get(1).getText().replace("\"", ""), ctx.referecne().get(0).getText().replace("\"", ""));
+        if(ctx.reference().size() > 1) {
+            expression = new SumAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
-            expression = new SumAggregateFunctionExpression(ctx.referecne().get(0).getText().replace("\"", ""));
+            expression = new SumAggregateFunctionExpression(ctx.reference().get(0).getText().replace("\"", ""));
         }
         expressionStack.push(expression);
         Token t = ctx.getStart();
@@ -482,11 +482,11 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
-        if(ctx.referecne().size() > 1) {
-            expression = new AvgAggregateFunctionExpression(ctx.referecne().get(1).getText().replace("\"", ""), ctx.referecne().get(0).getText().replace("\"", ""));
+        if(ctx.reference().size() > 1) {
+            expression = new AvgAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         }else {
-            expression = new AvgAggregateFunctionExpression(ctx.referecne().get(0).getText().replace("\"", ""));
+            expression = new AvgAggregateFunctionExpression(ctx.reference().get(0).getText().replace("\"", ""));
         }
         expressionStack.push(expression);
         Token t = ctx.getStart();
