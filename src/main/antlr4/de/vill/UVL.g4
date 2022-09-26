@@ -92,7 +92,7 @@ tokens { INDENT, DEDENT }
   }
 }
 
-featureModel: includes? NEWLINE? namespace? NEWLINE? imports? NEWLINE? features? NEWLINE? constraints? EOF;
+featureModel: namespace? NEWLINE? includes? NEWLINE? imports? NEWLINE? features? NEWLINE? constraints? EOF;
 
 includes: 'include' NEWLINE INDENT includeLine* DEDENT;
 includeLine: LANGUAGELEVEL NEWLINE;
