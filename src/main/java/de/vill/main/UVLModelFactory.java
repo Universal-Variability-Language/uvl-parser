@@ -378,7 +378,7 @@ public class UVLModelFactory {
         List<FeatureModel> subModelList = createSubModelList(featureModel);
         List<AggregateFunctionExpression> aggregateFunctionExpressions = featureModel.getAggregateFunctionsWithRootFeature();
         for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
-            Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName().replace("\'", ""));
+            Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName().replace("\"", ""));
             if(referencedFeature == null){
                 throw new ParseError("Feature " + expression.getRootFeatureName() + " is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!", expression.getLineNumber());
             }else {
@@ -388,7 +388,7 @@ public class UVLModelFactory {
         for(FeatureModel subModel : subModelList){
             aggregateFunctionExpressions = subModel.getAggregateFunctionsWithRootFeature();
             for(AggregateFunctionExpression expression : aggregateFunctionExpressions){
-                Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName().replace("\'", ""));
+                Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName().replace("\"", ""));
                 if(referencedFeature == null){
                     throw new ParseError("Feature " + expression.getRootFeatureName() + " is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!", expression.getLineNumber());
                 }else {
