@@ -1,5 +1,7 @@
 package de.vill.main;
 
+import de.vill.UVLConstraintLexer;
+import de.vill.UVLConstraintParser;
 import de.vill.UVLLexer;
 import de.vill.UVLParser;
 import de.vill.conversion.*;
@@ -91,6 +93,23 @@ public class UVLModelFactory {
         referenceAttributesInConstraints(featureModel);
         referenceRootFeaturesInAggregateFunctions(featureModel);
         return featureModel;
+    }
+    
+    public Constraint parseConstraint(String text) {
+    	UVLConstraintLexer constraintLexer= new UVLConstraintLexer(CharStreams.fromString(text));
+    	CommonTokenStream tokens= new CommonTokenStream(constraintLexer);
+    	UVLConstraintParser constraintParser= new UVLConstraintParser(tokens);    	
+    	
+    	UVLConstraintListener uvlConstraintListener = new UVLConstraintListener();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(uvlConstraintListener, constraintParser.constraint());
+        Constraint uvlConstraint= null;
+        try {
+        	uvlConstraint= uvlConstraintListener.getConstraint();
+        }catch(ParseErrorList e) {
+        	errorList.addAll(e.getErrorList());
+        }
+        return uvlConstraint;
     }
 
     //TODO If the level set is not consistent e.g. remove SMT_LEVEL but the feature model has AGGREGATE_FUNCTION level? -> remove automatically all related constraints (auch in der BA schrieben (In conversion strats chaper diskutieren))
