@@ -236,6 +236,8 @@ public class UVLModelFactory {
     }
 
     private FeatureModel parseFeatureModelWithImports(String text, Function<String, String> fileLoader, Map<String, Import> visitedImports){
+        //remove leading and trailing spaces (to be more robust)
+        text = text.trim();
         UVLLexer uvlLexer = new UVLLexer(CharStreams.fromString(text));
         CommonTokenStream tokens = new CommonTokenStream(uvlLexer);
         UVLParser uvlParser = new UVLParser(tokens);
