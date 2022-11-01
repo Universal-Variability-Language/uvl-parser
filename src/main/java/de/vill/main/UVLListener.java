@@ -511,9 +511,19 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
     }
 
-    @Override public void exitConstraintLine(UVLParser.ConstraintLineContext ctx) {
-        //featureModel.getConstraints().add(constraintStack.pop());
-        featureModel.getOwnConstraints().add(constraintStack.pop());
+    @Override public void exitConstraints(UVLParser.ConstraintsContext ctx){
+        while(!constraintStack.isEmpty()){
+            featureModel.getOwnConstraints().add(0,constraintStack.pop());
+        }
+    }
+
+    public Constraint getConstraint(){
+        if(errorList.size() > 0){
+            ParseErrorList parseErrorList = new ParseErrorList("Multiple Errors occurred during parsing!");
+            parseErrorList.getErrorList().addAll(errorList);
+            throw parseErrorList;
+        }
+        return constraintStack.pop();
     }
 
     public FeatureModel getFeatureModel() {

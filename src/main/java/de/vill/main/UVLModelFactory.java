@@ -93,6 +93,35 @@ public class UVLModelFactory {
         return featureModel;
     }
 
+    public Constraint parseConstraint(String constraintString) throws ParseError{
+        constraintString = constraintString.trim();
+        UVLLexer uvlLexer = new UVLLexer(CharStreams.fromString(constraintString));
+        CommonTokenStream tokens = new CommonTokenStream(uvlLexer);
+        UVLParser uvlParser = new UVLParser(tokens);
+        uvlParser.removeErrorListener(ConsoleErrorListener.INSTANCE);
+        uvlLexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
+
+        uvlLexer.addErrorListener(new BaseErrorListener(){
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                errorList.add(new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to: " + msg, e));
+            }
+        });
+        uvlParser.addErrorListener(new BaseErrorListener(){
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                errorList.add(new ParseError(line, charPositionInLine,"failed to parse at line " + line + ":" + charPositionInLine + " due to " + msg, e));
+            }
+        });
+
+        UVLListener uvlListener = new UVLListener();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(uvlListener, uvlParser.constraintLine());
+        Constraint constraint = null;
+
+        return uvlListener.getConstraint();
+    }
+
     //TODO If the level set is not consistent e.g. remove SMT_LEVEL but the feature model has AGGREGATE_FUNCTION level? -> remove automatically all related constraints (auch in der BA schrieben (In conversion strats chaper diskutieren))
     /**
      * This method takes a {@link FeatureModel} and transforms it so that it does not use any of the specified
