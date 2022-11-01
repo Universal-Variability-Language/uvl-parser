@@ -301,10 +301,11 @@ public class UVLModelFactory {
                 Import relatedImport = featureInMainFeatureTree.getRelatedImport();
                 Feature featureInSubmodelFeatureTree = relatedImport.getFeatureModel().getRootFeature();
                 featureInMainFeatureTree.getChildren().addAll(featureInSubmodelFeatureTree.getChildren());
+                for(Group group : featureInMainFeatureTree.getChildren()){
+                    group.setParentFeature(featureInMainFeatureTree);
+                }
                 featureInMainFeatureTree.getAttributes().putAll(featureInSubmodelFeatureTree.getAttributes());
                 relatedImport.getFeatureModel().setRootFeature(featureInMainFeatureTree);
-                //TODO das alte Root Feature vom Submodell (newFeature) ist noch in den feature maps?
-
             }
         }
     }

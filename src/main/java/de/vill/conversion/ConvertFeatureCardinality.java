@@ -55,14 +55,17 @@ public class ConvertFeatureCardinality implements IConversionStrategy{
             Feature newChild = new Feature(feature.getFeatureName() + "-" + i);
             newChild.getAttributes().put("abstract", new Attribute<Boolean>("abstract", true));
             newChildren.getFeatures().add(newChild);
+            newChild.setParentGroup(newChildren);
             Group mandatoryGroup = new Group(Group.GroupType.MANDATORY);
             if(i > 0) {
                 newChild.getChildren().add(mandatoryGroup);
+                mandatoryGroup.setParentFeature(newChild);
             }
             for(int j=1;j<=i;j++){
                 Feature subTreeClone = feature.clone();
                 addPrefixToNamesRecursively(subTreeClone, "-" + i + "-" + j);
                 mandatoryGroup.getFeatures().add(subTreeClone);
+                subTreeClone.setParentGroup(mandatoryGroup);
 
                 Map<String, Feature> constraintReplacementMap = new HashMap<>();
                 createFeatureReplacementMap(feature, subTreeClone, constraintReplacementMap);
@@ -76,6 +79,7 @@ public class ConvertFeatureCardinality implements IConversionStrategy{
         }
         feature.getChildren().removeAll(feature.getChildren());
         feature.getChildren().add(newChildren);
+        newChildren.setParentFeature(feature);
     }
 
     private void addPrefixToNamesRecursively(Feature feature, String prefix){

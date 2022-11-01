@@ -83,6 +83,7 @@ public class UVLListener extends UVLBaseListener {
         Group group = groupStack.pop();
         Feature feature = group.getFeatures().get(0);
         featureModel.setRootFeature(feature);
+        feature.setParentGroup(null);
     }
 
     @Override public void enterGroupSpec(UVLParser.GroupSpecContext ctx) {
@@ -93,6 +94,7 @@ public class UVLListener extends UVLBaseListener {
         Group group = new Group(Group.GroupType.OR);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
+        group.setParentFeature(feature);
         groupStack.push(group);
     }
 
@@ -104,6 +106,7 @@ public class UVLListener extends UVLBaseListener {
         Group group = new Group(Group.GroupType.ALTERNATIVE);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
+        group.setParentFeature(feature);
         groupStack.push(group);
     }
 
@@ -115,6 +118,7 @@ public class UVLListener extends UVLBaseListener {
         Group group = new Group(Group.GroupType.OPTIONAL);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
+        group.setParentFeature(feature);
         groupStack.push(group);
     }
 
@@ -126,6 +130,7 @@ public class UVLListener extends UVLBaseListener {
         Group group = new Group(Group.GroupType.MANDATORY);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
+        group.setParentFeature(feature);
         groupStack.push(group);
     }
 
@@ -149,6 +154,7 @@ public class UVLListener extends UVLBaseListener {
 
         Feature feature = featureStack.peek();
         feature.addChildren(group);
+        group.setParentFeature(feature);
         groupStack.push(group);
 
         featureModel.getUsedLanguageLevels().add(LanguageLevel.GROUP_CARDINALITY);
@@ -188,7 +194,9 @@ public class UVLListener extends UVLBaseListener {
         }
 
         featureStack.push(feature);
-        groupStack.peek().getFeatures().add(feature);
+        Group parentGroup = groupStack.peek();
+        parentGroup.getFeatures().add(feature);
+        feature.setParentGroup(parentGroup);
         if (featureNamespace == null) {
             featureModel.getFeatureMap().put(featureName, feature);
         }else {

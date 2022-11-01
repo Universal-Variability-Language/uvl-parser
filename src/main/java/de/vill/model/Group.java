@@ -25,6 +25,7 @@ public class Group {
     private final List<Feature> features;
     private String lowerBound;
     private String upperBound;
+    private Feature parent;
 
     /**
      * The constructor of the group class.
@@ -137,6 +138,25 @@ public class Group {
         for(Feature feature : getFeatures()){
             group.getFeatures().add(feature.clone());
         }
+        for(Feature feature : group.getFeatures()){
+            feature.setParentGroup(group);
+        }
         return group;
+    }
+
+    /**
+     * Returns the parent feature of the group.
+     * @return Parent Feature of the group.
+     */
+    public Feature getParentFeature(){
+        return parent;
+    }
+
+    /**
+     * Sets the parent feature of the group.
+     * @param parent The parent feature of the group.
+     */
+    public void setParentFeature(Feature parent){
+        this.parent = parent;
     }
 }

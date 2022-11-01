@@ -27,6 +27,8 @@ public class Feature {
     private final Map<String, Attribute> attributes;
     private boolean isSubmodelRoot = false;
 
+    private Group parent;
+
     /**
      * The constructor of the feature class. Needs a name that can not be changed. The name is independent of
      * the namespace. See {@link Feature#getFeatureName()} for further explanation.
@@ -285,6 +287,34 @@ public class Feature {
         }
     }
 
+    /**
+     * Returns the parent group of the feature.
+     * @return Parent group of the feature. Null if it is the root feature.
+     */
+    public Group getParentGroup(){
+        return parent;
+    }
+
+    /**
+     * Sets the parent of the group.
+     * @param parent the parent of the group
+     */
+    public void setParentGroup(Group parent){
+        this.parent = parent;
+    }
+
+    /**
+     * Returns the parent feature of the feature.
+     * @return parent feature of the feature. Null if it is the root feature.
+     */
+    public Feature getParentFeature(){
+        if(parent != null){
+            return parent.getParentFeature();
+        }else{
+            return null;
+        }
+    }
+
     private String cardinalityToString(){
         StringBuilder result = new StringBuilder();
         if(!(upperBound == null & lowerBound == null)){
@@ -329,6 +359,9 @@ public class Feature {
         feature.getAttributes().putAll(getAttributes());
         for(Group group : getChildren()){
             feature.getChildren().add(group.clone());
+        }
+        for(Group group : feature.getChildren()){
+            group.setParentFeature(feature);
         }
         return feature;
     }
