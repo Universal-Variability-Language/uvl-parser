@@ -186,8 +186,11 @@ public class UVLModelFactory {
                 conversionStrategy.convertFeatureModel(rootFeatureModel, featureModel);
                 featureModel.getUsedLanguageLevels().removeAll(conversionStrategy.getLevelsToBeRemoved());
                 for(Import importLine : featureModel.getImports()){
-                    convertFeatureModel(rootFeatureModel, importLine.getFeatureModel(), levelsToRemove, conversionStrategies);
-                    featureModel.getUsedLanguageLevels().removeAll(conversionStrategy.getLevelsToBeRemoved());
+                    //only consider sub feature models from imports that are actually used
+                    if(importLine.isReferenced()) {
+                        convertFeatureModel(rootFeatureModel, importLine.getFeatureModel(), levelsToRemove, conversionStrategies);
+                        featureModel.getUsedLanguageLevels().removeAll(conversionStrategy.getLevelsToBeRemoved());
+                    }
                 }
             }catch (Exception e){
                 System.err.println("Could not instantiate conversion strategy: " + e.getMessage());
@@ -303,6 +306,7 @@ public class UVLModelFactory {
                     subModel.getRootFeature().setRelatedImport(importLine);
                     visitedImports.put(importLine.getNamespace(), importLine);
 
+                    //adjust namespaces of imported features
                     for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
                         Feature feature = entry.getValue();
                         if(feature.getNameSpace().equals("")){
@@ -310,10 +314,25 @@ public class UVLModelFactory {
                         }else {
                             feature.setNameSpace(importLine.getAlias() + "." + feature.getNameSpace());
                         }
-                        if(!featureModel.getFeatureMap().containsKey(feature.getNameSpace() + "." + entry.getValue().getFeatureName())) {
-                            featureModel.getFeatureMap().put(feature.getNameSpace() + "." + entry.getValue().getFeatureName(), feature);
+                    }
+
+                    //check if submodel is acutally used
+                    if(featureModel.getFeatureMap().containsKey(subModel.getRootFeature().getReferenceFromSpecificSubmodel(""))){
+                        importLine.setReferenced(true);
+                    }
+                    // if submodel is used add features
+                    if(importLine.isReferenced()) {
+                        for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
+                            Feature feature = entry.getValue();
+                            if (!featureModel.getFeatureMap().containsKey(feature.getNameSpace() + "." + entry.getValue().getFeatureName())) {
+                                if (importLine.isReferenced()) {
+                                    featureModel.getFeatureMap().put(feature.getNameSpace() + "." + entry.getValue().getFeatureName(), feature);
+                                }
+                            }
                         }
                     }
+
+
                 } catch (IOException e) {
                     throw new ParseError("Could not resolve import: " + e.getMessage(), importLine.getLineNumber());
                 }

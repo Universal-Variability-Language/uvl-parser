@@ -9,6 +9,8 @@ public class Import {
     private final String alias;
     private FeatureModel featureModel;
 
+    private boolean isReferenced = false;
+
     public int getLineNumber() {
         return lineNumber;
     }
@@ -67,5 +69,21 @@ public class Import {
      */
     public void setFeatureModel(FeatureModel featureModel){
         this.featureModel = featureModel;
+    }
+
+    /**
+     * Boolean depending on if the import is acutally used. Meaning if the root feature of this submodel is referenced anywhere.
+     * @return True if the root feature of this import is referenced in the main feature model
+     */
+    public boolean isReferenced() {
+        return isReferenced;
+    }
+
+    /**
+     * Set boolean if this submodel is used (referenced) any where.
+     * @param referenced True if the root feature of this submodel is referenced.
+     */
+    public void setReferenced(boolean referenced) {
+        isReferenced = referenced;
     }
 }

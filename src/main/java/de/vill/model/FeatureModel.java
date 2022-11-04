@@ -42,7 +42,7 @@ public class FeatureModel {
 
     /**
      * Get a set with all in this featuremodel used language levels (major and minor).
-     * This list contains the levels used in this feature model and all its sub feature models
+     * This list contains the levels used in this feature model and all its sub feature models (that are actually used)
      * The returned set is a copy, therefore changing it will NOT change the featuremodel.
      * @return the used language levels as set
      */
@@ -50,7 +50,9 @@ public class FeatureModel {
         Set<LanguageLevel> languageLevels = new HashSet<>();
         languageLevels.addAll(getUsedLanguageLevels());
         for(Import importLine : imports){
-            languageLevels.addAll(importLine.getFeatureModel().getUsedLanguageLevelsRecursively());
+            if(importLine.isReferenced()) {
+                languageLevels.addAll(importLine.getFeatureModel().getUsedLanguageLevelsRecursively());
+            }
         }
         return languageLevels;
     }
@@ -165,7 +167,7 @@ public class FeatureModel {
     }
 
     /**
-     * A list will all constraints of this featuremodel and recursively of all its imported sub feature models.
+     * A list will all constraints of this featuremodel and recursively of all its imported sub feature models (that are used).
      * This inclues constraints in feature attributes. This list is not stored but gets calculated with every call.
      * This means changing a constraint will have an effect to the feature model,
      * but adding deleting constraints will have no effect. This must be done in the correspoding ownConstraint lists of the feature models.
@@ -178,7 +180,9 @@ public class FeatureModel {
         constraints.addAll(ownConstraints);
         constraints.addAll(getFeatureConstraints());
         for(Import importLine : imports){
-            constraints.addAll(importLine.getFeatureModel().getConstraints());
+            if(importLine.isReferenced()) {
+                constraints.addAll(importLine.getFeatureModel().getConstraints());
+            }
         }
         return constraints;
     }
@@ -232,13 +236,16 @@ public class FeatureModel {
         Map<String, String> models = new HashMap<String, String>();
         models.put(getNamespace(), toString(false, currentAlias));
         for(Import importLine : imports){
-            String newCurrentAlias;
-            if(currentAlias.equals("")){
-                newCurrentAlias = importLine.getAlias();
-            }else {
-                newCurrentAlias = currentAlias + "." + importLine.getAlias();
+            //only print sub feature models if the import is actually used
+            if(importLine.isReferenced()) {
+                String newCurrentAlias;
+                if (currentAlias.equals("")) {
+                    newCurrentAlias = importLine.getAlias();
+                } else {
+                    newCurrentAlias = currentAlias + "." + importLine.getAlias();
+                }
+                models.putAll(importLine.getFeatureModel().decomposedModelToString(newCurrentAlias));
             }
-            models.putAll(importLine.getFeatureModel().decomposedModelToString(newCurrentAlias));
         }
         return models;
     }
@@ -303,7 +310,10 @@ public class FeatureModel {
             constraintList = new LinkedList<>();
             constraintList.addAll(ownConstraints);
             for(Import importLine : imports){
-                constraintList.addAll(importLine.getFeatureModel().getOwnConstraints());
+                //only print the constraints of a submodel if the import is actually used
+                if(importLine.isReferenced()) {
+                    constraintList.addAll(importLine.getFeatureModel().getOwnConstraints());
+                }
             }
         }else{
             constraintList = getOwnConstraints();
