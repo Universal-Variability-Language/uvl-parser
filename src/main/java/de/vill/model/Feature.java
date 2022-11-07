@@ -40,7 +40,20 @@ public class Feature {
         }else {
             this.featureName = name;
         }
-        children = new LinkedList<>();
+        children = new LinkedList<Group>() {
+        	@Override
+			public void add(int index, Group element) {
+        		super.set(index, element);
+        		element.setParentFeature(Feature.this);
+        	}
+        	
+        	@Override
+        	public Group set(int index,Group element) {
+        		element.setParentFeature(Feature.this);
+        		return super.set(index, element);
+        	}
+        	//TODO override more stuff- also test if this even works
+        };
         attributes = new HashMap<>();
     }
 
