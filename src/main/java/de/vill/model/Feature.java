@@ -4,9 +4,11 @@ import de.vill.config.Configuration;
 import de.vill.model.constraint.Constraint;
 import de.vill.util.Util;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import static de.vill.util.Util.addNecessaryQuotes;
@@ -41,6 +43,20 @@ public class Feature {
             this.featureName = name;
         }
         children = new LinkedList<Group>() {
+        	        	
+        	/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+        	public boolean add(Group e) {
+        		if(super.add(e)) {
+        			e.setParentFeature(Feature.this);
+        			return true;
+        		}
+        		return false;
+        	}
         	@Override
 			public void add(int index, Group element) {
         		super.set(index, element);
@@ -48,11 +64,115 @@ public class Feature {
         	}
         	
         	@Override
-        	public Group set(int index,Group element) {
-        		element.setParentFeature(Feature.this);
-        		return super.set(index, element);
+        	public Group remove(int index) {
+        		Group g=super.remove(index);
+        		g.setParentFeature(null);
+        		return g;
         	}
-        	//TODO override more stuff- also test if this even works
+        	
+        	@Override
+        	public boolean remove(Object o) {
+        		if(super.remove(o)) {
+        			((Group)o).setParentFeature(null);
+        			return true;
+        		}
+        		return false;
+        	}
+        	
+        	@Override
+        	public boolean addAll(int index, Collection<? extends Group> c) {
+        		if(super.addAll(index,c)) {
+        			c.forEach(e->e.setParentFeature(Feature.this));
+        			return true;
+        		}
+        		return false;
+        	}
+        	
+        	@Override
+        	public void clear() {
+        		ListIterator<Group> it= this.listIterator();
+        		while(it.hasNext()) {
+        			it.next().setParentFeature(null);
+        		}
+        		super.clear();
+        	}
+        	
+        	@Override
+        	public Group set(int index,Group element) {
+        		Group g;
+        		if((g=super.set(index, element))!=null) {
+        			g.setParentFeature(Feature.this);
+        			return g;
+        		}
+        		return null;
+        	}
+        	
+        	class GroupIterator implements ListIterator<Group>{
+        		private ListIterator<Group> itr;
+        		Group lastReturned;
+        		
+        		public GroupIterator(ListIterator<Group> itr) {
+        			this.itr=itr;
+        		}
+
+				@Override
+				public boolean hasNext() {
+					return itr.hasNext();
+				}
+
+				@Override
+				public Group next() {
+					lastReturned=itr.next();
+					return lastReturned;
+				}
+
+				@Override
+				public boolean hasPrevious() {
+					return itr.hasPrevious();
+				}
+
+				@Override
+				public Group previous() {
+					lastReturned=itr.previous();
+					return lastReturned;
+				}
+
+				@Override
+				public int nextIndex() {
+					return itr.nextIndex();
+				}
+
+				@Override
+				public int previousIndex() {
+					return itr.previousIndex();
+				}
+
+				@Override
+				public void remove() {
+					itr.remove();
+					lastReturned.setParentFeature(null);					
+				}
+
+				@Override
+				public void set(Group e) {
+					itr.set(e);
+					lastReturned.setParentFeature(null);
+					e.setParentFeature(Feature.this);
+				}
+
+				@Override
+				public void add(Group e) {
+					itr.add(e);
+					e.setParentFeature(Feature.this);
+				}
+        		
+        	}
+        	
+        	@Override
+        	public ListIterator<Group> listIterator(int index){
+        		return new GroupIterator(super.listIterator(index));
+        	};
+        	
         };
         attributes = new HashMap<>();
     }
