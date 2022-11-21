@@ -3,8 +3,12 @@ package de.vill.model;
 import de.vill.config.Configuration;
 import de.vill.util.Util;
 
+import java.security.cert.CollectionCertStoreParameters;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * This class represents all kinds of groups (or, alternative, mandatory, optional, cardinality)
@@ -33,7 +37,137 @@ public class Group {
      */
     public Group(GroupType groupType){
         this.GROUPTYPE = groupType;
-        features = new LinkedList<>();
+        features = new LinkedList<Feature>() {
+        	/**
+			 * 
+			 */
+			private static final long serialVersionUID = 3856024708694486586L;
+
+			@Override
+        	public boolean add(Feature e) {
+        		if(super.add(e)) {
+        			e.setParentGroup(Group.this);
+        			return true;
+        		}
+        		return false;
+        	}
+			
+			@Override
+			public void add(int index, Feature element) {
+        		super.set(index, element);
+        		element.setParentGroup(Group.this);
+        	}
+        	
+        	@Override
+        	public Feature remove(int index) {
+        		Feature f=super.remove(index);
+        		f.setParentGroup(null);
+        		return f;
+        	}
+        	
+        	@Override
+        	public boolean remove(Object o) {
+        		if(super.remove(o)) {
+        			((Feature)o).setParentGroup(null);
+        			return true;
+        		}
+        		return false;
+        	}
+        	
+        	@Override
+        	public boolean addAll(int index, Collection<? extends Feature> c) {
+        		if(super.addAll(index,c)) {
+        			c.forEach(e->e.setParentGroup(Group.this));
+        			return true;
+        		}
+        		return false;
+        	}
+        	
+        	@Override
+        	public void clear() {
+        		ListIterator<Feature> it= this.listIterator();
+        		while(it.hasNext()) {
+        			it.next().setParentGroup(null);
+        		}
+        		super.clear();
+        	}
+        	
+        	@Override
+        	public Feature set(int index,Feature element) {
+        		Feature f;
+        		if((f=super.set(index, element))!=null) {
+        			f.setParentGroup(Group.this);
+        			return f;
+        		}
+        		return null;
+        	}
+        	
+        	class FeatureIterator implements ListIterator<Feature>{
+        		private ListIterator<Feature> itr;
+        		Feature lastReturned;
+        		
+        		public FeatureIterator(ListIterator<Feature> itr) {
+        			this.itr=itr;
+        		}
+
+				@Override
+				public boolean hasNext() {
+					return itr.hasNext();
+				}
+
+				@Override
+				public Feature next() {
+					lastReturned=itr.next();
+					return lastReturned;
+				}
+
+				@Override
+				public boolean hasPrevious() {
+					return itr.hasPrevious();
+				}
+
+				@Override
+				public Feature previous() {
+					lastReturned=itr.previous();
+					return lastReturned;
+				}
+
+				@Override
+				public int nextIndex() {
+					return itr.nextIndex();
+				}
+
+				@Override
+				public int previousIndex() {
+					return itr.previousIndex();
+				}
+
+				@Override
+				public void remove() {
+					itr.remove();
+					lastReturned.setParentGroup(null);
+				}
+
+				@Override
+				public void set(Feature e) {
+					itr.set(e);
+					lastReturned.setParentGroup(null);
+					e.setParentGroup(Group.this);
+				}
+
+				@Override
+				public void add(Feature e) {
+					itr.add(e);
+					e.setParentGroup(Group.this);
+				}
+        		
+        	}
+        	
+        	@Override
+        	public ListIterator<Feature> listIterator(int index){
+        		return new FeatureIterator(super.listIterator(index));
+        	};
+        };
     }
 
     /**
