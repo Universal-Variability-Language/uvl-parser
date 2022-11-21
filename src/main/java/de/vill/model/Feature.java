@@ -45,7 +45,7 @@ public class Feature {
         children = new LinkedList<Group>() {
         	        	
         	/**
-			 * 
+			 * This custom class with the List-Interface is used to force the update of the parent reference of children.
 			 */
 			private static final long serialVersionUID = 1L;
 
