@@ -15,7 +15,7 @@ public enum LanguageLevel {
     SMT_LEVEL(3, "SMT-level");
 
     private int value;
-
+ 
     private String name;
     private static HashMap<Integer, List<LanguageLevel>> valueMap = new HashMap<>();
     private static HashMap<String, LanguageLevel> nameMap = new HashMap<>();
