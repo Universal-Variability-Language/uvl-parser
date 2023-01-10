@@ -21,52 +21,56 @@ public class UVLListener extends UVLBaseListener {
 
     private Stack<Expression> expressionStack = new Stack<>();
 
-    private Stack<Map<String,Attribute>> attributeStack = new Stack<>();
+    private Stack<Map<String, Attribute>> attributeStack = new Stack<>();
 
     private boolean featureCardinality = false;
 
     private List<ParseError> errorList = new LinkedList<>();
 
-    @Override public void enterIncludes(UVLParser.IncludesContext ctx) {
+    @Override
+    public void enterIncludes(UVLParser.IncludesContext ctx) {
         featureModel.setExplicitLanguageLevels(true);
     }
 
-    @Override public void exitIncludeLine(UVLParser.IncludeLineContext ctx){
+    @Override
+    public void exitIncludeLine(UVLParser.IncludeLineContext ctx) {
         String[] levels = ctx.LANGUAGELEVEL().getText().split("\\.");
-        if(levels.length == 1){
+        if (levels.length == 1) {
             LanguageLevel majorLevel = LanguageLevel.getLevelByName(levels[0]);
             importedLanguageLevels.add(majorLevel);
-        }else if(levels.length == 2){
+        } else if (levels.length == 2) {
             LanguageLevel majorLevel = LanguageLevel.getLevelByName(levels[0]);
             List<LanguageLevel> minorLevels;
-            if(levels[1].equals("*")){
-                minorLevels = LanguageLevel.valueOf(majorLevel.getValue()+1);
-            }else {
+            if (levels[1].equals("*")) {
+                minorLevels = LanguageLevel.valueOf(majorLevel.getValue() + 1);
+            } else {
                 minorLevels = new LinkedList<>();
                 minorLevels.add(LanguageLevel.getLevelByName(levels[1]));
             }
             importedLanguageLevels.add(majorLevel);
-            for(LanguageLevel minorLevel : minorLevels) {
+            for (LanguageLevel minorLevel : minorLevels) {
                 if (minorLevel.getValue() - 1 != majorLevel.getValue()) {
                     throw new ParseError("Minor language level " + minorLevel.getName() + " does not correspond to major language level " + majorLevel + " but to " + LanguageLevel.valueOf(minorLevel.getValue() - 1));
                 }
                 importedLanguageLevels.add(minorLevel);
             }
-        }else {
+        } else {
             errorList.add(new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText()));
             //throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
         }
     }
 
-    @Override public void exitNamespace(UVLParser.NamespaceContext ctx) {
+    @Override
+    public void exitNamespace(UVLParser.NamespaceContext ctx) {
         featureModel.setNamespace(ctx.reference().getText().replace("\"", ""));
     }
 
-    @Override public void exitImportLine(UVLParser.ImportLineContext ctx) {
+    @Override
+    public void exitImportLine(UVLParser.ImportLineContext ctx) {
         Import importLine;
-        if(ctx.alias != null){
+        if (ctx.alias != null) {
             importLine = new Import(ctx.ns.getText().replace("\"", ""), ctx.alias.getText().replace("\"", ""));
-        }else{
+        } else {
             importLine = new Import(ctx.ns.getText().replace("\"", ""), null);
         }
         Token t = ctx.getStart();
@@ -75,22 +79,26 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getImports().add(importLine);
     }
 
-    @Override public void enterFeatures(UVLParser.FeaturesContext ctx) {
+    @Override
+    public void enterFeatures(UVLParser.FeaturesContext ctx) {
         groupStack.push(new Group(Group.GroupType.MANDATORY));
     }
 
-    @Override public void exitFeatures(UVLParser.FeaturesContext ctx) {
+    @Override
+    public void exitFeatures(UVLParser.FeaturesContext ctx) {
         Group group = groupStack.pop();
         Feature feature = group.getFeatures().get(0);
         featureModel.setRootFeature(feature);
         feature.setParentGroup(null);
     }
 
-    @Override public void enterGroupSpec(UVLParser.GroupSpecContext ctx) {
+    @Override
+    public void enterGroupSpec(UVLParser.GroupSpecContext ctx) {
 
     }
 
-    @Override public void enterOrGroup(UVLParser.OrGroupContext ctx) {
+    @Override
+    public void enterOrGroup(UVLParser.OrGroupContext ctx) {
         Group group = new Group(Group.GroupType.OR);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
@@ -98,11 +106,13 @@ public class UVLListener extends UVLBaseListener {
         groupStack.push(group);
     }
 
-    @Override public void exitOrGroup(UVLParser.OrGroupContext ctx) {
+    @Override
+    public void exitOrGroup(UVLParser.OrGroupContext ctx) {
         groupStack.pop();
     }
 
-    @Override public void enterAlternativeGroup(UVLParser.AlternativeGroupContext ctx) {
+    @Override
+    public void enterAlternativeGroup(UVLParser.AlternativeGroupContext ctx) {
         Group group = new Group(Group.GroupType.ALTERNATIVE);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
@@ -110,11 +120,13 @@ public class UVLListener extends UVLBaseListener {
         groupStack.push(group);
     }
 
-    @Override public void exitAlternativeGroup(UVLParser.AlternativeGroupContext ctx) {
+    @Override
+    public void exitAlternativeGroup(UVLParser.AlternativeGroupContext ctx) {
         groupStack.pop();
     }
 
-    @Override public void enterOptionalGroup(UVLParser.OptionalGroupContext ctx) {
+    @Override
+    public void enterOptionalGroup(UVLParser.OptionalGroupContext ctx) {
         Group group = new Group(Group.GroupType.OPTIONAL);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
@@ -122,11 +134,13 @@ public class UVLListener extends UVLBaseListener {
         groupStack.push(group);
     }
 
-    @Override public void exitOptionalGroup(UVLParser.OptionalGroupContext ctx) {
+    @Override
+    public void exitOptionalGroup(UVLParser.OptionalGroupContext ctx) {
         groupStack.pop();
     }
 
-    @Override public void enterMandatoryGroup(UVLParser.MandatoryGroupContext ctx) {
+    @Override
+    public void enterMandatoryGroup(UVLParser.MandatoryGroupContext ctx) {
         Group group = new Group(Group.GroupType.MANDATORY);
         Feature feature = featureStack.peek();
         feature.addChildren(group);
@@ -134,18 +148,20 @@ public class UVLListener extends UVLBaseListener {
         groupStack.push(group);
     }
 
-    @Override public void exitMandatoryGroup(UVLParser.MandatoryGroupContext ctx) {
+    @Override
+    public void exitMandatoryGroup(UVLParser.MandatoryGroupContext ctx) {
         groupStack.pop();
     }
 
-    @Override public void enterCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
+    @Override
+    public void enterCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
         Group group = new Group(Group.GroupType.GROUP_CARDINALITY);
         String lowerBound;
         String upperBound;
-        if(ctx.getText().contains("..")){
+        if (ctx.getText().contains("..")) {
             lowerBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[0];
             upperBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[1];
-        }else {
+        } else {
             lowerBound = ctx.getText().replace("[", "").replace("]", "");
             upperBound = lowerBound;
         }
@@ -160,34 +176,36 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.GROUP_CARDINALITY);
     }
 
-    @Override public void exitCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
+    @Override
+    public void exitCardinalityGroup(UVLParser.CardinalityGroupContext ctx) {
         groupStack.pop();
     }
 
-    @Override public void enterFeature(UVLParser.FeatureContext ctx) {
+    @Override
+    public void enterFeature(UVLParser.FeatureContext ctx) {
         String featureReference = ctx.reference().getText().replace("\"", "");
         String[] featureReferenceParts = featureReference.split("\\.");
         String featureName;
         String featureNamespace;
-        if(featureReferenceParts.length > 1){
-            featureName = featureReferenceParts[featureReferenceParts.length-1];
-            featureNamespace = featureReference.substring(0,featureReference.length()-featureName.length()-1);
-        }else {
+        if (featureReferenceParts.length > 1) {
+            featureName = featureReferenceParts[featureReferenceParts.length - 1];
+            featureNamespace = featureReference.substring(0, featureReference.length() - featureName.length() - 1);
+        } else {
             featureName = featureReferenceParts[0];
             featureNamespace = null;
         }
 
         Feature feature = new Feature(featureName);
-        if(featureNamespace != null) {
+        if (featureNamespace != null) {
             feature.setNameSpace(featureNamespace);
             feature.setSubmodelRoot(true);
-            for(Import importLine : featureModel.getImports()){
-                if(importLine.getAlias().equals(featureNamespace)){
+            for (Import importLine : featureModel.getImports()) {
+                if (importLine.getAlias().equals(featureNamespace)) {
                     feature.setRelatedImport(importLine);
                     break;
                 }
             }
-            if (feature.getRelatedImport() == null){
+            if (feature.getRelatedImport() == null) {
                 errorList.add(new ParseError("Feature " + featureReference + " is imported, but there is no import named " + featureNamespace));
                 //throw new ParseError("Feature " + featureReference + " is imported, but there is no import named " + featureNamespace);
             }
@@ -199,27 +217,29 @@ public class UVLListener extends UVLBaseListener {
         feature.setParentGroup(parentGroup);
         if (featureNamespace == null) {
             featureModel.getFeatureMap().put(featureName, feature);
-        }else {
+        } else {
             featureModel.getFeatureMap().put(featureNamespace + "." + featureName, feature);
         }
 
     }
 
-    @Override public void exitFeature(UVLParser.FeatureContext ctx) {
-       featureStack.pop();
+    @Override
+    public void exitFeature(UVLParser.FeatureContext ctx) {
+        featureStack.pop();
     }
 
-    @Override public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
+    @Override
+    public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
         String lowerBound;
         String upperBound;
-        if(ctx.getText().contains("..")){
+        if (ctx.getText().contains("..")) {
             lowerBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[0];
             upperBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[1];
-        }else {
+        } else {
             lowerBound = ctx.getText().replace("[", "").replace("]", "");
             upperBound = lowerBound;
         }
-        if(upperBound.equals("*")){
+        if (upperBound.equals("*")) {
             errorList.add(new ParseError("Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")"));
             //throw new ParseError("Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")");
         }
@@ -232,59 +252,64 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.FEATURE_CARDINALITY);
     }
 
-    @Override public void enterAttributes(UVLParser.AttributesContext ctx) {
+    @Override
+    public void enterAttributes(UVLParser.AttributesContext ctx) {
         attributeStack.push(new HashMap<>());
     }
 
-    @Override public void exitAttributes(UVLParser.AttributesContext ctx) {
-        if(attributeStack.size() == 1){
+    @Override
+    public void exitAttributes(UVLParser.AttributesContext ctx) {
+        if (attributeStack.size() == 1) {
             Feature feature = featureStack.peek();
             feature.getAttributes().putAll(attributeStack.pop());
         }
     }
 
 
-    @Override public void exitValueAttribute(UVLParser.ValueAttributeContext ctx) {
+    @Override
+    public void exitValueAttribute(UVLParser.ValueAttributeContext ctx) {
         String attributeName = ctx.key().getText().replace("\"", "");
 
-        if (ctx.value() == null){
+        if (ctx.value() == null) {
             Attribute<Boolean> attribute = new Attribute(attributeName, true);
             attributeStack.peek().put(attributeName, attribute);
-        }else if(ctx.value().BOOLEAN() != null){
+        } else if (ctx.value().BOOLEAN() != null) {
             Attribute<Boolean> attribute = new Attribute(attributeName, Boolean.parseBoolean(ctx.value().getText()));
             attributeStack.peek().put(attributeName, attribute);
-        }else if(ctx.value().INTEGER() != null){
+        } else if (ctx.value().INTEGER() != null) {
             Attribute<Integer> attribute = new Attribute(attributeName, Long.parseLong(ctx.value().getText()));
             attributeStack.peek().put(attributeName, attribute);
-        }else if(ctx.value().FLOAT() != null){
+        } else if (ctx.value().FLOAT() != null) {
             Attribute<Double> attribute = new Attribute(attributeName, Double.parseDouble(ctx.value().getText()));
             attributeStack.peek().put(attributeName, attribute);
-        }else if(ctx.value().string() != null) {
+        } else if (ctx.value().string() != null) {
             Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText().replace("\"", ""));
             attributeStack.peek().put(attributeName, attribute);
-        }else if(ctx.value().vector() != null) {
+        } else if (ctx.value().vector() != null) {
             String vectorString = ctx.value().getText();
             vectorString = vectorString.substring(1, vectorString.length() - 1);
             Attribute<List<String>> attribute = new Attribute(attributeName, Arrays.asList(vectorString.split(",")));
             attributeStack.peek().put(attributeName, attribute);
-        }else if(ctx.value().attributes() != null){
+        } else if (ctx.value().attributes() != null) {
             Map<String, Attribute> attributes = attributeStack.pop();
             Attribute<Map<String, Attribute>> attribute = new Attribute<>(attributeName, attributes);
             attributeStack.peek().put(attributeName, attribute);
-        }else {
+        } else {
             errorList.add(new ParseError(ctx.value().getText() + " is no value of any supported attribute type!"));
             //throw new ParseError(ctx.value().getText() + " is no value of any supported attribute type!");
         }
     }
 
-    @Override public void exitSingleConstraintAttribute(UVLParser.SingleConstraintAttributeContext ctx) {
+    @Override
+    public void exitSingleConstraintAttribute(UVLParser.SingleConstraintAttributeContext ctx) {
         Attribute<String> attribute = new Attribute("constraint", constraintStack.pop());
         attributeStack.peek().put("constraint", attribute);
     }
 
-    @Override public void exitListConstraintAttribute(UVLParser.ListConstraintAttributeContext ctx) {
+    @Override
+    public void exitListConstraintAttribute(UVLParser.ListConstraintAttributeContext ctx) {
         List<Constraint> constraintList = new LinkedList<>();
-        while(!constraintStack.empty()) {
+        while (!constraintStack.empty()) {
             constraintList.add(constraintStack.pop());
         }
         Attribute<String> attribute = new Attribute("constraints", constraintList);
@@ -292,17 +317,18 @@ public class UVLListener extends UVLBaseListener {
     }
 
 
-    @Override public void exitLiteralConstraint(UVLParser.LiteralConstraintContext ctx) {
+    @Override
+    public void exitLiteralConstraint(UVLParser.LiteralConstraintContext ctx) {
         String featureReference = ctx.reference().getText().replace("\"", "");
 
         LiteralConstraint constraint = new LiteralConstraint(featureReference);
 
-        if(featureReference.contains(".")){
+        if (featureReference.contains(".")) {
             int lastDotIndex = featureReference.lastIndexOf(".");
             String subModelName = featureReference.substring(0, lastDotIndex);
             String featureName = featureReference.substring(lastDotIndex + 1, featureReference.length());
-            for(Import importLine : featureModel.getImports()){
-                if(importLine.getAlias().equals(subModelName)){
+            for (Import importLine : featureModel.getImports()) {
+                if (importLine.getAlias().equals(subModelName)) {
                     constraint.setRelatedImport(importLine);
                     break;
                 }
@@ -315,7 +341,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitParenthesisConstraint(UVLParser.ParenthesisConstraintContext ctx) {
+    @Override
+    public void exitParenthesisConstraint(UVLParser.ParenthesisConstraintContext ctx) {
         Constraint constraint = new ParenthesisConstraint(constraintStack.pop());
         constraintStack.push(constraint);
         Token t = ctx.getStart();
@@ -323,7 +350,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitNotConstraint(UVLParser.NotConstraintContext ctx) {
+    @Override
+    public void exitNotConstraint(UVLParser.NotConstraintContext ctx) {
         Constraint constraint = new NotConstraint(constraintStack.pop());
         constraintStack.push(constraint);
         Token t = ctx.getStart();
@@ -331,7 +359,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitAndConstraint(UVLParser.AndConstraintContext ctx) {
+    @Override
+    public void exitAndConstraint(UVLParser.AndConstraintContext ctx) {
         Constraint rightConstraint = constraintStack.pop();
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new AndConstraint(leftConstraint, rightConstraint);
@@ -341,7 +370,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitOrConstraint(UVLParser.OrConstraintContext ctx) {
+    @Override
+    public void exitOrConstraint(UVLParser.OrConstraintContext ctx) {
         Constraint rightConstraint = constraintStack.pop();
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new OrConstraint(leftConstraint, rightConstraint);
@@ -351,7 +381,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitImplicationConstraint(UVLParser.ImplicationConstraintContext ctx) {
+    @Override
+    public void exitImplicationConstraint(UVLParser.ImplicationConstraintContext ctx) {
         Constraint rightConstraint = constraintStack.pop();
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new ImplicationConstraint(leftConstraint, rightConstraint);
@@ -361,7 +392,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitEquivalenceConstraint(UVLParser.EquivalenceConstraintContext ctx) {
+    @Override
+    public void exitEquivalenceConstraint(UVLParser.EquivalenceConstraintContext ctx) {
         Constraint rightConstraint = constraintStack.pop();
         Constraint leftConstraint = constraintStack.pop();
         Constraint constraint = new EquivalenceConstraint(leftConstraint, rightConstraint);
@@ -371,7 +403,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitEqualEquation(UVLParser.EqualEquationContext ctx) {
+    @Override
+    public void exitEqualEquation(UVLParser.EqualEquationContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Constraint constraint = new EqualEquationConstraint(left, right);
@@ -381,7 +414,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitLowerEquation(UVLParser.LowerEquationContext ctx) {
+    @Override
+    public void exitLowerEquation(UVLParser.LowerEquationContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Constraint constraint = new LowerEquationConstraint(left, right);
@@ -391,7 +425,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitGreaterEquation(UVLParser.GreaterEquationContext ctx) {
+    @Override
+    public void exitGreaterEquation(UVLParser.GreaterEquationContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Constraint constraint = new GreaterEquationConstraint(left, right);
@@ -401,7 +436,8 @@ public class UVLListener extends UVLBaseListener {
         constraint.setLineNumber(line);
     }
 
-    @Override public void exitBracketExpression(UVLParser.BracketExpressionContext ctx) {
+    @Override
+    public void exitBracketExpression(UVLParser.BracketExpressionContext ctx) {
         ParenthesisExpression expression = new ParenthesisExpression(expressionStack.pop());
         expressionStack.push(expression);
         Token t = ctx.getStart();
@@ -409,7 +445,8 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitIntegerLiteralExpression(UVLParser.IntegerLiteralExpressionContext ctx) {
+    @Override
+    public void exitIntegerLiteralExpression(UVLParser.IntegerLiteralExpressionContext ctx) {
         Expression expression = new NumberExpression(Integer.parseInt(ctx.INTEGER().getText()));
         expressionStack.push(expression);
         Token t = ctx.getStart();
@@ -417,7 +454,8 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitFloatLiteralExpression(UVLParser.FloatLiteralExpressionContext ctx) {
+    @Override
+    public void exitFloatLiteralExpression(UVLParser.FloatLiteralExpressionContext ctx) {
         Expression expression = new NumberExpression(Double.parseDouble(ctx.FLOAT().getText()));
         expressionStack.push(expression);
         Token t = ctx.getStart();
@@ -425,7 +463,8 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
+    @Override
+    public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
         LiteralExpression expression = new LiteralExpression(ctx.reference().getText().replace("\"", ""));
         expressionStack.push(expression);
         featureModel.getLiteralExpressions().add(expression);
@@ -434,7 +473,8 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitAddExpression(UVLParser.AddExpressionContext ctx) {
+    @Override
+    public void exitAddExpression(UVLParser.AddExpressionContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Expression expression = new AddExpression(left, right);
@@ -444,7 +484,8 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitSubExpression(UVLParser.SubExpressionContext ctx) {
+    @Override
+    public void exitSubExpression(UVLParser.SubExpressionContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Expression expression = new SubExpression(left, right);
@@ -454,7 +495,8 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitMulExpression(UVLParser.MulExpressionContext ctx) {
+    @Override
+    public void exitMulExpression(UVLParser.MulExpressionContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Expression expression = new MulExpression(left, right);
@@ -464,7 +506,8 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitDivExpresssion(UVLParser.DivExpresssionContext ctx) {
+    @Override
+    public void exitDivExpresssion(UVLParser.DivExpresssionContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Expression expression = new DivExpression(left, right);
@@ -474,12 +517,13 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
+    @Override
+    public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
-        if(ctx.reference().size() > 1) {
+        if (ctx.reference().size() > 1) {
             expression = new SumAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
-        }else {
+        } else {
             expression = new SumAggregateFunctionExpression(ctx.reference().get(0).getText().replace("\"", ""));
         }
         expressionStack.push(expression);
@@ -488,12 +532,13 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
+    @Override
+    public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
         AggregateFunctionExpression expression;
-        if(ctx.reference().size() > 1) {
+        if (ctx.reference().size() > 1) {
             expression = new AvgAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
-        }else {
+        } else {
             expression = new AvgAggregateFunctionExpression(ctx.reference().get(0).getText().replace("\"", ""));
         }
         expressionStack.push(expression);
@@ -502,23 +547,26 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void enterAggregateFunctionExpression(UVLParser.AggregateFunctionExpressionContext ctx) {
+    @Override
+    public void enterAggregateFunctionExpression(UVLParser.AggregateFunctionExpressionContext ctx) {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
         featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
     }
 
-    @Override public void enterEquationConstraint(UVLParser.EquationConstraintContext ctx) {
+    @Override
+    public void enterEquationConstraint(UVLParser.EquationConstraintContext ctx) {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
     }
 
-    @Override public void exitConstraints(UVLParser.ConstraintsContext ctx){
-        while(!constraintStack.isEmpty()){
-            featureModel.getOwnConstraints().add(0,constraintStack.pop());
+    @Override
+    public void exitConstraints(UVLParser.ConstraintsContext ctx) {
+        while (!constraintStack.isEmpty()) {
+            featureModel.getOwnConstraints().add(0, constraintStack.pop());
         }
     }
 
-    public Constraint getConstraint(){
-        if(errorList.size() > 0){
+    public Constraint getConstraint() {
+        if (errorList.size() > 0) {
             ParseErrorList parseErrorList = new ParseErrorList("Multiple Errors occurred during parsing!");
             parseErrorList.getErrorList().addAll(errorList);
             throw parseErrorList;
@@ -527,7 +575,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     public FeatureModel getFeatureModel() {
-        if(errorList.size() > 0){
+        if (errorList.size() > 0) {
             ParseErrorList parseErrorList = new ParseErrorList("Multiple Errors occurred during parsing!");
             parseErrorList.getErrorList().addAll(errorList);
             throw parseErrorList;
@@ -536,8 +584,9 @@ public class UVLListener extends UVLBaseListener {
     }
 
 
-    @Override public void exitFeatureModel(UVLParser.FeatureModelContext ctx) {
-        if(featureModel.isExplicitLanguageLevels() && !featureModel.getUsedLanguageLevels().equals(importedLanguageLevels)){
+    @Override
+    public void exitFeatureModel(UVLParser.FeatureModelContext ctx) {
+        if (featureModel.isExplicitLanguageLevels() && !featureModel.getUsedLanguageLevels().equals(importedLanguageLevels)) {
             errorList.add(new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString()));
             //throw new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString());
         }

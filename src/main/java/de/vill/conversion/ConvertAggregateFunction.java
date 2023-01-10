@@ -7,7 +7,7 @@ import de.vill.model.expression.*;
 
 import java.util.*;
 
-public class ConvertAggregateFunction implements IConversionStrategy{
+public class ConvertAggregateFunction implements IConversionStrategy {
 
     private FeatureModel rootFeatureModel;
 
@@ -28,43 +28,43 @@ public class ConvertAggregateFunction implements IConversionStrategy{
         traverseFeatures(featureModel.getRootFeature());
     }
 
-    private void searchAggregateFunctionInConstraint(Constraint constraint){
-        if(constraint instanceof ExpressionConstraint){
-            for(Expression expression : ((ExpressionConstraint)constraint).getExpressionSubParts()){
-                if(expression instanceof AggregateFunctionExpression){
+    private void searchAggregateFunctionInConstraint(Constraint constraint) {
+        if (constraint instanceof ExpressionConstraint) {
+            for (Expression expression : ((ExpressionConstraint) constraint).getExpressionSubParts()) {
+                if (expression instanceof AggregateFunctionExpression) {
                     replaceAggregateFunctionInExpressionConstraint((ExpressionConstraint) constraint, (AggregateFunctionExpression) expression);
-                }else {
+                } else {
                     searchAggregateFunctionInExpression(expression);
                 }
             }
-        }else {
-            for (Constraint subConstraint : constraint.getConstraintSubParts()){
+        } else {
+            for (Constraint subConstraint : constraint.getConstraintSubParts()) {
                 searchAggregateFunctionInConstraint(subConstraint);
             }
         }
     }
 
-    private void searchAggregateFunctionInExpression(Expression expression){
-        for(Expression subExpression : expression.getExpressionSubParts()){
-            if (subExpression instanceof AggregateFunctionExpression){
+    private void searchAggregateFunctionInExpression(Expression expression) {
+        for (Expression subExpression : expression.getExpressionSubParts()) {
+            if (subExpression instanceof AggregateFunctionExpression) {
                 replaceAggregateFunctionInExpression(expression, (AggregateFunctionExpression) subExpression);
-            }else {
+            } else {
                 searchAggregateFunctionInExpression(subExpression);
             }
         }
     }
 
-    private void replaceAggregateFunctionInExpression(Expression parentExpression, AggregateFunctionExpression aggregateFunctionExpression){
+    private void replaceAggregateFunctionInExpression(Expression parentExpression, AggregateFunctionExpression aggregateFunctionExpression) {
         Feature rootFeature;
         Expression aggregateFunctionReplacement;
-        if(aggregateFunctionExpression.getRootFeature() == null){
+        if (aggregateFunctionExpression.getRootFeature() == null) {
             rootFeature = rootFeatureModel.getRootFeature();
-        }else {
+        } else {
             rootFeature = aggregateFunctionExpression.getRootFeature();
         }
         List<Feature> attributes = collectAttributes(rootFeature, aggregateFunctionExpression.getAttributeName());
         Expression newExpression = null;
-        if(aggregateFunctionExpression instanceof SumAggregateFunctionExpression){
+        if (aggregateFunctionExpression instanceof SumAggregateFunctionExpression) {
             newExpression = getSum(attributes, aggregateFunctionExpression.getAttributeName());
         } else if (aggregateFunctionExpression instanceof AvgAggregateFunctionExpression) {
             newExpression = getAvg(attributes, aggregateFunctionExpression.getAttributeName());
@@ -72,17 +72,17 @@ public class ConvertAggregateFunction implements IConversionStrategy{
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
-    private void replaceAggregateFunctionInExpressionConstraint(ExpressionConstraint parentExpression, AggregateFunctionExpression aggregateFunctionExpression){
+    private void replaceAggregateFunctionInExpressionConstraint(ExpressionConstraint parentExpression, AggregateFunctionExpression aggregateFunctionExpression) {
         Feature rootFeature;
         Expression aggregateFunctionReplacement;
-        if(aggregateFunctionExpression.getRootFeature() == null){
+        if (aggregateFunctionExpression.getRootFeature() == null) {
             rootFeature = rootFeatureModel.getRootFeature();
-        }else {
+        } else {
             rootFeature = aggregateFunctionExpression.getRootFeature();
         }
         List<Feature> attributes = collectAttributes(rootFeature, aggregateFunctionExpression.getAttributeName());
         Expression newExpression = null;
-        if(aggregateFunctionExpression instanceof SumAggregateFunctionExpression){
+        if (aggregateFunctionExpression instanceof SumAggregateFunctionExpression) {
             newExpression = getSum(attributes, aggregateFunctionExpression.getAttributeName());
         } else if (aggregateFunctionExpression instanceof AvgAggregateFunctionExpression) {
             newExpression = getAvg(attributes, aggregateFunctionExpression.getAttributeName());
@@ -90,16 +90,16 @@ public class ConvertAggregateFunction implements IConversionStrategy{
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
-    private Expression getSum(List<Feature> attributes, String attributeName){
-        if(attributes.size() == 0){
+    private Expression getSum(List<Feature> attributes, String attributeName) {
+        if (attributes.size() == 0) {
             return new NumberExpression(0);
-        }else if(attributes.size() == 1){
+        } else if (attributes.size() == 1) {
             LiteralExpression literalExpression = new LiteralExpression(attributeName);
             literalExpression.setFeature(attributes.get(0));
             attributes.remove(0);
 
             return literalExpression;
-        }else {
+        } else {
             LiteralExpression literalExpression = new LiteralExpression(attributeName);
             literalExpression.setFeature(attributes.get(0));
             attributes.remove(0);
@@ -108,11 +108,11 @@ public class ConvertAggregateFunction implements IConversionStrategy{
         }
     }
 
-    private Expression getAvg(List<Feature> attributes, String attributeName){
-        if(attributes.size() == 0){
+    private Expression getAvg(List<Feature> attributes, String attributeName) {
+        if (attributes.size() == 0) {
             return new NumberExpression(0);
-        }else {
-            for(Feature feature : attributes){
+        } else {
+            for (Feature feature : attributes) {
                 feature.getAttributes().put("avg_counter__", new Attribute<Long>("avg_counter__", 1L));
             }
             Expression n = getSum(new LinkedList<>(attributes), "avg_counter__");
@@ -124,23 +124,23 @@ public class ConvertAggregateFunction implements IConversionStrategy{
     }
 
 
-    private List<Feature> collectAttributes(Feature feature, String attributeName){
+    private List<Feature> collectAttributes(Feature feature, String attributeName) {
         List<Feature> result = new LinkedList<>();
-        if(feature.getAttributes().containsKey(attributeName)){
-            if(feature.getAttributes().get(attributeName).getValue() instanceof Double || feature.getAttributes().get(attributeName).getValue() instanceof Integer || feature.getAttributes().get(attributeName).getValue() instanceof Long) {
+        if (feature.getAttributes().containsKey(attributeName)) {
+            if (feature.getAttributes().get(attributeName).getValue() instanceof Double || feature.getAttributes().get(attributeName).getValue() instanceof Integer || feature.getAttributes().get(attributeName).getValue() instanceof Long) {
                 result.add(feature);
             }
         }
-        for (Group group : feature.getChildren()){
-            for(Feature childFeature : group.getFeatures()){
+        for (Group group : feature.getChildren()) {
+            for (Feature childFeature : group.getFeatures()) {
                 result.addAll(collectAttributes(childFeature, attributeName));
             }
         }
-        return  result;
+        return result;
     }
 
-    private void traverseFeatures(Feature feature){
-        if(!feature.isSubmodelRoot()) {
+    private void traverseFeatures(Feature feature) {
+        if (!feature.isSubmodelRoot()) {
             removeAggregateFunctionFromAttributes(feature);
             for (Group group : feature.getChildren()) {
                 for (Feature subFeature : group.getFeatures()) {
@@ -150,18 +150,18 @@ public class ConvertAggregateFunction implements IConversionStrategy{
         }
     }
 
-    private void removeAggregateFunctionFromAttributes(Feature feature){
+    private void removeAggregateFunctionFromAttributes(Feature feature) {
         Attribute attributeConstraint = feature.getAttributes().get("constraint");
         Attribute attributeConstraintList = feature.getAttributes().get("constraints");
-        if(attributeConstraint != null){
-            if(attributeConstraint.getValue() instanceof Constraint){
+        if (attributeConstraint != null) {
+            if (attributeConstraint.getValue() instanceof Constraint) {
                 searchAggregateFunctionInConstraint((Constraint) attributeConstraint.getValue());
             }
         }
-        if(attributeConstraintList != null && attributeConstraintList.getValue() instanceof List<?>){
+        if (attributeConstraintList != null && attributeConstraintList.getValue() instanceof List<?>) {
             List<Object> newConstraintList = new LinkedList<>();
-            for(Object constraint : (List<?>)attributeConstraintList.getValue()){
-                if(constraint instanceof Constraint){
+            for (Object constraint : (List<?>) attributeConstraintList.getValue()) {
+                if (constraint instanceof Constraint) {
                     searchAggregateFunctionInConstraint((Constraint) constraint);
                 }
             }

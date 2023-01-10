@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DropFeatureCardinality implements IConversionStrategy{
+public class DropFeatureCardinality implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
         return new HashSet<>(Arrays.asList(LanguageLevel.FEATURE_CARDINALITY));
@@ -25,15 +25,15 @@ public class DropFeatureCardinality implements IConversionStrategy{
         removeFeatureCardinalityRecursively(featureModel.getRootFeature());
     }
 
-    private void removeFeatureCardinalityRecursively(Feature feature){
-        if(!(feature.getUpperBound() == null && feature.getLowerBound() == null)){
+    private void removeFeatureCardinalityRecursively(Feature feature) {
+        if (!(feature.getUpperBound() == null && feature.getLowerBound() == null)) {
             feature.setUpperBound(null);
             feature.setLowerBound(null);
         }
-        for(Group group : feature.getChildren()){
-            for(Feature childFeature : group.getFeatures()) {
+        for (Group group : feature.getChildren()) {
+            for (Feature childFeature : group.getFeatures()) {
                 //stop when feature is submodelroot to only consider this featuremodel and no submodels
-                if (!feature.isSubmodelRoot()){
+                if (!feature.isSubmodelRoot()) {
                     removeFeatureCardinalityRecursively(childFeature);
                 }
             }

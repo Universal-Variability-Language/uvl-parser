@@ -3,7 +3,7 @@ package de.vill.model.expression;
 import java.util.Arrays;
 import java.util.List;
 
-public class SumAggregateFunctionExpression extends AggregateFunctionExpression{
+public class SumAggregateFunctionExpression extends AggregateFunctionExpression {
 
 
     public SumAggregateFunctionExpression(String attributeName) {
@@ -15,7 +15,7 @@ public class SumAggregateFunctionExpression extends AggregateFunctionExpression{
     }
 
     @Override
-    public String toString(boolean withSubmodels, String currentAlias){
+    public String toString(boolean withSubmodels, String currentAlias) {
         return super.toString(withSubmodels, "sum", currentAlias);
     }
 

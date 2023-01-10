@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ConvertGroupCardinality implements IConversionStrategy{
+public class ConvertGroupCardinality implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
         return new HashSet<>(Arrays.asList(LanguageLevel.GROUP_CARDINALITY));
@@ -27,18 +27,18 @@ public class ConvertGroupCardinality implements IConversionStrategy{
         searchGroupCardinalities(featureModel.getRootFeature(), featureModel);
     }
 
-    private void searchGroupCardinalities(Feature feature, FeatureModel featureModel){
-        for(Group group : feature.getChildren()){
+    private void searchGroupCardinalities(Feature feature, FeatureModel featureModel) {
+        for (Group group : feature.getChildren()) {
             removeGroupCardinality(group, featureModel);
-            for(Feature subFeature : group.getFeatures()){
-                if(!subFeature.isSubmodelRoot()){
+            for (Feature subFeature : group.getFeatures()) {
+                if (!subFeature.isSubmodelRoot()) {
                     searchGroupCardinalities(subFeature, featureModel);
                 }
             }
         }
     }
 
-    private void removeGroupCardinality(Group group, FeatureModel featureModel){
+    private void removeGroupCardinality(Group group, FeatureModel featureModel) {
 
         group.GROUPTYPE = Group.GroupType.OPTIONAL;
 
@@ -46,51 +46,51 @@ public class ConvertGroupCardinality implements IConversionStrategy{
 
         int lowerBound = Integer.parseInt(group.getLowerBound());
         int upperBound = 0;
-        if(group.getUpperBound().equals("*")){
+        if (group.getUpperBound().equals("*")) {
             upperBound = groupMembers.size();
-        }else {
+        } else {
             upperBound = Integer.parseInt(group.getUpperBound());
         }
 
         Set<Set<Feature>> featureCombinations = new HashSet<>();
-        for(int i=lowerBound;i<=upperBound;i++){
+        for (int i = lowerBound; i <= upperBound; i++) {
             featureCombinations.addAll(Sets.combinations(groupMembers, i));
         }
         Set<Constraint> disjunction = new HashSet<>();
-        for(Set<Feature> configuration : featureCombinations){
+        for (Set<Feature> configuration : featureCombinations) {
             disjunction.add(createConjunction(configuration, new HashSet<>(groupMembers)));
         }
         featureModel.getOwnConstraints().add(new ParenthesisConstraint(createDisjunction(disjunction)));
     }
 
-    private Constraint createConjunction(Set<Feature> selectedFeatures, Set<Feature> allFeatures){
+    private Constraint createConjunction(Set<Feature> selectedFeatures, Set<Feature> allFeatures) {
         Constraint constraint;
         Feature feature = null;
-        if(allFeatures.size() >= 1){
+        if (allFeatures.size() >= 1) {
             feature = allFeatures.iterator().next();
             allFeatures.remove(feature);
         }
         Constraint literalConstraint = new LiteralConstraint(feature.getFeatureName());
         ((LiteralConstraint) literalConstraint).setFeature(feature);
-        if(!selectedFeatures.contains(feature)){
+        if (!selectedFeatures.contains(feature)) {
             literalConstraint = new NotConstraint(literalConstraint);
         }
-        if(allFeatures.size() == 0){
+        if (allFeatures.size() == 0) {
             constraint = literalConstraint;
-        }else{
+        } else {
             constraint = new AndConstraint(literalConstraint, createConjunction(selectedFeatures, allFeatures));
         }
 
         return constraint;
     }
 
-    private Constraint createDisjunction(Set<Constraint> constraints){
+    private Constraint createDisjunction(Set<Constraint> constraints) {
         Constraint orConstraint;
-        if(constraints.size() == 1){
+        if (constraints.size() == 1) {
             Constraint constraint = constraints.iterator().next();
             constraints.remove(constraint);
             orConstraint = constraint;
-        }else{
+        } else {
             Constraint constraint = constraints.iterator().next();
             constraints.remove(constraint);
             orConstraint = new OrConstraint(constraint, createDisjunction(constraints));

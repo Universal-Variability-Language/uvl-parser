@@ -3,7 +3,7 @@ package de.vill.exception;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ParseErrorList extends ParseError{
+public class ParseErrorList extends ParseError {
     public List<ParseError> getErrorList() {
         return errorList;
     }
@@ -19,7 +19,7 @@ public class ParseErrorList extends ParseError{
         StringBuilder result = new StringBuilder();
         result.append(getMessage());
         result.append("\n");
-        for(ParseError error : errorList){
+        for (ParseError error : errorList) {
             result.append(error.toString());
             result.append("\n");
         }

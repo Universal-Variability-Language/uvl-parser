@@ -15,7 +15,7 @@ public enum LanguageLevel {
     SMT_LEVEL(3, "SMT-level");
 
     private int value;
- 
+
     private String name;
     private static HashMap<Integer, List<LanguageLevel>> valueMap = new HashMap<>();
     private static HashMap<String, LanguageLevel> nameMap = new HashMap<>();
@@ -27,7 +27,7 @@ public enum LanguageLevel {
 
     static {
         for (LanguageLevel level : LanguageLevel.values()) {
-            if(!valueMap.containsKey(level.value)){
+            if (!valueMap.containsKey(level.value)) {
                 valueMap.put(level.value, new LinkedList<>());
             }
             valueMap.get(level.value).add(level);
@@ -39,15 +39,15 @@ public enum LanguageLevel {
         return (List<LanguageLevel>) valueMap.get(languageLevel);
     }
 
-    public static LanguageLevel getLevelByName(String name){
+    public static LanguageLevel getLevelByName(String name) {
         return nameMap.get(name);
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public static boolean isMajorLevel(LanguageLevel languageLevel){
+    public static boolean isMajorLevel(LanguageLevel languageLevel) {
         return languageLevel.getValue() % 2 != 0;
     }
 
