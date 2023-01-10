@@ -1,31 +1,39 @@
 package de.vill.model.constraint;
 
-import de.vill.model.expression.AggregateFunctionExpression;
-import de.vill.model.expression.Expression;
-
 import java.util.List;
 
 public abstract class Constraint {
-    public int getLineNumber() {
-        return lineNumber;
-    }
+	public int getLineNumber() {
+		return lineNumber;
+	}
 
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
+	public void setLineNumber(int lineNumber) {
+		this.lineNumber = lineNumber;
+	}
 
-    private int lineNumber;
-    @Override
-    public String toString(){
-        return toString(true, "");
-    }
+	private int lineNumber;
 
-    public abstract String toString(boolean withSubmodels, String currentAlias);
+	@Override
+	public String toString() {
+		return toString(true, "");
+	}
 
-    public abstract List<Constraint> getConstraintSubParts();
+	public abstract String toString(boolean withSubmodels, String currentAlias);
 
-    public abstract void replaceConstraintSubPart(Constraint oldSubConstraint, Constraint newSubConstraint);
+	public abstract List<Constraint> getConstraintSubParts();
 
-    public abstract Constraint clone();
+	public abstract void replaceConstraintSubPart(Constraint oldSubConstraint, Constraint newSubConstraint);
 
+	@Override
+	public abstract Constraint clone();
+
+	@Override
+	public int hashCode() {
+		return hashCode(1);
+	}
+
+	public abstract int hashCode(int level);
+
+	@Override
+	public abstract boolean equals(Object obj);
 }
