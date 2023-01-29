@@ -329,9 +329,9 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void exitFeatureCardinality(final UVLParser.FeatureCardinalityContext ctx) {
-        final String lowerBound;
-        final String upperBound;
+    public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
+        String lowerBound;
+        String upperBound;
         if (ctx.getText().contains("..")) {
             lowerBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[0];
             upperBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[1];

@@ -16,7 +16,7 @@ import static de.vill.util.Util.addNecessaryQuotes;
  * This class represents a feature of any kind (normal, numeric, abstract, ...).
  */
 public class Feature {
-    public void setFeatureName(final String featureName) {
+    public void setFeatureName(String featureName) {
         this.featureName = featureName;
     }
 
@@ -566,6 +566,7 @@ public class Feature {
         feature.setUpperBound(getUpperBound());
         feature.setSubmodelRoot(isSubmodelRoot);
         feature.setRelatedImport(getRelatedImport());
+        feature.setFeatureType(this.getFeatureType());
         feature.getAttributes().putAll(getAttributes());
         for (Group group : getChildren()) {
             feature.getChildren().add(group.clone());
