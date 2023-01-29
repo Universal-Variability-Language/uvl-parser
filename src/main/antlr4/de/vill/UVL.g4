@@ -114,7 +114,7 @@ group
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
-feature: reference featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
+feature: featureType? reference featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
 
 featureCardinality: 'cardinality' CARDINALITY;
 
@@ -143,12 +143,13 @@ constraintLine: constraint NEWLINE;
 constraint
     : equation                              # EquationConstraint
     | reference                             # LiteralConstraint
-    | OPEN_PAREN constraint CLOSE_PAREN      # ParenthesisConstraint
+    | OPEN_PAREN constraint CLOSE_PAREN     # ParenthesisConstraint
     | NOT constraint                        # NotConstraint
     | constraint AND constraint             # AndConstraint
     | constraint OR constraint              # OrConstraint
     | constraint IMPLICATION constraint     # ImplicationConstraint
     | constraint EQUIVALENCE constraint     # EquivalenceConstraint
+    | typeLevelConstriant                   # TypeLevelConstraints
 	;
 
 equation
@@ -169,16 +170,32 @@ expression:
     | expression DIV expression             # DivExpresssion
     ;
 
+typeLevelConstriant
+    : stringAggregateFunction               # StringAggregateFucntionConstraint
+    | numericValidityCheck                  # NumericValidityCheckConstraints
+    ;
+
 aggregateFunction
     : 'sum' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # SumAggregateFunction
     | 'avg' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # AvgAggregateFunction
     ;
+
+stringAggregateFunction
+    : reference '.length' OPEN_PAREN inequality number CLOSE_PAREN
+    | reference '.contains' OPEN_PAREN reference CLOSE_PAREN;
+
+numericValidityCheck
+    : reference inequality (reference|number);
+
+inequality: EQUAL | LOWER | GREATER | LOWER_EQUAL | GREATER_EQUAL;
+number: INTEGER | FLOAT;
 
 string
     : ID_NOT_STRICT
     | STRING;
 
 reference: (id '.')* id;
+featureType: 'String' | 'Integer' | 'Boolean' | 'Real';
 id: ID_STRICT | ID_NOT_STRICT;
 
 ORGROUP: 'or';
@@ -195,7 +212,9 @@ IMPLICATION: '=>';
 
 EQUAL: '==';
 LOWER: '<';
+LOWER_EQUAL: '<=';
 GREATER: '>';
+GREATER_EQUAL: '>=';
 
 DIV: '/';
 MUL: '*';
@@ -207,8 +226,8 @@ INTEGER: '0' | '-'?[1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
-MAJORLEVEL: 'SAT-level' | 'SMT-level';
-MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function';
+MAJORLEVEL: 'SAT-level' | 'SMT-level' | 'TYPE-level';
+MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-aggregate-function' | 'numeric-validity-check';
 
 COMMA: ',';
 

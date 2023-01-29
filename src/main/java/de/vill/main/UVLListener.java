@@ -4,12 +4,46 @@ import de.vill.UVLBaseListener;
 import de.vill.UVLParser;
 import de.vill.exception.ParseError;
 import de.vill.exception.ParseErrorList;
-import de.vill.model.*;
-import de.vill.model.constraint.*;
-import de.vill.model.expression.*;
+import de.vill.model.Attribute;
+import de.vill.model.Feature;
+import de.vill.model.FeatureModel;
+import de.vill.model.FeatureType;
+import de.vill.model.Group;
+import de.vill.model.Import;
+import de.vill.model.LanguageLevel;
+import de.vill.model.constraint.AndConstraint;
+import de.vill.model.constraint.Constraint;
+import de.vill.model.constraint.EqualEquationConstraint;
+import de.vill.model.constraint.EquivalenceConstraint;
+import de.vill.model.constraint.GreaterEquationConstraint;
+import de.vill.model.constraint.ImplicationConstraint;
+import de.vill.model.constraint.LiteralConstraint;
+import de.vill.model.constraint.LowerEquationConstraint;
+import de.vill.model.constraint.NotConstraint;
+import de.vill.model.constraint.OrConstraint;
+import de.vill.model.constraint.ParenthesisConstraint;
+import de.vill.model.expression.AddExpression;
+import de.vill.model.expression.AggregateFunctionExpression;
+import de.vill.model.expression.AvgAggregateFunctionExpression;
+import de.vill.model.expression.DivExpression;
+import de.vill.model.expression.Expression;
+import de.vill.model.expression.LiteralExpression;
+import de.vill.model.expression.MulExpression;
+import de.vill.model.expression.NumberExpression;
+import de.vill.model.expression.ParenthesisExpression;
+import de.vill.model.expression.SubExpression;
+import de.vill.model.expression.SumAggregateFunctionExpression;
 import org.antlr.v4.runtime.Token;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Stack;
 
 public class UVLListener extends UVLBaseListener {
     private FeatureModel featureModel = new FeatureModel();
@@ -229,9 +263,75 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
-        String lowerBound;
-        String upperBound;
+    public void enterFeatureType(final UVLParser.FeatureTypeContext ctx) {
+        final Optional<String> featureTypeVal = Arrays.stream(
+                ctx.getText().toLowerCase()
+                        .split(" ")
+        ).filter(
+                text -> FeatureType.getSupportedFeatureTypes()
+                        .stream()
+                        .anyMatch(featureType -> featureType.equals(text))
+        ).findFirst();
+        if (featureTypeVal.isPresent()) {
+            final Feature feature = this.featureStack.peek();
+            feature.setFeatureType(FeatureType.fromString(featureTypeVal.get().toLowerCase()));
+            // TODO: see the usage
+            feature.getAttributes().put(
+                    "type_level_default_value", new Attribute<>("type_level_default_value", "")
+            );
+            feature.getAttributes().put(
+                    "type_level_actual_value", new Attribute<>("type_level_actual_value", "")
+            );
+            this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+        }
+    }
+
+    // TODO: don't know what to do
+    @Override
+    public void exitFeatureType(final UVLParser.FeatureTypeContext ctx) {
+    }
+
+    @Override
+    public void enterNumericValidityCheckConstraints(final UVLParser.NumericValidityCheckConstraintsContext ctx) {
+    }
+
+    @Override
+    public void exitNumericValidityCheckConstraints(final UVLParser.NumericValidityCheckConstraintsContext ctx) {
+    }
+
+    @Override
+    public void enterStringAggregateFunction(final UVLParser.StringAggregateFunctionContext ctx) {
+    }
+
+    @Override
+    public void exitStringAggregateFunction(final UVLParser.StringAggregateFunctionContext ctx) {
+    }
+
+    @Override
+    public void enterInequality(final UVLParser.InequalityContext ctx) {
+    }
+
+    @Override
+    public void exitInequality(final UVLParser.InequalityContext ctx) {
+    }
+
+    @Override
+    public void enterNumber(final UVLParser.NumberContext ctx) {
+    }
+
+    @Override
+    public void exitNumber(final UVLParser.NumberContext ctx) {
+    }
+
+    @Override
+    public void enterTypeLevelConstraints(final UVLParser.TypeLevelConstraintsContext ctx) {
+        this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+    }
+
+    @Override
+    public void exitFeatureCardinality(final UVLParser.FeatureCardinalityContext ctx) {
+        final String lowerBound;
+        final String upperBound;
         if (ctx.getText().contains("..")) {
             lowerBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[0];
             upperBound = ctx.CARDINALITY().getText().replace("[", "").replace("]", "").split("\\.\\.")[1];

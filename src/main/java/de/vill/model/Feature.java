@@ -3,7 +3,12 @@ package de.vill.model;
 import de.vill.config.Configuration;
 import de.vill.util.Util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import static de.vill.util.Util.addNecessaryQuotes;
 
@@ -11,7 +16,7 @@ import static de.vill.util.Util.addNecessaryQuotes;
  * This class represents a feature of any kind (normal, numeric, abstract, ...).
  */
 public class Feature {
-    public void setFeatureName(String featureName) {
+    public void setFeatureName(final String featureName) {
         this.featureName = featureName;
     }
 
@@ -22,6 +27,7 @@ public class Feature {
     private String upperBound;
     private final List<Group> children;
     private final Map<String, Attribute> attributes;
+    private FeatureType featureType;
     private boolean isSubmodelRoot = false;
 
     private Group parent;
@@ -285,6 +291,24 @@ public class Feature {
             throw new IllegalArgumentException("Namespace must not be null!");
         }
         this.nameSpace = nameSpace;
+    }
+
+    /**
+     * Adds the feature type of the feature (if supported by the language level)
+     *
+     * @param featureType
+     */
+    public void setFeatureType(final FeatureType featureType) {
+        this.featureType = featureType;
+    }
+
+    /**
+     * Returns the type of the feature if supported by the language level
+     *
+     * @return the type of the feature
+     */
+    public FeatureType getFeatureType() {
+        return this.featureType;
     }
 
     /**

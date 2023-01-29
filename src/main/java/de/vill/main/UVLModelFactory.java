@@ -2,22 +2,51 @@ package de.vill.main;
 
 import de.vill.UVLLexer;
 import de.vill.UVLParser;
-import de.vill.conversion.*;
+import de.vill.conversion.ConvertAggregateFunction;
+import de.vill.conversion.ConvertFeatureCardinality;
+import de.vill.conversion.ConvertGroupCardinality;
+import de.vill.conversion.ConvertNumbericValidityCheck;
+import de.vill.conversion.ConvertSMTLevel;
+import de.vill.conversion.ConvertStringAggregateFunction;
+import de.vill.conversion.ConvertTypeLevel;
+import de.vill.conversion.DropAggregateFunction;
+import de.vill.conversion.DropFeatureCardinality;
+import de.vill.conversion.DropGroupCardinality;
+import de.vill.conversion.DropNumbericValidityCheck;
+import de.vill.conversion.DropSMTLevel;
+import de.vill.conversion.DropStringAggregateFunction;
+import de.vill.conversion.DropTypeLevel;
+import de.vill.conversion.IConversionStrategy;
 import de.vill.exception.ParseError;
 import de.vill.exception.ParseErrorList;
-import de.vill.model.*;
+import de.vill.model.Feature;
+import de.vill.model.FeatureModel;
+import de.vill.model.Group;
+import de.vill.model.Import;
+import de.vill.model.LanguageLevel;
 import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.LiteralConstraint;
 import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.LiteralExpression;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ConsoleErrorListener;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class UVLModelFactory {
@@ -28,16 +57,22 @@ public class UVLModelFactory {
     private final List<ParseError> errorList = new LinkedList<>();
 
     public UVLModelFactory() {
-        conversionStrategiesDrop = new HashMap<>();
-        conversionStrategiesDrop.put(LanguageLevel.GROUP_CARDINALITY, DropGroupCardinality.class);
-        conversionStrategiesDrop.put(LanguageLevel.FEATURE_CARDINALITY, DropFeatureCardinality.class);
-        conversionStrategiesDrop.put(LanguageLevel.AGGREGATE_FUNCTION, DropAggregateFunction.class);
-        conversionStrategiesDrop.put(LanguageLevel.SMT_LEVEL, DropSMTLevel.class);
-        conversionStrategiesConvert = new HashMap<>();
-        conversionStrategiesConvert.put(LanguageLevel.GROUP_CARDINALITY, ConvertGroupCardinality.class);
-        conversionStrategiesConvert.put(LanguageLevel.FEATURE_CARDINALITY, ConvertFeatureCardinality.class);
-        conversionStrategiesConvert.put(LanguageLevel.AGGREGATE_FUNCTION, ConvertAggregateFunction.class);
-        conversionStrategiesConvert.put(LanguageLevel.SMT_LEVEL, ConvertSMTLevel.class);
+        this.conversionStrategiesDrop = new HashMap<>();
+        this.conversionStrategiesDrop.put(LanguageLevel.GROUP_CARDINALITY, DropGroupCardinality.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.FEATURE_CARDINALITY, DropFeatureCardinality.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.AGGREGATE_FUNCTION, DropAggregateFunction.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.SMT_LEVEL, DropSMTLevel.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.TYPE_LEVEL, DropTypeLevel.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.NUMERIC_VALIDITY_CHECK, DropNumbericValidityCheck.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.STRING_AGGREGATE_FUNCTION, DropStringAggregateFunction.class);
+        this.conversionStrategiesConvert = new HashMap<>();
+        this.conversionStrategiesConvert.put(LanguageLevel.GROUP_CARDINALITY, ConvertGroupCardinality.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.FEATURE_CARDINALITY, ConvertFeatureCardinality.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.AGGREGATE_FUNCTION, ConvertAggregateFunction.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.SMT_LEVEL, ConvertSMTLevel.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.TYPE_LEVEL, ConvertTypeLevel.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.NUMERIC_VALIDITY_CHECK, ConvertNumbericValidityCheck.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.STRING_AGGREGATE_FUNCTION, ConvertStringAggregateFunction.class);
     }
 
     /**
