@@ -17,6 +17,7 @@ public enum LanguageLevel {
     GROUP_CARDINALITY(2, "group-cardinality"),
     FEATURE_CARDINALITY(4, "feature-cardinality"),
     AGGREGATE_FUNCTION(4, "aggregate-function"),
+    //TODO: finalize the name
     STRING_AGGREGATE_FUNCTION(6, "string-aggregate-function"),
     NUMERIC_VALIDITY_CHECK(6, "numeric-validity-check"),
     ;

@@ -271,27 +271,16 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void enterFeatureType(final UVLParser.FeatureTypeContext ctx) {
-        //TODO: check
-        final Optional<String> featureTypeVal = Arrays.stream(
-            ctx.getText().toLowerCase()
-                .split(" ")
-        ).filter(
-            text -> FeatureType.getSupportedFeatureTypes()
-                .stream()
-                .anyMatch(featureType -> featureType.equals(text))
-        ).findFirst();
-        if (featureTypeVal.isPresent()) {
-            final Feature feature = this.featureStack.peek();
-            feature.setFeatureType(FeatureType.fromString(featureTypeVal.get().toLowerCase()));
-            // TODO: see the usage
-            feature.getAttributes().put(
-                "type_level_default_value", new Attribute<>("type_level_default_value", "")
-            );
-            feature.getAttributes().put(
-                "type_level_actual_value", new Attribute<>("type_level_actual_value", "")
-            );
-            this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        }
+        final Feature feature = this.featureStack.peek();
+        feature.setFeatureType(FeatureType.fromString(ctx.getText().toLowerCase()));
+        // TODO: see the usage
+        feature.getAttributes().put(
+            "type_level_default_value", new Attribute<>("type_level_default_value", "")
+        );
+        feature.getAttributes().put(
+            "type_level_actual_value", new Attribute<>("type_level_actual_value", "")
+        );
+        this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
     }
 
     @Override
@@ -312,7 +301,9 @@ public class UVLListener extends UVLBaseListener {
             ctx.reference(0).getText().replace("\"", "")
         );
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(isRightConstant ? ctx.INTEGER().getText() : ctx.reference(1).getText().replace("\"", ""));
+        LiteralConstraint right = new LiteralConstraint(
+            isRightConstant ? ctx.INTEGER().getText() : ctx.reference(1).getText().replace("\"", "")
+        );
         Constraint constraint = new StringFeatureLengthConstraint(
             left,
             right,
@@ -330,7 +321,9 @@ public class UVLListener extends UVLBaseListener {
             ctx.reference(0).getText().replace("\"", "")
         );
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(isRightConstant ? ctx.STRING().getText() : ctx.reference(1).getText().replace("\"", ""));
+        LiteralConstraint right = new LiteralConstraint(
+            isRightConstant ? ctx.STRING().getText() : ctx.reference(1).getText().replace("\"", "")
+        );
         Constraint constraint = new StringFeatureEqualsConstraint(
             left,
             right,
@@ -348,7 +341,9 @@ public class UVLListener extends UVLBaseListener {
             ctx.reference(0).getText().replace("\"", "")
         );
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", ""));
+        LiteralConstraint right = new LiteralConstraint(
+            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
+        );
         Constraint constraint = new NumericFeatureEqualsConstraint(
             left,
             right,
@@ -366,7 +361,9 @@ public class UVLListener extends UVLBaseListener {
             ctx.reference(0).getText().replace("\"", "")
         );
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", ""));
+        LiteralConstraint right = new LiteralConstraint(
+            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
+        );
         Constraint constraint = new NumericFeatureGreaterConstraint(
             left,
             right,
@@ -384,7 +381,9 @@ public class UVLListener extends UVLBaseListener {
             ctx.reference(0).getText().replace("\"", "")
         );
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", ""));
+        LiteralConstraint right = new LiteralConstraint(
+            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
+        );
         Constraint constraint = new NumericFeatureGreaterEqualsConstraint(
             left,
             right,
@@ -402,7 +401,9 @@ public class UVLListener extends UVLBaseListener {
             ctx.reference(0).getText().replace("\"", "")
         );
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", ""));
+        LiteralConstraint right = new LiteralConstraint(
+            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
+        );
         Constraint constraint = new NumericFeatureLowerConstraint(
             left,
             right,
@@ -420,7 +421,9 @@ public class UVLListener extends UVLBaseListener {
             ctx.reference(0).getText().replace("\"", "")
         );
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", ""));
+        LiteralConstraint right = new LiteralConstraint(
+            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
+        );
         Constraint constraint = new NumericFeatureLowerEqualsConstraint(
             left,
             right,
@@ -438,7 +441,9 @@ public class UVLListener extends UVLBaseListener {
             ctx.reference(0).getText().replace("\"", "")
         );
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", ""));
+        LiteralConstraint right = new LiteralConstraint(
+            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
+        );
         Constraint constraint = new NumericFeatureNotEqualsConstraint(
             left,
             right,
