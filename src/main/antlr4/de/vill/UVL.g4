@@ -149,7 +149,8 @@ constraint
     | constraint OR constraint              # OrConstraint
     | constraint IMPLICATION constraint     # ImplicationConstraint
     | constraint EQUIVALENCE constraint     # EquivalenceConstraint
-    | typeLevelConstriant                   # TypeLevelConstraints
+    | stringFeatureFunctions                # StringFeatureConstraint
+    | numericFeatureValidityEquations       # NumericFeatureConstraint
 	;
 
 equation
@@ -170,24 +171,25 @@ expression:
     | expression DIV expression             # DivExpresssion
     ;
 
-typeLevelConstriant
-    : stringAggregateFunction               # StringAggregateFucntionConstraint
-    | numericValidityCheck                  # NumericValidityCheckConstraints
-    ;
-
 aggregateFunction
     : 'sum' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # SumAggregateFunction
     | 'avg' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # AvgAggregateFunction
     ;
 
-stringAggregateFunction
-    : reference '.length' OPEN_PAREN inequality number CLOSE_PAREN
-    | reference '.contains' OPEN_PAREN reference CLOSE_PAREN;
+stringFeatureFunctions
+    : 'String.length' OPEN_PAREN reference COMMA (INTEGER | reference) CLOSE_PAREN  # StringFeatureLengthConstraint
+    | 'String.equals' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint
+    ;
 
-numericValidityCheck
-    : reference inequality (reference|number);
+numericFeatureValidityEquations
+    : 'Number.equals' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN           # NumericFeatureEqualsConstraint
+    | 'Number.greater' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN          # NumericFeatureGreaterConstraint
+    | 'Number.greaterEquals' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN    # NumericFeatureGreaterEqualsConstraint
+    | 'Number.lower' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN            # NumericFeatureLowerConstraint
+    | 'Number.lowerEquals' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN      # NumericFeatureLowerEqualsConstraint
+    | 'Number.notEquals' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN        # NumericFeatureNotEqualsConstraint
+    ;
 
-inequality: EQUAL | LOWER | GREATER | LOWER_EQUAL | GREATER_EQUAL;
 number: INTEGER | FLOAT;
 
 string
@@ -212,9 +214,7 @@ IMPLICATION: '=>';
 
 EQUAL: '==';
 LOWER: '<';
-LOWER_EQUAL: '<=';
 GREATER: '>';
-GREATER_EQUAL: '>=';
 
 DIV: '/';
 MUL: '*';
