@@ -47,7 +47,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import org.antlr.v4.runtime.Token;
@@ -297,10 +296,22 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitStringFeatureLengthConstraint(UVLParser.StringFeatureLengthConstraintContext ctx) {
-        LiteralConstraint left = new LiteralConstraint(
-            ctx.reference(0).getText().replace("\"", "")
-        );
+        String leftFeature = ctx.reference(0).getText().replace("\"", "");
+        if (this.featureModel.getFeatureMap().get(leftFeature) != null &&
+            !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(leftFeature).getFeatureType())) {
+            errorList.add(new ParseError("Feature - " + leftFeature + " in the constraint must be of type String"));
+            return;
+        }
+        LiteralConstraint left = new LiteralConstraint(leftFeature);
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
+        if (!isRightConstant) {
+            String rightFeature = ctx.reference(1).getText().replace("\"", "");
+            if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
+                !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
+                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String"));
+                return;
+            }
+        }
         LiteralConstraint right = new LiteralConstraint(
             isRightConstant ? ctx.INTEGER().getText() : ctx.reference(1).getText().replace("\"", "")
         );
@@ -317,10 +328,22 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitStringFeatureEqualsConstraint(UVLParser.StringFeatureEqualsConstraintContext ctx) {
-        LiteralConstraint left = new LiteralConstraint(
-            ctx.reference(0).getText().replace("\"", "")
-        );
+        String leftFeature = ctx.reference(0).getText().replace("\"", "");
+        if (this.featureModel.getFeatureMap().get(leftFeature) != null &&
+            !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(leftFeature).getFeatureType())) {
+            errorList.add(new ParseError("Feature - " + leftFeature + " in the constraint must be of type String"));
+            return;
+        }
+        LiteralConstraint left = new LiteralConstraint(leftFeature);
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
+        if (!isRightConstant) {
+            String rightFeature = ctx.reference(1).getText().replace("\"", "");
+            if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
+                !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
+                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String"));
+                return;
+            }
+        }
         LiteralConstraint right = new LiteralConstraint(
             isRightConstant ? ctx.STRING().getText() : ctx.reference(1).getText().replace("\"", "")
         );
@@ -336,119 +359,72 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void exitNumericFeatureEqualsConstraint(UVLParser.NumericFeatureEqualsConstraintContext ctx) {
-        LiteralConstraint left = new LiteralConstraint(
-            ctx.reference(0).getText().replace("\"", "")
-        );
+    public void exitNumericFeatureComparisonConstraint(UVLParser.NumericFeatureComparisonConstraintContext ctx) {
+        String leftFeature = ctx.reference(0).getText().replace("\"", "");
+        if (this.featureModel.getFeatureMap().get(leftFeature) != null &&
+            !FeatureType.INT.equals(this.featureModel.getFeatureMap().get(leftFeature).getFeatureType())) {
+            errorList.add(new ParseError("Feature - " + leftFeature + " in the constraint must be of type Integer"));
+            return;
+        }
+        LiteralConstraint left = new LiteralConstraint(leftFeature);
         Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
+        if (!isRightConstant) {
+            String rightFeature = ctx.reference(1).getText().replace("\"", "");
+            if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
+                !FeatureType.INT.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
+                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type Integer"));
+                return;
+            }
+        }
         LiteralConstraint right = new LiteralConstraint(
             isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
         );
-        Constraint constraint = new NumericFeatureEqualsConstraint(
-            left,
-            right,
-            isRightConstant
-        );
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override
-    public void exitNumericFeatureGreaterConstraint(UVLParser.NumericFeatureGreaterConstraintContext ctx) {
-        LiteralConstraint left = new LiteralConstraint(
-            ctx.reference(0).getText().replace("\"", "")
-        );
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
-        Constraint constraint = new NumericFeatureGreaterConstraint(
-            left,
-            right,
-            isRightConstant
-        );
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override
-    public void exitNumericFeatureGreaterEqualsConstraint(UVLParser.NumericFeatureGreaterEqualsConstraintContext ctx) {
-        LiteralConstraint left = new LiteralConstraint(
-            ctx.reference(0).getText().replace("\"", "")
-        );
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
-        Constraint constraint = new NumericFeatureGreaterEqualsConstraint(
-            left,
-            right,
-            isRightConstant
-        );
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override
-    public void exitNumericFeatureLowerConstraint(UVLParser.NumericFeatureLowerConstraintContext ctx) {
-        LiteralConstraint left = new LiteralConstraint(
-            ctx.reference(0).getText().replace("\"", "")
-        );
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
-        Constraint constraint = new NumericFeatureLowerConstraint(
-            left,
-            right,
-            isRightConstant
-        );
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override
-    public void exitNumericFeatureLowerEqualsConstraint(UVLParser.NumericFeatureLowerEqualsConstraintContext ctx) {
-        LiteralConstraint left = new LiteralConstraint(
-            ctx.reference(0).getText().replace("\"", "")
-        );
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
-        Constraint constraint = new NumericFeatureLowerEqualsConstraint(
-            left,
-            right,
-            isRightConstant
-        );
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override
-    public void exitNumericFeatureNotEqualsConstraint(UVLParser.NumericFeatureNotEqualsConstraintContext ctx) {
-        LiteralConstraint left = new LiteralConstraint(
-            ctx.reference(0).getText().replace("\"", "")
-        );
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
-        Constraint constraint = new NumericFeatureNotEqualsConstraint(
-            left,
-            right,
-            isRightConstant
-        );
+        Constraint constraint = null;
+        switch (ctx.inequality().getText().replace("\"", "")) {
+            case "==":
+                constraint = new NumericFeatureEqualsConstraint(
+                    left,
+                    right,
+                    isRightConstant
+                );
+                break;
+            case ">":
+                constraint = new NumericFeatureGreaterConstraint(
+                    left,
+                    right,
+                    isRightConstant
+                );
+                break;
+            case ">=":
+                constraint = new NumericFeatureGreaterEqualsConstraint(
+                    left,
+                    right,
+                    isRightConstant
+                );
+                break;
+            case "<":
+                constraint = new NumericFeatureLowerConstraint(
+                    left,
+                    right,
+                    isRightConstant
+                );
+                break;
+            case "<=":
+                constraint = new NumericFeatureLowerEqualsConstraint(
+                    left,
+                    right,
+                    isRightConstant
+                );
+                break;
+            case "!=":
+                constraint = new NumericFeatureNotEqualsConstraint(
+                    left,
+                    right,
+                    isRightConstant
+                );
+                break;
+        }
+        // constraint is not null
         constraintStack.push(constraint);
         Token t = ctx.getStart();
         int line = t.getLine();

@@ -177,17 +177,12 @@ aggregateFunction
     ;
 
 stringFeatureFunctions
-    : 'String.length' OPEN_PAREN reference COMMA (INTEGER | reference) CLOSE_PAREN  # StringFeatureLengthConstraint
-    | 'String.equals' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint
+    : 'strlen' OPEN_PAREN reference COMMA (INTEGER | reference) CLOSE_PAREN  # StringFeatureLengthConstraint
+    | 'strcmp' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint
     ;
 
 numericFeatureValidityEquations
-    : 'Number.equals' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN           # NumericFeatureEqualsConstraint
-    | 'Number.greater' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN          # NumericFeatureGreaterConstraint
-    | 'Number.greaterEquals' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN    # NumericFeatureGreaterEqualsConstraint
-    | 'Number.lower' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN            # NumericFeatureLowerConstraint
-    | 'Number.lowerEquals' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN      # NumericFeatureLowerEqualsConstraint
-    | 'Number.notEquals' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN        # NumericFeatureNotEqualsConstraint
+    : 'numcmp' OPEN_PAREN reference COMMA (number | reference) COMMA inequality CLOSE_PAREN    # NumericFeatureComparisonConstraint
     ;
 
 number: INTEGER | FLOAT;
@@ -195,6 +190,16 @@ number: INTEGER | FLOAT;
 string
     : ID_NOT_STRICT
     | STRING;
+
+inequality
+    : EQUAL
+    | GREATER
+    | GREATER_EQUALS
+    | LOWER
+    | LOWER_EQUALS
+    | NOT_EQUALS
+    ;
+
 
 reference: (id '.')* id;
 featureType: 'String' | 'Integer' | 'Boolean' | 'Real';
@@ -214,7 +219,10 @@ IMPLICATION: '=>';
 
 EQUAL: '==';
 LOWER: '<';
+LOWER_EQUALS: '<=';
 GREATER: '>';
+GREATER_EQUALS: '>=';
+NOT_EQUALS: '!=';
 
 DIV: '/';
 MUL: '*';
