@@ -24,14 +24,7 @@ public abstract class StringFeatureConstraint extends Constraint {
     }
 
 
-    @Override
-    //TODO
-    public String toString(boolean withSubmodels, String currentAlias) {
-        return left.toString(withSubmodels, currentAlias) +
-            " " +
-            " " +
-            right.toString(withSubmodels, currentAlias);
-    }
+
 
     @Override
     public List<Constraint> getConstraintSubParts() {

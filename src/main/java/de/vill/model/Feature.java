@@ -420,6 +420,9 @@ public class Feature {
     public String toStringAsRoot(String currentAlias) {
         StringBuilder result = new StringBuilder();
 
+        if (featureType != null) {
+            result.append(featureType.getName()).append(" ");
+        }
         result.append(addNecessaryQuotes(getFeatureName()));
         result.append(cardinalityToString());
         result.append(attributesToString(false, currentAlias));
@@ -444,6 +447,9 @@ public class Feature {
      */
     public String toString(boolean withSubmodels, String currentAlias) {
         StringBuilder result = new StringBuilder();
+        if (featureType != null) {
+            result.append(featureType.getName()).append(" ");
+        }
         if (withSubmodels) {
             result.append(addNecessaryQuotes(getFullReference()));
         } else {

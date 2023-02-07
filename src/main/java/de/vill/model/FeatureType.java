@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
  * An enum that represents the possible types of the Feature (valid of TYPE-level)
  */
 public enum FeatureType {
-    STRING("string"),
-    INT("integer"),
-    BOOL("boolean"),
-    REAL("real"),
+    STRING("String"),
+    INT("Integer"),
+    BOOL("Boolean"),
+    REAL("Real"),
     ;
 
     private final String name;

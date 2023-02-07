@@ -19,6 +19,19 @@ public abstract class NumericFeatureConstraint extends Constraint {
         this.isRightConstant = isRightConstant;
     }
 
+    public LiteralConstraint getLeft(){
+        return left;
+    }
+    public LiteralConstraint getRight(){
+        return right;
+    }
+    public String getInequalitySymbol(){
+        return inequalitySymbol;
+    }
+    public Boolean getIsRightConstant(){
+        return isRightConstant;
+    }
+
     public boolean evaluate() {
         Double featureVal = Double.parseDouble(left.getFeature().getAttributes().get("type_level_default_value").getValue().toString());
         Double rightVal;
@@ -45,13 +58,10 @@ public abstract class NumericFeatureConstraint extends Constraint {
     }
 
     @Override
-    //TODO:
     public String toString(boolean withSubmodels, String currentAlias) {
-        return left.toString(withSubmodels, currentAlias) +
-            " " +
-            inequalitySymbol +
-            " " +
-            (isRightConstant ? right.getLiteral() : right.toString(withSubmodels, currentAlias));
+        return "numcmp(" + left.toString(withSubmodels, currentAlias) + "," +
+            (isRightConstant ? right.getLiteral() : right.toString(withSubmodels, currentAlias)) + "," +
+            inequalitySymbol + ")";
     }
 
     @Override

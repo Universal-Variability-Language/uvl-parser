@@ -273,12 +273,12 @@ public class UVLListener extends UVLBaseListener {
         final Feature feature = this.featureStack.peek();
         feature.setFeatureType(FeatureType.fromString(ctx.getText().toLowerCase()));
         // TODO: see the usage
-        feature.getAttributes().put(
-            "type_level_default_value", new Attribute<>("type_level_default_value", "")
-        );
-        feature.getAttributes().put(
-            "type_level_actual_value", new Attribute<>("type_level_actual_value", "")
-        );
+//        feature.getAttributes().put(
+//            "type_level_default_value", new Attribute<>("type_level_default_value", "")
+//        );
+//        feature.getAttributes().put(
+//            "type_level_actual_value", new Attribute<>("type_level_actual_value", "")
+//        );
         this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
     }
 
