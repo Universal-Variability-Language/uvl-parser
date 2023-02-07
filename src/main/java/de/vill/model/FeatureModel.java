@@ -265,7 +265,7 @@ public class FeatureModel {
      * model.
      *
      * @return a map with namespaces of featuremodel and submodels as key and uvl
-     * strings as value
+     *         strings as value
      */
     public Map<String, String> decomposedModelToString() {
         return decomposedModelToString("");
@@ -291,6 +291,12 @@ public class FeatureModel {
 
     private String toString(boolean withSubmodels, String currentAlias) {
         StringBuilder result = new StringBuilder();
+        if (namespace != null) {
+            result.append("namespace ");
+            result.append(addNecessaryQuotes(namespace));
+            result.append(Configuration.getNewlineSymbol());
+            result.append(Configuration.getNewlineSymbol());
+        }
         if (explicitLanguageLevels && usedLanguageLevels.size() != 0) {
             result.append("include");
             result.append(Configuration.getNewlineSymbol());
@@ -310,12 +316,6 @@ public class FeatureModel {
                 result.append(languageLevel.getName());
                 result.append(Configuration.getNewlineSymbol());
             }
-            result.append(Configuration.getNewlineSymbol());
-        }
-        if (namespace != null) {
-            result.append("namespace ");
-            result.append(addNecessaryQuotes(namespace));
-            result.append(Configuration.getNewlineSymbol());
             result.append(Configuration.getNewlineSymbol());
         }
         if (imports.size() > 0 && !withSubmodels) {
@@ -376,7 +376,7 @@ public class FeatureModel {
      * when adding for example constraints.
      *
      * @return a list with all {@link LiteralConstraint} objects in the constraints
-     * of this feature model.
+     *         of this feature model.
      */
     public List<LiteralConstraint> getLiteralConstraints() {
         return literalConstraints;
@@ -389,7 +389,7 @@ public class FeatureModel {
      * when adding for example constraints.
      *
      * @return a list with all {@link LiteralExpression} objects in the constraints
-     * of this feature model.
+     *         of this feature model.
      */
     public List<LiteralExpression> getLiteralExpressions() {
         return literalExpressions;
@@ -402,7 +402,7 @@ public class FeatureModel {
      * when adding for example constraints.
      *
      * @return a list with all {@link AggregateFunctionExpression} objects in the
-     * constraints of this feature model.
+     *         constraints of this feature model.
      */
     public List<AggregateFunctionExpression> getAggregateFunctionsWithRootFeature() {
         return aggregateFunctionsWithRootFeature;
