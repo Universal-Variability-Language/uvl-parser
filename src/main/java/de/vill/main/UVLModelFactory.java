@@ -5,14 +5,14 @@ import de.vill.UVLParser;
 import de.vill.conversion.ConvertAggregateFunction;
 import de.vill.conversion.ConvertFeatureCardinality;
 import de.vill.conversion.ConvertGroupCardinality;
-import de.vill.conversion.ConvertNumbericValidityCheck;
+import de.vill.conversion.ConvertNumericValidityCheck;
 import de.vill.conversion.ConvertSMTLevel;
 import de.vill.conversion.ConvertStringAggregateFunction;
 import de.vill.conversion.ConvertTypeLevel;
 import de.vill.conversion.DropAggregateFunction;
 import de.vill.conversion.DropFeatureCardinality;
 import de.vill.conversion.DropGroupCardinality;
-import de.vill.conversion.DropNumbericValidityCheck;
+import de.vill.conversion.DropNumericValidityCheck;
 import de.vill.conversion.DropSMTLevel;
 import de.vill.conversion.DropStringAggregateFunction;
 import de.vill.conversion.DropTypeLevel;
@@ -63,7 +63,7 @@ public class UVLModelFactory {
         this.conversionStrategiesDrop.put(LanguageLevel.AGGREGATE_FUNCTION, DropAggregateFunction.class);
         this.conversionStrategiesDrop.put(LanguageLevel.SMT_LEVEL, DropSMTLevel.class);
         this.conversionStrategiesDrop.put(LanguageLevel.TYPE_LEVEL, DropTypeLevel.class);
-        this.conversionStrategiesDrop.put(LanguageLevel.NUMERIC_VALIDITY_CHECK, DropNumbericValidityCheck.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.NUMERIC_VALIDITY_CHECK, DropNumericValidityCheck.class);
         this.conversionStrategiesDrop.put(LanguageLevel.STRING_AGGREGATE_FUNCTION, DropStringAggregateFunction.class);
         this.conversionStrategiesConvert = new HashMap<>();
         this.conversionStrategiesConvert.put(LanguageLevel.GROUP_CARDINALITY, ConvertGroupCardinality.class);
@@ -71,7 +71,7 @@ public class UVLModelFactory {
         this.conversionStrategiesConvert.put(LanguageLevel.AGGREGATE_FUNCTION, ConvertAggregateFunction.class);
         this.conversionStrategiesConvert.put(LanguageLevel.SMT_LEVEL, ConvertSMTLevel.class);
         this.conversionStrategiesConvert.put(LanguageLevel.TYPE_LEVEL, ConvertTypeLevel.class);
-        this.conversionStrategiesConvert.put(LanguageLevel.NUMERIC_VALIDITY_CHECK, ConvertNumbericValidityCheck.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.NUMERIC_VALIDITY_CHECK, ConvertNumericValidityCheck.class);
         this.conversionStrategiesConvert.put(LanguageLevel.STRING_AGGREGATE_FUNCTION, ConvertStringAggregateFunction.class);
     }
 

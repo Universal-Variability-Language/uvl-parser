@@ -5,7 +5,6 @@ import de.vill.model.Feature;
 import de.vill.model.FeatureModel;
 import de.vill.model.Group;
 import de.vill.model.LanguageLevel;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,8 +28,8 @@ public class ConvertTypeLevel implements IConversionStrategy {
     private void traverseFeatures(final Feature feature) {
         if (feature.getFeatureType() != null) {
             feature.getAttributes().put(
-                    "feature_type",
-                    new Attribute<>("feature_type", feature.getFeatureType().getName())
+                "feature_type",
+                new Attribute<>("feature_type", feature.getFeatureType().getName())
             );
         }
 

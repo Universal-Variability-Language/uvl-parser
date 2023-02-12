@@ -8,8 +8,8 @@ import java.util.Objects;
 public abstract class StringFeatureConstraint extends Constraint {
     private LiteralConstraint left;
     private LiteralConstraint right;
-    private String functionName;
-    private Boolean isRightConstant;
+    private final String functionName;
+    private final Boolean isRightConstant;
 
     public StringFeatureConstraint(
         LiteralConstraint left,
@@ -22,9 +22,6 @@ public abstract class StringFeatureConstraint extends Constraint {
         this.functionName = functionName;
         this.isRightConstant = isRightConstant;
     }
-
-
-
 
     @Override
     public List<Constraint> getConstraintSubParts() {

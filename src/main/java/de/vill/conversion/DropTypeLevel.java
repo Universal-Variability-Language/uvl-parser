@@ -4,7 +4,6 @@ import de.vill.model.Feature;
 import de.vill.model.FeatureModel;
 import de.vill.model.Group;
 import de.vill.model.LanguageLevel;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

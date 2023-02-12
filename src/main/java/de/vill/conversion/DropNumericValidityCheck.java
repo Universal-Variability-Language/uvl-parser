@@ -1,17 +1,13 @@
 package de.vill.conversion;
 
-import de.vill.model.Attribute;
-import de.vill.model.Feature;
 import de.vill.model.FeatureModel;
-import de.vill.model.Group;
 import de.vill.model.LanguageLevel;
-
 import de.vill.model.constraint.NumericFeatureConstraint;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DropNumbericValidityCheck implements IConversionStrategy {
+public class DropNumericValidityCheck implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
         return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_VALIDITY_CHECK));

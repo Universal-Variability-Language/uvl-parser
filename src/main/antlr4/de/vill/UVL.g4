@@ -179,10 +179,12 @@ aggregateFunction
 stringFeatureFunctions
     : 'strlen' OPEN_PAREN reference COMMA (INTEGER | reference) CLOSE_PAREN  # StringFeatureLengthConstraint
     | 'strcmp' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint
+    | 'strval' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureAssignmentConstraint
     ;
 
 numericFeatureValidityEquations
     : 'numcmp' OPEN_PAREN reference COMMA (number | reference) COMMA inequality CLOSE_PAREN    # NumericFeatureComparisonConstraint
+    | 'numval' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN                     # NumberFeatureAssignmentConstraint
     ;
 
 number: INTEGER | FLOAT;

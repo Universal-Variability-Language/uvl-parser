@@ -19,16 +19,19 @@ public abstract class NumericFeatureConstraint extends Constraint {
         this.isRightConstant = isRightConstant;
     }
 
-    public LiteralConstraint getLeft(){
+    public LiteralConstraint getLeft() {
         return left;
     }
-    public LiteralConstraint getRight(){
+
+    public LiteralConstraint getRight() {
         return right;
     }
-    public String getInequalitySymbol(){
+
+    public String getInequalitySymbol() {
         return inequalitySymbol;
     }
-    public Boolean getIsRightConstant(){
+
+    public Boolean getIsRightConstant() {
         return isRightConstant;
     }
 
@@ -106,6 +109,6 @@ public abstract class NumericFeatureConstraint extends Constraint {
         }
         NumericFeatureConstraint other = (NumericFeatureConstraint) obj;
         return Objects.equals(inequalitySymbol, other.inequalitySymbol) && Objects.equals(left, other.left)
-                && Objects.equals(right, other.right);
+            && Objects.equals(right, other.right);
     }
 }
