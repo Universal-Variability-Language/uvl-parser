@@ -50,6 +50,15 @@ public class Attribute<T> {
     }
 
     /**
+     * Returns the name of the attribute.
+     *
+     * @return Name of the attribute (never null)
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * Returns a uvl representation of the attribute as string (different for the possible types of the value)
      *
      * @return attribute as string

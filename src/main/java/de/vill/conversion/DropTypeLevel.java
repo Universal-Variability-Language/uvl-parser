@@ -25,11 +25,9 @@ public class DropTypeLevel implements IConversionStrategy {
     }
 
     private void traverseFeatures(final Feature feature) {
-        if (feature.getFeatureType() != null) {
-            feature.setFeatureType(null);
-            feature.getAttributes().remove("type_level_default_value");
-            feature.getAttributes().remove("type_level_actual_value");
-        }
+        feature.setFeatureType(null);
+        feature.getAttributes().remove("type_level_default_value");
+        feature.getAttributes().remove("type_level_actual_value");
 
         for (final Group group : feature.getChildren()) {
             for (final Feature subFeature : group.getFeatures()) {

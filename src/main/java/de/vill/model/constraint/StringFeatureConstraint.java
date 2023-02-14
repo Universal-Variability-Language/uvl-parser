@@ -68,4 +68,16 @@ public abstract class StringFeatureConstraint extends Constraint {
         return Objects.equals(functionName, other.functionName) && Objects.equals(left, other.left)
             && Objects.equals(right, other.right);
     }
+
+    public LiteralConstraint getLeft() {
+        return this.left;
+    }
+
+    public LiteralConstraint getRight() {
+        return this.right;
+    }
+
+    public Boolean getIsRightConstant() {
+        return this.isRightConstant;
+    }
 }

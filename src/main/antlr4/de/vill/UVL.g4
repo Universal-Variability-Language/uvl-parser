@@ -178,7 +178,7 @@ aggregateFunction
 
 stringFeatureFunctions
     : 'strlen' OPEN_PAREN reference COMMA (INTEGER | reference) CLOSE_PAREN  # StringFeatureLengthConstraint
-    | 'strcmp' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint
+    | 'strcmp' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint //equalsIgnoreCase
     | 'strval' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureAssignmentConstraint
     ;
 

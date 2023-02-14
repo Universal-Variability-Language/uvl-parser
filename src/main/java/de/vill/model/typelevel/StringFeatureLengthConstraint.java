@@ -20,4 +20,12 @@ public class StringFeatureLengthConstraint extends StringFeatureConstraint {
         return "strlen(" + this.left.toString(withSubmodels, currentAlias) + "," +
             (this.isRightConstant ? this.right.getLiteral() : this.right.toString(withSubmodels, currentAlias)) + ")";
     }
+
+    public boolean evaluate() {
+        String featureVal = left.getFeature().getAttributes().get("type_level_default_value").getValue().toString();
+        String rightVal =
+            isRightConstant ? right.getLiteral() : right.getFeature().getAttributes().get("type_level_default_value").getValue().toString();
+
+        return featureVal.length() == rightVal.length();
+    }
 }
