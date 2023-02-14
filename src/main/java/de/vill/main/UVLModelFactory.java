@@ -194,6 +194,7 @@ public class UVLModelFactory {
                 IConversionStrategy conversionStrategy = conversionStrategies.get(levelToDropNow).getDeclaredConstructor().newInstance();
                 conversionStrategy.convertFeatureModel(rootFeatureModel, featureModel);
                 featureModel.getUsedLanguageLevels().removeAll(conversionStrategy.getLevelsToBeRemoved());
+                featureModel.getUsedLanguageLevels().addAll(conversionStrategy.getTargetLevelsOfConversion());
                 for (Import importLine : featureModel.getImports()) {
                     //only consider sub feature models from imports that are actually used
                     if (importLine.isReferenced()) {
