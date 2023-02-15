@@ -293,7 +293,7 @@ public class UVLListener extends UVLBaseListener {
     @Override
     public void enterNumericFeatureConstraint(UVLParser.NumericFeatureConstraintContext ctx) {
         this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_VALIDITY_CHECK);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_AGGREGATE_FUNCTION);
     }
 
     @Override

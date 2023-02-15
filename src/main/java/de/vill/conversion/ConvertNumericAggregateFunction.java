@@ -26,10 +26,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ConvertNumericValidityCheck implements IConversionStrategy {
+public class ConvertNumericAggregateFunction implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_VALIDITY_CHECK));
+        return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_AGGREGATE_FUNCTION));
     }
 
     @Override
@@ -46,9 +46,9 @@ public class ConvertNumericValidityCheck implements IConversionStrategy {
         List<Constraint> constraints = new ArrayList<>();
         for (Constraint constraint : fm.getOwnConstraints()) {
             if (constraint instanceof StringFeatureConstraint) {
-                constraints.add(processSimpleConstraint(fm, constraint));
+                constraints.add(processSimpleConstraint(constraint));
             } else {
-                constraints.add(processCompoundConstraint(fm, constraint));
+                constraints.add(processCompoundConstraint(constraint));
             }
         }
         if (constraints.size() != 0) {
@@ -57,7 +57,7 @@ public class ConvertNumericValidityCheck implements IConversionStrategy {
         }
     }
 
-    private Constraint processSimpleConstraint(FeatureModel fm, Constraint constraint) {
+    private Constraint processSimpleConstraint(Constraint constraint) {
         Boolean isRightConstant = ((NumericFeatureConstraint) constraint).getIsRightConstant();
         if (constraint instanceof NumericFeatureAssignmentConstraint) {
             return new AssignmentEquationConstraint(
@@ -128,12 +128,12 @@ public class ConvertNumericValidityCheck implements IConversionStrategy {
         throw new ParseError("constraint type not supported");
     }
 
-    private Constraint processCompoundConstraint(FeatureModel fm, Constraint constraint) {
+    private Constraint processCompoundConstraint(Constraint constraint) {
         if (constraint instanceof NumericFeatureConstraint) {
-            return processSimpleConstraint(fm, constraint);
+            return processSimpleConstraint(constraint);
         }
 
-        constraint.getConstraintSubParts().forEach(c -> c.replaceConstraintSubPart(c, processCompoundConstraint(fm, c)));
+        constraint.getConstraintSubParts().forEach(c -> c.replaceConstraintSubPart(c, processCompoundConstraint(c)));
 
         return constraint;
     }

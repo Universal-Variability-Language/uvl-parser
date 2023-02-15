@@ -7,10 +7,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DropNumericValidityCheck implements IConversionStrategy {
+public class DropNumericAggregateFunction implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_VALIDITY_CHECK));
+        return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_AGGREGATE_FUNCTION));
     }
 
     @Override

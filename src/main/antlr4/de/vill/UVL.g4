@@ -150,7 +150,7 @@ constraint
     | constraint IMPLICATION constraint     # ImplicationConstraint
     | constraint EQUIVALENCE constraint     # EquivalenceConstraint
     | stringFeatureFunctions                # StringFeatureConstraint
-    | numericFeatureValidityEquations       # NumericFeatureConstraint
+    | numericFeatureFunctions               # NumericFeatureConstraint
 	;
 
 equation
@@ -177,14 +177,14 @@ aggregateFunction
     ;
 
 stringFeatureFunctions
-    : 'strlen' OPEN_PAREN reference COMMA (INTEGER | reference) CLOSE_PAREN  # StringFeatureLengthConstraint
-    | 'strcmp' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint //equalsIgnoreCase
-    | 'strval' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureAssignmentConstraint
+    : 'strlen' OPEN_PAREN reference COMMA (INTEGER | reference) CLOSE_PAREN  # StringFeatureLengthConstraint // string length comparison
+    | 'strcmp' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint // equalsIgnoreCase comparison
+    | 'strset' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureAssignmentConstraint // value assignment
     ;
 
-numericFeatureValidityEquations
-    : 'numcmp' OPEN_PAREN reference COMMA (number | reference) COMMA inequality CLOSE_PAREN    # NumericFeatureComparisonConstraint
-    | 'numval' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN                     # NumberFeatureAssignmentConstraint
+numericFeatureFunctions
+    : 'numcmp' OPEN_PAREN reference COMMA (number | reference) COMMA inequality CLOSE_PAREN    # NumericFeatureComparisonConstraint // numeric inequalities
+    | 'numset' OPEN_PAREN reference COMMA (number | reference) CLOSE_PAREN                     # NumberFeatureAssignmentConstraint // value assignment
     ;
 
 number: INTEGER | FLOAT;
@@ -237,7 +237,7 @@ BOOLEAN: 'true' | 'false';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
 MAJORLEVEL: 'SAT-level' | 'SMT-level' | 'TYPE-level';
-MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-aggregate-function' | 'numeric-validity-check';
+MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-aggregate-function' | 'numeric-aggregate-function';
 
 COMMA: ',';
 

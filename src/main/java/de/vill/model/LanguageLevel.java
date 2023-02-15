@@ -19,7 +19,7 @@ public enum LanguageLevel {
     AGGREGATE_FUNCTION(4, "aggregate-function"),
     //TODO: finalize the name
     STRING_AGGREGATE_FUNCTION(6, "string-aggregate-function"),
-    NUMERIC_VALIDITY_CHECK(6, "numeric-validity-check"),
+    NUMERIC_AGGREGATE_FUNCTION(6, "numeric-aggregate-function"),
     ;
 
     private final int value;
