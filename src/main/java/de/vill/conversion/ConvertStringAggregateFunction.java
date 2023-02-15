@@ -16,11 +16,15 @@ import de.vill.model.typelevel.StringFeatureEqualsConstraint;
 import de.vill.model.typelevel.StringFeatureLengthConstraint;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ConvertStringAggregateFunction implements IConversionStrategy {
+    private final Map<String, Map<String, Attribute>> featuresToBeUpdated = new HashMap<>();
+
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
         return new HashSet<>(Collections.singletonList(LanguageLevel.STRING_AGGREGATE_FUNCTION));
@@ -49,34 +53,44 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
             fm.getOwnConstraints().clear();
             fm.getOwnConstraints().addAll(constraints);
         }
+        traverseFeatures(fm.getRootFeature());
     }
 
     private Constraint processSimpleConstraint(FeatureModel fm, Constraint constraint) {
         Boolean isRightConstant = ((StringFeatureConstraint) constraint).getIsRightConstant();
         if (constraint instanceof StringFeatureAssignmentConstraint) {
             return new AssignmentEquationConstraint(
-                new LiteralExpression(((StringFeatureAssignmentConstraint) constraint).getLeft().getLiteral() + ".type_level_default_value"),
+                new LiteralExpression(((StringFeatureAssignmentConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
                 new LiteralExpression(
-                    ((StringFeatureAssignmentConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".type_level_default_value"))
+                    ((StringFeatureAssignmentConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".feature_value"))
             );
         } else if (constraint instanceof StringFeatureEqualsConstraint) {
             return new EqualEquationConstraint(
-                new LiteralExpression(((StringFeatureEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_default_value"),
+                new LiteralExpression(((StringFeatureEqualsConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
                 new LiteralExpression(
-                    ((StringFeatureEqualsConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".type_level_default_value"))
+                    ((StringFeatureEqualsConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".feature_value"))
             );
         } else if (constraint instanceof StringFeatureLengthConstraint) {
-            findFeatureAndAddAttribute(
-                fm.getRootFeature(),
-                fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral()),
-                new Attribute<Integer>("length", 0)
+            Map<String, Attribute> currentAttributes =
+                fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral()).getAttributes();
+            currentAttributes.put(
+                "length",
+                new Attribute<>(
+                    "length",
+                    getStringLength(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral())).toString()
+                )
             );
+            featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral(), currentAttributes);
             if (!((StringFeatureLengthConstraint) constraint).getIsRightConstant()) {
-                findFeatureAndAddAttribute(
-                    fm.getRootFeature(),
-                    fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral()),
-                    new Attribute<Integer>("length", 0)
+                currentAttributes = fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral()).getAttributes();
+                currentAttributes.put(
+                    "length",
+                    new Attribute<>(
+                        "length",
+                        getStringLength(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral())).toString()
+                    )
                 );
+                featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getRight().getLiteral(), currentAttributes);
             }
             return new EqualEquationConstraint(
                 new LiteralExpression(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral() + ".length"),
@@ -99,19 +113,23 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
         return constraint;
     }
 
-    //TODO: fix
-    private void findFeatureAndAddAttribute(Feature current, Feature feature, Attribute attribute) {
-        if (current.getFeatureName().equals(feature.getFeatureName())) {
-            feature.getAttributes().put(
-                attribute.getName(),
-                attribute
-            );
+    private void traverseFeatures(final Feature feature) {
+        if (featuresToBeUpdated.containsKey(feature.getFeatureName())) {
+            feature.getAttributes().putAll(featuresToBeUpdated.get(feature.getFeatureName()));
         }
 
         for (final Group group : feature.getChildren()) {
             for (final Feature subFeature : group.getFeatures()) {
-                this.findFeatureAndAddAttribute(subFeature, feature, attribute);
+                this.traverseFeatures(subFeature);
             }
         }
+    }
+
+    private Integer getStringLength(Feature feature) {
+        if (feature.getAttributes().containsKey("feature_value")) {
+            return feature.getAttributes().get("feature_value").getValue().toString().length();
+        }
+
+        return 0;
     }
 }

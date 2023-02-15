@@ -276,10 +276,7 @@ public class UVLListener extends UVLBaseListener {
         feature.setFeatureType(FeatureType.fromString(ctx.getText().toLowerCase()));
         // TODO: see the usage
 //        feature.getAttributes().put(
-//            "type_level_default_value", new Attribute<>("type_level_default_value", "")
-//        );
-//        feature.getAttributes().put(
-//            "type_level_actual_value", new Attribute<>("type_level_actual_value", "")
+//            "feature_value", new Attribute<>("feature_value", "")
 //        );
         this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
     }
@@ -337,18 +334,15 @@ public class UVLListener extends UVLBaseListener {
             return;
         }
         LiteralConstraint left = new LiteralConstraint(leftFeature);
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
+        String rightFeature = ctx.reference(1).getText().replace("\"", "");
+        Boolean isRightConstant = featureModel.getFeatureMap().get(rightFeature) == null;
         if (!isRightConstant) {
-            String rightFeature = ctx.reference(1).getText().replace("\"", "");
-            if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
-                !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
+            if (!FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
                 errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String"));
                 return;
             }
         }
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.STRING().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
+        LiteralConstraint right = new LiteralConstraint(rightFeature);
         Constraint constraint = new StringFeatureEqualsConstraint(
             left,
             right,
@@ -368,18 +362,15 @@ public class UVLListener extends UVLBaseListener {
             return;
         }
         LiteralConstraint left = new LiteralConstraint(leftFeature);
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
+        String rightFeature = ctx.reference(1).getText().replace("\"", "");
+        Boolean isRightConstant = featureModel.getFeatureMap().get(rightFeature) == null;
         if (!isRightConstant) {
-            String rightFeature = ctx.reference(1).getText().replace("\"", "");
-            if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
-                !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
+            if (!FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
                 errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String"));
                 return;
             }
         }
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.STRING().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
+        LiteralConstraint right = new LiteralConstraint(rightFeature);
         Constraint constraint = new StringFeatureAssignmentConstraint(
             left,
             right,

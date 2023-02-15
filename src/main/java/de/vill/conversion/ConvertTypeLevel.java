@@ -31,6 +31,7 @@ public class ConvertTypeLevel implements IConversionStrategy {
                 "feature_type",
                 new Attribute<>("feature_type", feature.getFeatureType().getName())
             );
+            feature.setFeatureType(null);
         }
 
         for (final Group group : feature.getChildren()) {
