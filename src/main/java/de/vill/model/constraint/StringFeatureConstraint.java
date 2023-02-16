@@ -12,10 +12,10 @@ public abstract class StringFeatureConstraint extends Constraint {
     private final Boolean isRightConstant;
 
     public StringFeatureConstraint(
-        LiteralConstraint left,
-        LiteralConstraint right,
-        String functionName,
-        Boolean isRightConstant
+        final LiteralConstraint left,
+        final LiteralConstraint right,
+        final String functionName,
+        final Boolean isRightConstant
     ) {
         this.left = left;
         this.right = right;
@@ -25,48 +25,41 @@ public abstract class StringFeatureConstraint extends Constraint {
 
     @Override
     public List<Constraint> getConstraintSubParts() {
-        if (isRightConstant) {
-            return Collections.singletonList(left);
+        if (this.isRightConstant) {
+            return Collections.singletonList(this.left);
         }
-        return Arrays.asList(left, right);
+        return Arrays.asList(this.left, this.right);
     }
 
     @Override
-    public void replaceConstraintSubPart(Constraint oldSubConstraint, Constraint newSubConstraint) {
-        if (left == oldSubConstraint) {
-            left = (LiteralConstraint) newSubConstraint;
-        } else if (right == oldSubConstraint) {
-            right = (LiteralConstraint) newSubConstraint;
+    public void replaceConstraintSubPart(final Constraint oldSubConstraint, final Constraint newSubConstraint) {
+        if (this.left == oldSubConstraint) {
+            this.left = (LiteralConstraint) newSubConstraint;
+        } else if (this.right == oldSubConstraint) {
+            this.right = (LiteralConstraint) newSubConstraint;
         }
     }
 
     @Override
-    public Constraint clone() {
-        // TODO implement clone method in expressions and clone them here
-        //return new NumericFeatureValueFeatureCompareConstraint(left, right, inequalitySymbol) ;
-        return null;
-    }
-
-    @Override
-    public int hashCode(int level) {
+    public int hashCode(final int level) {
         final int prime = 31;
-        int result = prime * level + (left == null ? 0 : left.hashCode());
-        result = prime * result + (right == null ? 0 : right.hashCode());
-        result = prime * result + (functionName == null ? 0 : functionName.hashCode());
+        int result = prime * level + (this.left == null ? 0 : this.left.hashCode());
+        result = prime * result + (this.right == null ? 0 : this.right.hashCode());
+        result = prime * result + (this.functionName == null ? 0 : this.functionName.hashCode());
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
-        StringFeatureConstraint other = (StringFeatureConstraint) obj;
-        return Objects.equals(functionName, other.functionName) && Objects.equals(left, other.left)
-            && Objects.equals(right, other.right);
+        final StringFeatureConstraint other = (StringFeatureConstraint) obj;
+        return Objects.equals(this.functionName, other.functionName) && Objects.equals(this.left, other.left)
+            && Objects.equals(this.right, other.right);
     }
 
     public LiteralConstraint getLeft() {

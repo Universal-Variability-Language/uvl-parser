@@ -35,27 +35,27 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
 
     @Override
     public void convertFeatureModel(final FeatureModel rootFeatureModel, final FeatureModel featureModel) {
-        processConstraints(featureModel);
+        this.processConstraints(featureModel);
     }
 
-    private void processConstraints(FeatureModel fm) {
-        List<Constraint> constraints = new ArrayList<>();
-        for (Constraint constraint : fm.getOwnConstraints()) {
+    private void processConstraints(final FeatureModel fm) {
+        final List<Constraint> constraints = new ArrayList<>();
+        for (final Constraint constraint : fm.getOwnConstraints()) {
             if (constraint instanceof StringFeatureConstraint) {
-                constraints.add(processSimpleConstraint(fm, constraint));
+                constraints.add(this.processSimpleConstraint(fm, constraint));
             } else {
-                constraints.add(processCompoundConstraint(fm, constraint));
+                constraints.add(this.processCompoundConstraint(fm, constraint));
             }
         }
         if (constraints.size() != 0) {
             fm.getOwnConstraints().clear();
             fm.getOwnConstraints().addAll(constraints);
         }
-        traverseFeatures(fm.getRootFeature());
+        this.traverseFeatures(fm.getRootFeature());
     }
 
-    private Constraint processSimpleConstraint(FeatureModel fm, Constraint constraint) {
-        Boolean isRightConstant = ((StringFeatureConstraint) constraint).getIsRightConstant();
+    private Constraint processSimpleConstraint(final FeatureModel fm, final Constraint constraint) {
+        final Boolean isRightConstant = ((StringFeatureConstraint) constraint).getIsRightConstant();
         if (constraint instanceof StringFeatureEqualsConstraint) {
             return new EqualEquationConstraint(
                 new LiteralExpression(((StringFeatureEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
@@ -69,20 +69,20 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
                 "type_level_value_length",
                 new Attribute<>(
                     "type_level_value_length",
-                    getStringLength(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral())).toString()
+                    this.getStringLength(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral())).toString()
                 )
             );
-            featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral(), currentAttributes);
+            this.featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral(), currentAttributes);
             if (!((StringFeatureLengthConstraint) constraint).getIsRightConstant()) {
                 currentAttributes = fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral()).getAttributes();
                 currentAttributes.put(
                     "type_level_value_length",
                     new Attribute<>(
                         "type_level_value_length",
-                        getStringLength(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral())).toString()
+                        this.getStringLength(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral())).toString()
                     )
                 );
-                featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getRight().getLiteral(), currentAttributes);
+                this.featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getRight().getLiteral(), currentAttributes);
             }
             return new EqualEquationConstraint(
                 new LiteralExpression(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral() + ".type_level_value_length"),
@@ -95,19 +95,19 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
         throw new ParseError("constraint type not supported");
     }
 
-    private Constraint processCompoundConstraint(FeatureModel fm, Constraint constraint) {
+    private Constraint processCompoundConstraint(final FeatureModel fm, final Constraint constraint) {
         if (constraint instanceof StringFeatureConstraint) {
-            return processSimpleConstraint(fm, constraint);
+            return this.processSimpleConstraint(fm, constraint);
         }
 
-        constraint.getConstraintSubParts().forEach(c -> c.replaceConstraintSubPart(c, processCompoundConstraint(fm, c)));
+        constraint.getConstraintSubParts().forEach(c -> c.replaceConstraintSubPart(c, this.processCompoundConstraint(fm, c)));
 
         return constraint;
     }
 
     private void traverseFeatures(final Feature feature) {
-        if (featuresToBeUpdated.containsKey(feature.getFeatureName())) {
-            feature.getAttributes().putAll(featuresToBeUpdated.get(feature.getFeatureName()));
+        if (this.featuresToBeUpdated.containsKey(feature.getFeatureName())) {
+            feature.getAttributes().putAll(this.featuresToBeUpdated.get(feature.getFeatureName()));
         }
 
         for (final Group group : feature.getChildren()) {
@@ -117,7 +117,7 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
         }
     }
 
-    private Integer getStringLength(Feature feature) {
+    private Integer getStringLength(final Feature feature) {
         if (feature.getAttributes().containsKey("type_level_value")) {
             return feature.getAttributes().get("type_level_value").getValue().toString().length();
         }

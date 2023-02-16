@@ -1,5 +1,6 @@
 package de.vill.model.typelevel;
 
+import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.LiteralConstraint;
 import de.vill.model.constraint.StringFeatureConstraint;
 
@@ -22,10 +23,15 @@ public class StringFeatureEqualsConstraint extends StringFeatureConstraint {
     }
 
     public boolean evaluate() {
-        String featureVal = left.getFeature().getAttributes().get("type_level_value").getValue().toString();
-        String rightVal =
-            isRightConstant ? right.getLiteral() : right.getFeature().getAttributes().get("type_level_value").getValue().toString();
+        final String featureVal = this.left.getFeature().getAttributes().get("type_level_value").getValue().toString();
+        final String rightVal =
+            this.isRightConstant ? this.right.getLiteral() : this.right.getFeature().getAttributes().get("type_level_value").getValue().toString();
 
         return featureVal.equalsIgnoreCase(rightVal);
+    }
+
+    @Override
+    public Constraint clone() {
+        return new StringFeatureEqualsConstraint(this.left, this.right, this.isRightConstant);
     }
 }

@@ -37,16 +37,16 @@ public class ConvertNumericAggregateFunction implements IConversionStrategy {
 
     @Override
     public void convertFeatureModel(final FeatureModel rootFeatureModel, final FeatureModel featureModel) {
-        processConstraints(featureModel);
+        this.processConstraints(featureModel);
     }
 
-    private void processConstraints(FeatureModel fm) {
-        List<Constraint> constraints = new ArrayList<>();
-        for (Constraint constraint : fm.getOwnConstraints()) {
+    private void processConstraints(final FeatureModel fm) {
+        final List<Constraint> constraints = new ArrayList<>();
+        for (final Constraint constraint : fm.getOwnConstraints()) {
             if (constraint instanceof StringFeatureConstraint) {
-                constraints.add(processSimpleConstraint(constraint));
+                constraints.add(this.processSimpleConstraint(constraint));
             } else {
-                constraints.add(processCompoundConstraint(constraint));
+                constraints.add(this.processCompoundConstraint(constraint));
             }
         }
         if (constraints.size() != 0) {
@@ -55,9 +55,9 @@ public class ConvertNumericAggregateFunction implements IConversionStrategy {
         }
     }
 
-    private Constraint processSimpleConstraint(Constraint constraint) {
-        Boolean isRightConstant = ((NumericFeatureConstraint) constraint).getIsRightConstant();
-       if (constraint instanceof NumericFeatureEqualsConstraint) {
+    private Constraint processSimpleConstraint(final Constraint constraint) {
+        final Boolean isRightConstant = ((NumericFeatureConstraint) constraint).getIsRightConstant();
+        if (constraint instanceof NumericFeatureEqualsConstraint) {
             return new EqualEquationConstraint(
                 new LiteralExpression(((NumericFeatureEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                 new LiteralExpression(
@@ -120,12 +120,12 @@ public class ConvertNumericAggregateFunction implements IConversionStrategy {
         throw new ParseError("constraint type not supported");
     }
 
-    private Constraint processCompoundConstraint(Constraint constraint) {
+    private Constraint processCompoundConstraint(final Constraint constraint) {
         if (constraint instanceof NumericFeatureConstraint) {
-            return processSimpleConstraint(constraint);
+            return this.processSimpleConstraint(constraint);
         }
 
-        constraint.getConstraintSubParts().forEach(c -> c.replaceConstraintSubPart(c, processCompoundConstraint(c)));
+        constraint.getConstraintSubParts().forEach(c -> c.replaceConstraintSubPart(c, this.processCompoundConstraint(c)));
 
         return constraint;
     }

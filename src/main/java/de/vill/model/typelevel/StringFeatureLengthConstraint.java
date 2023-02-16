@@ -1,5 +1,6 @@
 package de.vill.model.typelevel;
 
+import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.LiteralConstraint;
 import de.vill.model.constraint.StringFeatureConstraint;
 
@@ -8,7 +9,7 @@ public class StringFeatureLengthConstraint extends StringFeatureConstraint {
     private final LiteralConstraint right;
     private final Boolean isRightConstant;
 
-    public StringFeatureLengthConstraint(LiteralConstraint left, LiteralConstraint right, Boolean isRightConstant) {
+    public StringFeatureLengthConstraint(final LiteralConstraint left, final LiteralConstraint right, final Boolean isRightConstant) {
         super(left, right, "length", isRightConstant);
         this.left = left;
         this.right = right;
@@ -22,10 +23,15 @@ public class StringFeatureLengthConstraint extends StringFeatureConstraint {
     }
 
     public boolean evaluate() {
-        String featureVal = left.getFeature().getAttributes().get("type_level_value").getValue().toString();
-        String rightVal =
-            isRightConstant ? right.getLiteral() : right.getFeature().getAttributes().get("type_level_value").getValue().toString();
+        final String featureVal = this.left.getFeature().getAttributes().get("type_level_value").getValue().toString();
+        final String rightVal =
+            this.isRightConstant ? this.right.getLiteral() : this.right.getFeature().getAttributes().get("type_level_value").getValue().toString();
 
         return featureVal.length() == rightVal.length();
+    }
+
+    @Override
+    public Constraint clone() {
+        return new StringFeatureEqualsConstraint(this.left, this.right, this.isRightConstant);
     }
 }
