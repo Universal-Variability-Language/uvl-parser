@@ -36,12 +36,12 @@ public abstract class NumericFeatureConstraint extends Constraint {
     }
 
     public boolean evaluate() {
-        Double featureVal = Double.parseDouble(left.getFeature().getAttributes().get("feature_value").getValue().toString());
+        Double featureVal = Double.parseDouble(left.getFeature().getAttributes().get("type_level_value").getValue().toString());
         Double rightVal;
         if (isRightConstant) {
             rightVal = Double.parseDouble(right.getLiteral());
         } else {
-            rightVal = Double.parseDouble(right.getFeature().getAttributes().get("feature_value").getValue().toString());
+            rightVal = Double.parseDouble(right.getFeature().getAttributes().get("type_level_value").getValue().toString());
         }
         switch (this.inequalitySymbol) {
             case "==":

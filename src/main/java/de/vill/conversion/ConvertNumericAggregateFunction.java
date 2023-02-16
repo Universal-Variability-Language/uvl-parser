@@ -3,7 +3,6 @@ package de.vill.conversion;
 import de.vill.exception.ParseError;
 import de.vill.model.FeatureModel;
 import de.vill.model.LanguageLevel;
-import de.vill.model.constraint.AssignmentEquationConstraint;
 import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.EqualEquationConstraint;
 import de.vill.model.constraint.GreaterEquationConstraint;
@@ -13,7 +12,6 @@ import de.vill.model.constraint.NumericFeatureConstraint;
 import de.vill.model.constraint.OrConstraint;
 import de.vill.model.constraint.StringFeatureConstraint;
 import de.vill.model.expression.LiteralExpression;
-import de.vill.model.typelevel.NumericFeatureAssignmentConstraint;
 import de.vill.model.typelevel.NumericFeatureEqualsConstraint;
 import de.vill.model.typelevel.NumericFeatureGreaterConstraint;
 import de.vill.model.typelevel.NumericFeatureGreaterEqualsConstraint;
@@ -59,67 +57,61 @@ public class ConvertNumericAggregateFunction implements IConversionStrategy {
 
     private Constraint processSimpleConstraint(Constraint constraint) {
         Boolean isRightConstant = ((NumericFeatureConstraint) constraint).getIsRightConstant();
-        if (constraint instanceof NumericFeatureAssignmentConstraint) {
-            return new AssignmentEquationConstraint(
-                new LiteralExpression(((NumericFeatureAssignmentConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
-                new LiteralExpression(
-                    ((NumericFeatureAssignmentConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".feature_value"))
-            );
-        } else if (constraint instanceof NumericFeatureEqualsConstraint) {
+       if (constraint instanceof NumericFeatureEqualsConstraint) {
             return new EqualEquationConstraint(
-                new LiteralExpression(((NumericFeatureEqualsConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
+                new LiteralExpression(((NumericFeatureEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                 new LiteralExpression(
-                    ((NumericFeatureEqualsConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".feature_value"))
+                    ((NumericFeatureEqualsConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".type_level_value"))
             );
         } else if (constraint instanceof NumericFeatureNotEqualsConstraint) {
             return new NotConstraint(
                 new EqualEquationConstraint(
-                    new LiteralExpression(((NumericFeatureNotEqualsConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
+                    new LiteralExpression(((NumericFeatureNotEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                     new LiteralExpression(
                         ((NumericFeatureNotEqualsConstraint) constraint).getRight().getLiteral() +
-                            (isRightConstant ? "" : ".feature_value"))
+                            (isRightConstant ? "" : ".type_level_value"))
                 )
             );
         } else if (constraint instanceof NumericFeatureGreaterConstraint) {
             return new GreaterEquationConstraint(
-                new LiteralExpression(((NumericFeatureGreaterConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
+                new LiteralExpression(((NumericFeatureGreaterConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                 new LiteralExpression(
-                    ((NumericFeatureGreaterConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".feature_value"))
+                    ((NumericFeatureGreaterConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".type_level_value"))
             );
         } else if (constraint instanceof NumericFeatureGreaterEqualsConstraint) {
             return new OrConstraint(
                 new EqualEquationConstraint(
-                    new LiteralExpression(((NumericFeatureGreaterEqualsConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
+                    new LiteralExpression(((NumericFeatureGreaterEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                     new LiteralExpression(
                         ((NumericFeatureGreaterEqualsConstraint) constraint).getRight().getLiteral() +
-                            (isRightConstant ? "" : ".feature_value"))
+                            (isRightConstant ? "" : ".type_level_value"))
                 ),
                 new GreaterEquationConstraint(
-                    new LiteralExpression(((NumericFeatureGreaterEqualsConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
+                    new LiteralExpression(((NumericFeatureGreaterEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                     new LiteralExpression(
                         ((NumericFeatureGreaterEqualsConstraint) constraint).getRight().getLiteral() +
-                            (isRightConstant ? "" : ".feature_value"))
+                            (isRightConstant ? "" : ".type_level_value"))
                 )
             );
         } else if (constraint instanceof NumericFeatureLowerConstraint) {
             return new LowerEquationConstraint(
-                new LiteralExpression(((NumericFeatureLowerConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
+                new LiteralExpression(((NumericFeatureLowerConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                 new LiteralExpression(
-                    ((NumericFeatureLowerConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".feature_value"))
+                    ((NumericFeatureLowerConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".type_level_value"))
             );
         } else if (constraint instanceof NumericFeatureLowerEqualsConstraint) {
             return new OrConstraint(
                 new EqualEquationConstraint(
-                    new LiteralExpression(((NumericFeatureLowerEqualsConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
+                    new LiteralExpression(((NumericFeatureLowerEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                     new LiteralExpression(
                         ((NumericFeatureLowerEqualsConstraint) constraint).getRight().getLiteral() +
-                            (isRightConstant ? "" : ".feature_value"))
+                            (isRightConstant ? "" : ".type_level_value"))
                 ),
                 new LowerEquationConstraint(
-                    new LiteralExpression(((NumericFeatureLowerEqualsConstraint) constraint).getLeft().getLiteral() + ".feature_value"),
+                    new LiteralExpression(((NumericFeatureLowerEqualsConstraint) constraint).getLeft().getLiteral() + ".type_level_value"),
                     new LiteralExpression(
                         ((NumericFeatureLowerEqualsConstraint) constraint).getRight().getLiteral() +
-                            (isRightConstant ? "" : ".feature_value"))
+                            (isRightConstant ? "" : ".type_level_value"))
                 )
             );
         }

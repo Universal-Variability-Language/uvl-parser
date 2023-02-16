@@ -33,14 +33,12 @@ import de.vill.model.expression.NumberExpression;
 import de.vill.model.expression.ParenthesisExpression;
 import de.vill.model.expression.SubExpression;
 import de.vill.model.expression.SumAggregateFunctionExpression;
-import de.vill.model.typelevel.NumericFeatureAssignmentConstraint;
 import de.vill.model.typelevel.NumericFeatureEqualsConstraint;
 import de.vill.model.typelevel.NumericFeatureGreaterConstraint;
 import de.vill.model.typelevel.NumericFeatureGreaterEqualsConstraint;
 import de.vill.model.typelevel.NumericFeatureLowerConstraint;
 import de.vill.model.typelevel.NumericFeatureLowerEqualsConstraint;
 import de.vill.model.typelevel.NumericFeatureNotEqualsConstraint;
-import de.vill.model.typelevel.StringFeatureAssignmentConstraint;
 import de.vill.model.typelevel.StringFeatureEqualsConstraint;
 import de.vill.model.typelevel.StringFeatureLengthConstraint;
 import java.util.Arrays;
@@ -274,10 +272,6 @@ public class UVLListener extends UVLBaseListener {
     public void enterFeatureType(final UVLParser.FeatureTypeContext ctx) {
         final Feature feature = this.featureStack.peek();
         feature.setFeatureType(FeatureType.fromString(ctx.getText().toLowerCase()));
-        // TODO: see the usage
-//        feature.getAttributes().put(
-//            "feature_value", new Attribute<>("feature_value", "")
-//        );
         this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
     }
 
@@ -344,34 +338,6 @@ public class UVLListener extends UVLBaseListener {
         }
         LiteralConstraint right = new LiteralConstraint(rightFeature);
         Constraint constraint = new StringFeatureEqualsConstraint(
-            left,
-            right,
-            isRightConstant
-        );
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override public void exitStringFeatureAssignmentConstraint(UVLParser.StringFeatureAssignmentConstraintContext ctx) {
-        String leftFeature = ctx.reference(0).getText().replace("\"", "");
-        if (this.featureModel.getFeatureMap().get(leftFeature) != null &&
-            !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(leftFeature).getFeatureType())) {
-            errorList.add(new ParseError("Feature - " + leftFeature + " in the constraint must be of type String"));
-            return;
-        }
-        LiteralConstraint left = new LiteralConstraint(leftFeature);
-        String rightFeature = ctx.reference(1).getText().replace("\"", "");
-        Boolean isRightConstant = featureModel.getFeatureMap().get(rightFeature) == null;
-        if (!isRightConstant) {
-            if (!FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
-                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String"));
-                return;
-            }
-        }
-        LiteralConstraint right = new LiteralConstraint(rightFeature);
-        Constraint constraint = new StringFeatureAssignmentConstraint(
             left,
             right,
             isRightConstant
@@ -449,37 +415,6 @@ public class UVLListener extends UVLBaseListener {
                 break;
         }
         // constraint is not null
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override public void exitNumberFeatureAssignmentConstraint(UVLParser.NumberFeatureAssignmentConstraintContext ctx) {
-        String leftFeature = ctx.reference(0).getText().replace("\"", "");
-        if (this.featureModel.getFeatureMap().get(leftFeature) != null &&
-            !FeatureType.INT.equals(this.featureModel.getFeatureMap().get(leftFeature).getFeatureType())) {
-            errorList.add(new ParseError("Feature - " + leftFeature + " in the constraint must be of type Integer"));
-            return;
-        }
-        LiteralConstraint left = new LiteralConstraint(leftFeature);
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        if (!isRightConstant) {
-            String rightFeature = ctx.reference(1).getText().replace("\"", "");
-            if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
-                !FeatureType.INT.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
-                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type Integer"));
-                return;
-            }
-        }
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
-        Constraint constraint = new NumericFeatureAssignmentConstraint(
-            left,
-            right,
-            isRightConstant
-        );
         constraintStack.push(constraint);
         Token t = ctx.getStart();
         int line = t.getLine();
