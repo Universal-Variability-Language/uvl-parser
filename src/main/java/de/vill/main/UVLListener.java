@@ -278,13 +278,13 @@ public class UVLListener extends UVLBaseListener {
     @Override
     public void enterStringFeatureConstraint(UVLParser.StringFeatureConstraintContext ctx) {
         this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_AGGREGATE_FUNCTION);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
     }
 
     @Override
     public void enterNumericFeatureConstraint(UVLParser.NumericFeatureConstraintContext ctx) {
         this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_AGGREGATE_FUNCTION);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
     }
 
     @Override
@@ -300,8 +300,10 @@ public class UVLListener extends UVLBaseListener {
         if (!isRightConstant) {
             String rightFeature = ctx.reference(1).getText().replace("\"", "");
             if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
-                !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
-                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String"));
+                !(FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())
+                    || FeatureType.INT.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType()))
+            ) {
+                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String or Integer"));
                 return;
             }
         }

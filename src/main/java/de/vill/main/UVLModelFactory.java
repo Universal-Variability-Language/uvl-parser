@@ -63,16 +63,16 @@ public class UVLModelFactory {
         this.conversionStrategiesDrop.put(LanguageLevel.AGGREGATE_FUNCTION, DropAggregateFunction.class);
         this.conversionStrategiesDrop.put(LanguageLevel.SMT_LEVEL, DropSMTLevel.class);
         this.conversionStrategiesDrop.put(LanguageLevel.TYPE_LEVEL, DropTypeLevel.class);
-        this.conversionStrategiesDrop.put(LanguageLevel.NUMERIC_AGGREGATE_FUNCTION, DropNumericAggregateFunction.class);
-        this.conversionStrategiesDrop.put(LanguageLevel.STRING_AGGREGATE_FUNCTION, DropStringAggregateFunction.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.NUMERIC_CONSTRAINTS, DropNumericAggregateFunction.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.STRING_CONSTRAINTS, DropStringAggregateFunction.class);
         this.conversionStrategiesConvert = new HashMap<>();
         this.conversionStrategiesConvert.put(LanguageLevel.GROUP_CARDINALITY, ConvertGroupCardinality.class);
         this.conversionStrategiesConvert.put(LanguageLevel.FEATURE_CARDINALITY, ConvertFeatureCardinality.class);
         this.conversionStrategiesConvert.put(LanguageLevel.AGGREGATE_FUNCTION, ConvertAggregateFunction.class);
         this.conversionStrategiesConvert.put(LanguageLevel.SMT_LEVEL, ConvertSMTLevel.class);
         this.conversionStrategiesConvert.put(LanguageLevel.TYPE_LEVEL, ConvertTypeLevel.class);
-        this.conversionStrategiesConvert.put(LanguageLevel.NUMERIC_AGGREGATE_FUNCTION, ConvertNumericAggregateFunction.class);
-        this.conversionStrategiesConvert.put(LanguageLevel.STRING_AGGREGATE_FUNCTION, ConvertStringAggregateFunction.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.NUMERIC_CONSTRAINTS, ConvertNumericAggregateFunction.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.STRING_CONSTRAINTS, ConvertStringAggregateFunction.class);
     }
 
     /**

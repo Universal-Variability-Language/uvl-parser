@@ -10,7 +10,7 @@ import java.util.Set;
 public class DropStringAggregateFunction implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Collections.singletonList(LanguageLevel.STRING_AGGREGATE_FUNCTION));
+        return new HashSet<>(Collections.singletonList(LanguageLevel.STRING_CONSTRAINTS));
     }
 
     @Override

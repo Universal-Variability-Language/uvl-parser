@@ -1,5 +1,6 @@
 package de.vill.model.typelevel;
 
+import de.vill.model.FeatureType;
 import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.LiteralConstraint;
 import de.vill.model.constraint.StringFeatureConstraint;
@@ -26,7 +27,9 @@ public class StringFeatureLengthConstraint extends StringFeatureConstraint {
         final String featureVal = this.left.getFeature().getAttributes().get("type_level_value").getValue().toString();
         final String rightVal =
             this.isRightConstant ? this.right.getLiteral() : this.right.getFeature().getAttributes().get("type_level_value").getValue().toString();
-
+        if (!isRightConstant && FeatureType.INT.equals(this.right.getFeature().getFeatureType())) {
+            return featureVal.length() == Integer.parseInt(rightVal);
+        }
         return featureVal.length() == rightVal.length();
     }
 

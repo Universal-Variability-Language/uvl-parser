@@ -235,7 +235,7 @@ BOOLEAN: 'true' | 'false';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
 MAJORLEVEL: 'SAT-level' | 'SMT-level' | 'TYPE-level';
-MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-aggregate-function' | 'numeric-aggregate-function';
+MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-constraints' | 'numeric-constraints';
 
 COMMA: ',';
 

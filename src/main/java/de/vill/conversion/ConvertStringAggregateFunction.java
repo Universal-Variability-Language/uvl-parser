@@ -4,6 +4,7 @@ import de.vill.exception.ParseError;
 import de.vill.model.Attribute;
 import de.vill.model.Feature;
 import de.vill.model.FeatureModel;
+import de.vill.model.FeatureType;
 import de.vill.model.Group;
 import de.vill.model.LanguageLevel;
 import de.vill.model.constraint.Constraint;
@@ -25,7 +26,7 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
 
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Collections.singletonList(LanguageLevel.STRING_AGGREGATE_FUNCTION));
+        return new HashSet<>(Collections.singletonList(LanguageLevel.STRING_CONSTRAINTS));
     }
 
     @Override
@@ -63,6 +64,7 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
                     ((StringFeatureEqualsConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".type_level_value"))
             );
         } else if (constraint instanceof StringFeatureLengthConstraint) {
+            Boolean isRightInteger = Boolean.FALSE;
             Map<String, Attribute> currentAttributes =
                 fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral()).getAttributes();
             currentAttributes.put(
@@ -74,20 +76,25 @@ public class ConvertStringAggregateFunction implements IConversionStrategy {
             );
             this.featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral(), currentAttributes);
             if (!((StringFeatureLengthConstraint) constraint).getIsRightConstant()) {
-                currentAttributes = fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral()).getAttributes();
-                currentAttributes.put(
-                    "type_level_value_length",
-                    new Attribute<>(
+                if (FeatureType.STRING.equals(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral()).getFeatureType())) {
+                    currentAttributes = fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral()).getAttributes();
+                    currentAttributes.put(
                         "type_level_value_length",
-                        this.getStringLength(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral())).toString()
-                    )
-                );
-                this.featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getRight().getLiteral(), currentAttributes);
+                        new Attribute<>(
+                            "type_level_value_length",
+                            this.getStringLength(fm.getFeatureMap().get(((StringFeatureLengthConstraint) constraint).getRight().getLiteral()))
+                                .toString()
+                        )
+                    );
+                    this.featuresToBeUpdated.put(((StringFeatureLengthConstraint) constraint).getRight().getLiteral(), currentAttributes);
+                } else {
+                    isRightInteger = Boolean.TRUE;
+                }
             }
             return new EqualEquationConstraint(
                 new LiteralExpression(((StringFeatureLengthConstraint) constraint).getLeft().getLiteral() + ".type_level_value_length"),
                 new LiteralExpression(
-                    ((StringFeatureLengthConstraint) constraint).getRight().getLiteral() + (isRightConstant ? "" : ".type_level_value_length"))
+                    ((StringFeatureLengthConstraint) constraint).getRight().getLiteral() + ((isRightConstant ? "" : (isRightInteger ? ".type_level_value" : ".type_level_value_length"))))
             );
         }
 

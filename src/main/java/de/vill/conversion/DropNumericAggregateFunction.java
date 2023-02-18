@@ -10,7 +10,7 @@ import java.util.Set;
 public class DropNumericAggregateFunction implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_AGGREGATE_FUNCTION));
+        return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_CONSTRAINTS));
     }
 
     @Override
