@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ConvertStringAggregateFunction implements IConversionStrategy {
+public class ConvertStringConstraints implements IConversionStrategy {
     private final Map<String, Map<String, Attribute>> featuresToBeUpdated = new HashMap<>();
 
     @Override

@@ -149,43 +149,35 @@ constraint
     | constraint OR constraint              # OrConstraint
     | constraint IMPLICATION constraint     # ImplicationConstraint
     | constraint EQUIVALENCE constraint     # EquivalenceConstraint
-    | stringFeatureFunctions                # StringFeatureConstraint
-    | numericFeatureFunctions               # NumericFeatureConstraint
 	;
 
 equation
-    : expression EQUAL expression       # EqualEquation
-    | expression LOWER expression       # LowerEquation
-    | expression GREATER expression     # GreaterEquation
+    : expression EQUAL expression           # EqualEquation
+    | expression LOWER expression           # LowerEquation
+    | expression GREATER expression         # GreaterEquation
+    | expression LOWER_EQUALS expression    # LowerEqualsEquation
+    | expression GREATER_EQUALS expression  # GreaterEqualsEquation
+    | expression NOT_EQUALS expression      # NotEqualsEquation
     ;
 
 expression:
     FLOAT                                   # FloatLiteralExpression
     | INTEGER                               # IntegerLiteralExpression
+    | STRING                                # StringLiteralExpression
     | aggregateFunction                     # AggregateFunctionExpression
-    | reference                             # AttributeLiteralExpression
+    | reference                             # LiteralExpression
     | OPEN_PAREN expression CLOSE_PAREN     # BracketExpression
     | expression ADD expression             # AddExpression
     | expression SUB expression             # SubExpression
     | expression MUL expression             # MulExpression
-    | expression DIV expression             # DivExpresssion
+    | expression DIV expression             # DivExpression
     ;
 
 aggregateFunction
     : 'sum' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # SumAggregateFunction
     | 'avg' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # AvgAggregateFunction
+    | 'len' OPEN_PAREN reference CLOSE_PAREN                       # LengthAggregateFunction
     ;
-
-stringFeatureFunctions
-    : 'strlen' OPEN_PAREN reference COMMA (INTEGER | reference) CLOSE_PAREN  # StringFeatureLengthConstraint // string length comparison
-    | 'strcmp' OPEN_PAREN reference COMMA (STRING | reference) CLOSE_PAREN   # StringFeatureEqualsConstraint // equalsIgnoreCase comparison
-    ;
-
-numericFeatureFunctions
-    : 'numcmp' OPEN_PAREN reference COMMA (number | reference) COMMA inequality CLOSE_PAREN    # NumericFeatureComparisonConstraint // numeric inequalities
-    ;
-
-number: INTEGER | FLOAT;
 
 string
     : ID_NOT_STRICT

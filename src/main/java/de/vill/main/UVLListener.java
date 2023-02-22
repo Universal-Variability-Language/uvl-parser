@@ -15,11 +15,14 @@ import de.vill.model.constraint.AndConstraint;
 import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.EqualEquationConstraint;
 import de.vill.model.constraint.EquivalenceConstraint;
+import de.vill.model.constraint.GreaterEqualsEquationConstraint;
 import de.vill.model.constraint.GreaterEquationConstraint;
 import de.vill.model.constraint.ImplicationConstraint;
 import de.vill.model.constraint.LiteralConstraint;
+import de.vill.model.constraint.LowerEqualsEquationConstraint;
 import de.vill.model.constraint.LowerEquationConstraint;
 import de.vill.model.constraint.NotConstraint;
+import de.vill.model.constraint.NotEqualsEquationConstraint;
 import de.vill.model.constraint.OrConstraint;
 import de.vill.model.constraint.ParenthesisConstraint;
 import de.vill.model.expression.AddExpression;
@@ -27,20 +30,14 @@ import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.AvgAggregateFunctionExpression;
 import de.vill.model.expression.DivExpression;
 import de.vill.model.expression.Expression;
+import de.vill.model.expression.LengthAggregateFunctionExpression;
 import de.vill.model.expression.LiteralExpression;
 import de.vill.model.expression.MulExpression;
 import de.vill.model.expression.NumberExpression;
 import de.vill.model.expression.ParenthesisExpression;
+import de.vill.model.expression.StringExpression;
 import de.vill.model.expression.SubExpression;
 import de.vill.model.expression.SumAggregateFunctionExpression;
-import de.vill.model.typelevel.NumericFeatureEqualsConstraint;
-import de.vill.model.typelevel.NumericFeatureGreaterConstraint;
-import de.vill.model.typelevel.NumericFeatureGreaterEqualsConstraint;
-import de.vill.model.typelevel.NumericFeatureLowerConstraint;
-import de.vill.model.typelevel.NumericFeatureLowerEqualsConstraint;
-import de.vill.model.typelevel.NumericFeatureNotEqualsConstraint;
-import de.vill.model.typelevel.StringFeatureEqualsConstraint;
-import de.vill.model.typelevel.StringFeatureLengthConstraint;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -276,154 +273,6 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void enterStringFeatureConstraint(UVLParser.StringFeatureConstraintContext ctx) {
-        this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
-    }
-
-    @Override
-    public void enterNumericFeatureConstraint(UVLParser.NumericFeatureConstraintContext ctx) {
-        this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
-    }
-
-    @Override
-    public void exitStringFeatureLengthConstraint(UVLParser.StringFeatureLengthConstraintContext ctx) {
-        String leftFeature = ctx.reference(0).getText().replace("\"", "");
-        if (this.featureModel.getFeatureMap().get(leftFeature) != null &&
-            !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(leftFeature).getFeatureType())) {
-            errorList.add(new ParseError("Feature - " + leftFeature + " in the constraint must be of type String"));
-            return;
-        }
-        LiteralConstraint left = new LiteralConstraint(leftFeature);
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        if (!isRightConstant) {
-            String rightFeature = ctx.reference(1).getText().replace("\"", "");
-            if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
-                !(FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())
-                    || FeatureType.INT.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType()))
-            ) {
-                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String or Integer"));
-                return;
-            }
-        }
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.INTEGER().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
-        Constraint constraint = new StringFeatureLengthConstraint(
-            left,
-            right,
-            isRightConstant
-        );
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override
-    public void exitStringFeatureEqualsConstraint(UVLParser.StringFeatureEqualsConstraintContext ctx) {
-        String leftFeature = ctx.reference(0).getText().replace("\"", "");
-        if (this.featureModel.getFeatureMap().get(leftFeature) != null &&
-            !FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(leftFeature).getFeatureType())) {
-            errorList.add(new ParseError("Feature - " + leftFeature + " in the constraint must be of type String"));
-            return;
-        }
-        LiteralConstraint left = new LiteralConstraint(leftFeature);
-        String rightFeature = ctx.reference(1).getText().replace("\"", "");
-        Boolean isRightConstant = featureModel.getFeatureMap().get(rightFeature) == null;
-        if (!isRightConstant) {
-            if (!FeatureType.STRING.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
-                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type String"));
-                return;
-            }
-        }
-        LiteralConstraint right = new LiteralConstraint(rightFeature);
-        Constraint constraint = new StringFeatureEqualsConstraint(
-            left,
-            right,
-            isRightConstant
-        );
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override
-    public void exitNumericFeatureComparisonConstraint(UVLParser.NumericFeatureComparisonConstraintContext ctx) {
-        String leftFeature = ctx.reference(0).getText().replace("\"", "");
-        if (this.featureModel.getFeatureMap().get(leftFeature) != null &&
-            !FeatureType.INT.equals(this.featureModel.getFeatureMap().get(leftFeature).getFeatureType())) {
-            errorList.add(new ParseError("Feature - " + leftFeature + " in the constraint must be of type Integer"));
-            return;
-        }
-        LiteralConstraint left = new LiteralConstraint(leftFeature);
-        Boolean isRightConstant = ctx.reference().size() == 2 ? Boolean.FALSE : Boolean.TRUE;
-        if (!isRightConstant) {
-            String rightFeature = ctx.reference(1).getText().replace("\"", "");
-            if (this.featureModel.getFeatureMap().get(rightFeature) != null &&
-                !FeatureType.INT.equals(this.featureModel.getFeatureMap().get(rightFeature).getFeatureType())) {
-                errorList.add(new ParseError("Feature - " + rightFeature + " in the constraint must be of type Integer"));
-                return;
-            }
-        }
-        LiteralConstraint right = new LiteralConstraint(
-            isRightConstant ? ctx.number().getText() : ctx.reference(1).getText().replace("\"", "")
-        );
-        Constraint constraint = null;
-        switch (ctx.inequality().getText().replace("\"", "")) {
-            case "==":
-                constraint = new NumericFeatureEqualsConstraint(
-                    left,
-                    right,
-                    isRightConstant
-                );
-                break;
-            case ">":
-                constraint = new NumericFeatureGreaterConstraint(
-                    left,
-                    right,
-                    isRightConstant
-                );
-                break;
-            case ">=":
-                constraint = new NumericFeatureGreaterEqualsConstraint(
-                    left,
-                    right,
-                    isRightConstant
-                );
-                break;
-            case "<":
-                constraint = new NumericFeatureLowerConstraint(
-                    left,
-                    right,
-                    isRightConstant
-                );
-                break;
-            case "<=":
-                constraint = new NumericFeatureLowerEqualsConstraint(
-                    left,
-                    right,
-                    isRightConstant
-                );
-                break;
-            case "!=":
-                constraint = new NumericFeatureNotEqualsConstraint(
-                    left,
-                    right,
-                    isRightConstant
-                );
-                break;
-        }
-        // constraint is not null
-        constraintStack.push(constraint);
-        Token t = ctx.getStart();
-        int line = t.getLine();
-        constraint.setLineNumber(line);
-    }
-
-    @Override
     public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
         String lowerBound;
         String upperBound;
@@ -632,6 +481,39 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
+    public void exitLowerEqualsEquation(UVLParser.LowerEqualsEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new LowerEqualsEquationConstraint(left, right);
+        constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
+    }
+
+    @Override
+    public void exitGreaterEqualsEquation(UVLParser.GreaterEqualsEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new GreaterEqualsEquationConstraint(left, right);
+        constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
+    }
+
+    @Override
+    public void exitNotEqualsEquation(UVLParser.NotEqualsEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new NotEqualsEquationConstraint(left, right);
+        constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
+    }
+
+    @Override
     public void exitBracketExpression(UVLParser.BracketExpressionContext ctx) {
         ParenthesisExpression expression = new ParenthesisExpression(expressionStack.pop());
         expressionStack.push(expression);
@@ -650,6 +532,18 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
+    public void exitStringLiteralExpression(UVLParser.StringLiteralExpressionContext ctx) {
+        //TODO: check these
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+        Expression expression = new StringExpression(ctx.STRING().getText());
+        expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
+    }
+
+    @Override
     public void exitFloatLiteralExpression(UVLParser.FloatLiteralExpressionContext ctx) {
         Expression expression = new NumberExpression(Double.parseDouble(ctx.FLOAT().getText()));
         expressionStack.push(expression);
@@ -659,10 +553,30 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
-        LiteralExpression expression = new LiteralExpression(ctx.reference().getText().replace("\"", ""));
+    public void exitLiteralExpression(UVLParser.LiteralExpressionContext ctx) {
+        String reference = ctx.reference().getText().replace("\"", "");
+        Expression expression = new LiteralExpression(reference);
+
+        if (featureModel.getFeatureMap().containsKey(reference)) {
+            if (FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType())) {
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+            } else if (FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType()) || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())) {
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
+            } else {
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+            }
+        } else {
+            featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+            featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+            expression = new StringExpression(reference);
+        }
+
         expressionStack.push(expression);
-        featureModel.getLiteralExpressions().add(expression);
+        if (expression instanceof LiteralExpression) {
+            featureModel.getLiteralExpressions().add((LiteralExpression)expression);
+        }
         Token t = ctx.getStart();
         int line = t.getLine();
         expression.setLineNumber(line);
@@ -702,7 +616,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void exitDivExpresssion(UVLParser.DivExpresssionContext ctx) {
+    public void exitDivExpression(UVLParser.DivExpressionContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Expression expression = new DivExpression(left, right);
@@ -714,6 +628,8 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
         AggregateFunctionExpression expression;
         if (ctx.reference().size() > 1) {
             expression = new SumAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
@@ -729,6 +645,8 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
         AggregateFunctionExpression expression;
         if (ctx.reference().size() > 1) {
             expression = new AvgAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
@@ -742,15 +660,21 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override
-    public void enterAggregateFunctionExpression(UVLParser.AggregateFunctionExpressionContext ctx) {
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
-    }
+    @Override public void exitLengthAggregateFunction(UVLParser.LengthAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
 
-    @Override
-    public void enterEquationConstraint(UVLParser.EquationConstraintContext ctx) {
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        String reference = ctx.reference().getText().replace("\"", "");
+        if (!(featureModel.getFeatureMap().containsKey(reference) && FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType()))) {
+            errorList.add(new ParseError("Length Aggregate Function can only be used with String features"));
+            return;
+        }
+
+        AggregateFunctionExpression expression = new LengthAggregateFunctionExpression(reference);
+        expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override

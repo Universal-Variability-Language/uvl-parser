@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ConvertNumericAggregateFunction implements IConversionStrategy {
+public class ConvertNumericConstraints implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
         return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_CONSTRAINTS));
