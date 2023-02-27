@@ -1,13 +1,12 @@
 package de.vill.model.expression;
 
-import de.vill.model.Feature;
+import static de.vill.util.Util.addNecessaryQuotes;
 
+import de.vill.model.Feature;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import static de.vill.util.Util.addNecessaryQuotes;
 
 public class AggregateFunctionExpression extends Expression {
     public String getRootFeatureName() {
@@ -67,8 +66,8 @@ public class AggregateFunctionExpression extends Expression {
     }
 
     protected String toString(boolean withSubmodels, String functionName, String currentAlias) {
-        StringBuilder result = new StringBuilder();
-        result.append(functionName + "(");
+        final StringBuilder result = new StringBuilder();
+        result.append(functionName).append("(");
 
         if (getRootFeature() != null) {
             if (withSubmodels) {

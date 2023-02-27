@@ -30,9 +30,9 @@ public class FeatureModel {
 
     /*
      * These three lists are just for performance. They contain all points where
-     * features are referenced e.g. in constraints or aggregatefunctions. The
+     * features are referenced e.g. in constraints or aggregate functions. The
      * corresponding feature can not be set during parsing, because the feature may
-     * be in a submodel which is not parsed then. Therefore we strore all this
+     * be in a sub-model which is not parsed then. Therefore. we store all this
      * objects to reference the features after everything is parsed without
      * searching for them.
      */

@@ -123,8 +123,8 @@ public class UVLModelFactory {
         FeatureModel featureModel = parseFeatureModelWithImports(text, fileLoader, new HashMap<>());
         composeFeatureModelFromImports(featureModel);
         referenceFeaturesInConstraints(featureModel);
-        //referenceAttributesInConstraints(featureModel);
-        //referenceRootFeaturesInAggregateFunctions(featureModel);
+        referenceAttributesInConstraints(featureModel);
+        referenceRootFeaturesInAggregateFunctions(featureModel);
         return featureModel;
     }
 

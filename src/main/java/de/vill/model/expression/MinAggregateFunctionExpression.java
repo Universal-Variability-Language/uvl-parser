@@ -5,7 +5,6 @@ import java.util.List;
 
 public class MinAggregateFunctionExpression extends AggregateFunctionExpression {
 
-
     public MinAggregateFunctionExpression(String attributeName) {
         super(attributeName);
     }

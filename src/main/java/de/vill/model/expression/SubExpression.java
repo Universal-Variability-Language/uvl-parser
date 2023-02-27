@@ -1,7 +1,6 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -18,11 +17,9 @@ public class SubExpression extends Expression {
 
     @Override
     public String toString(boolean withSubmodels, String currentAlias) {
-        StringBuilder result = new StringBuilder();
-        result.append(left.toString(withSubmodels, currentAlias));
-        result.append(" - ");
-        result.append(right.toString(withSubmodels, currentAlias));
-        return result.toString();
+        return left.toString(withSubmodels, currentAlias) +
+            " - " +
+            right.toString(withSubmodels, currentAlias);
     }
 
     @Override
@@ -49,7 +46,7 @@ public class SubExpression extends Expression {
         }
         double rightResult;
         if (right instanceof LiteralExpression
-                && !selectedFeatures.contains(((LiteralExpression) right).getFeature())) {
+            && !selectedFeatures.contains(((LiteralExpression) right).getFeature())) {
             rightResult = 0;
         } else {
             rightResult = right.evaluate(selectedFeatures);

@@ -4,11 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LengthAggregateFunctionExpression extends AggregateFunctionExpression {
-    private String featureName;
-
     public LengthAggregateFunctionExpression(String featureName) {
         super(featureName);
-        this.featureName = featureName;
     }
 
     @Override

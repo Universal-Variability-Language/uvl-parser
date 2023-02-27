@@ -1,7 +1,6 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
-
 import java.util.List;
 import java.util.Set;
 

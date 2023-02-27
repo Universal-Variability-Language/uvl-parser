@@ -44,7 +44,6 @@ public class StringExpression extends Expression {
         }
     }
 
-    //TODO:
     @Override
     public double evaluate(Set<Feature> selectedFeatures) {
         return 0;

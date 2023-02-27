@@ -1,7 +1,6 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -16,11 +15,9 @@ public class ParenthesisExpression extends Expression {
 
     @Override
     public String toString(boolean withSubmodels, String currentAlias) {
-        StringBuilder result = new StringBuilder();
-        result.append("(");
-        result.append(content.toString(withSubmodels, currentAlias));
-        result.append(")");
-        return result.toString();
+        return "(" +
+            content.toString(withSubmodels, currentAlias) +
+            ")";
     }
 
     @Override

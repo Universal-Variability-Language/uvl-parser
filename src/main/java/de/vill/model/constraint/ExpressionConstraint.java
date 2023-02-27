@@ -4,8 +4,8 @@ import de.vill.model.Feature;
 import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.Expression;
 import de.vill.model.expression.LiteralExpression;
-
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -23,18 +23,16 @@ public abstract class ExpressionConstraint extends Constraint {
 
     @Override
     public String toString(boolean withSubmodels, String currentAlias) {
-        StringBuilder result = new StringBuilder();
-        result.append(left.toString(withSubmodels, currentAlias));
-        result.append(" ");
-        result.append(expressionSymbol);
-        result.append(" ");
-        result.append(right.toString(withSubmodels, currentAlias));
-        return result.toString();
+        return left.toString(withSubmodels, currentAlias) +
+            " " +
+            expressionSymbol +
+            " " +
+            right.toString(withSubmodels, currentAlias);
     }
 
     @Override
     public List<Constraint> getConstraintSubParts() {
-        return Arrays.asList();
+        return Collections.emptyList();
     }
 
     public List<Expression> getExpressionSubParts() {
@@ -63,7 +61,7 @@ public abstract class ExpressionConstraint extends Constraint {
         }
         double rightResult;
         if (right instanceof LiteralExpression
-                && !selectedFeatures.contains(((LiteralExpression) right).getFeature())) {
+            && !selectedFeatures.contains(((LiteralExpression) right).getFeature())) {
             rightResult = 0;
         } else {
             rightResult = right.evaluate(selectedFeatures);
@@ -71,20 +69,18 @@ public abstract class ExpressionConstraint extends Constraint {
 
         if ("==".equals(expressionSymbol)) {
             return leftResult == rightResult;
-        }
-        if ("<".equals(expressionSymbol)) {
+        } else if ("<".equals(expressionSymbol)) {
             return leftResult < rightResult;
-        }
-        if (">".equals(expressionSymbol)) {
+        } else if (">".equals(expressionSymbol)) {
             return leftResult > rightResult;
+        } else if (">=".equals(expressionSymbol)) {
+            return leftResult >= rightResult;
+        } else if ("<=".equals(expressionSymbol)) {
+            return leftResult <= rightResult;
+        } else if ("!=".equals(expressionSymbol)) {
+            return leftResult != rightResult;
         }
         return false;
-    }
-
-    @Override
-    public Constraint clone() {
-        // TODO implement clone method in expressions and clone them here
-        return new EqualEquationConstraint(left, right);
     }
 
     @Override
@@ -106,6 +102,6 @@ public abstract class ExpressionConstraint extends Constraint {
         }
         ExpressionConstraint other = (ExpressionConstraint) obj;
         return Objects.equals(expressionSymbol, other.expressionSymbol) && Objects.equals(left, other.left)
-                && Objects.equals(right, other.right);
+            && Objects.equals(right, other.right);
     }
 }

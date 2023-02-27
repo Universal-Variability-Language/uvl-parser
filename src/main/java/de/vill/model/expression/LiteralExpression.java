@@ -1,16 +1,19 @@
 package de.vill.model.expression;
 
+import static de.vill.util.Util.addNecessaryQuotes;
+
 import de.vill.model.Attribute;
 import de.vill.model.Feature;
-
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static de.vill.util.Util.addNecessaryQuotes;
-
 public class LiteralExpression extends Expression {
+    private String attributeName;
+    private Feature feature;
+
     public String getAttributeName() {
         return attributeName;
     }
@@ -19,13 +22,9 @@ public class LiteralExpression extends Expression {
         this.attributeName = attributeName;
     }
 
-    private String attributeName;
-
     public Attribute getAttribute() {
         return getFeature().getAttributes().get(attributeName);
     }
-
-    private Feature feature;
 
     public Feature getFeature() {
         return feature;
@@ -57,7 +56,7 @@ public class LiteralExpression extends Expression {
 
     @Override
     public List<Expression> getExpressionSubParts() {
-        return Arrays.asList();
+        return Collections.emptyList();
     }
 
     @Override
