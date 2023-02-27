@@ -66,36 +66,36 @@ public class ConvertTypeConstraints implements IConversionStrategy {
 
     private void replaceAggregateFunctionInExpression(Expression parentExpression, AggregateFunctionExpression aggregateFunctionExpression) {
         Map<String, Attribute> currentAttributes =
-            rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getAttributeName()).getAttributes();
+            rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()).getAttributes();
         currentAttributes.put(
             "type_level_value_length",
             new Attribute<>(
                 "type_level_value_length",
                 this.computeStringLength(
-                    rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getAttributeName())).toString()
+                    rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName())).toString()
             )
         );
-        this.featuresToBeUpdated.put(aggregateFunctionExpression.getAttributeName(), currentAttributes);
+        this.featuresToBeUpdated.put(aggregateFunctionExpression.getRootFeatureName(), currentAttributes);
 
-        Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getAttributeName() + ".type_level_value_length");
+        Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + ".type_level_value_length");
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
     private void replaceAggregateFunctionInExpressionConstraint(ExpressionConstraint parentExpression,
                                                                 AggregateFunctionExpression aggregateFunctionExpression) {
         Map<String, Attribute> currentAttributes =
-            rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getAttributeName()).getAttributes();
+            rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()).getAttributes();
         currentAttributes.put(
             "type_level_value_length",
             new Attribute<>(
                 "type_level_value_length",
                 this.computeStringLength(
-                    rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getAttributeName())).toString()
+                    rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName())).toString()
             )
         );
-        this.featuresToBeUpdated.put(aggregateFunctionExpression.getAttributeName(), currentAttributes);
+        this.featuresToBeUpdated.put(aggregateFunctionExpression.getRootFeatureName(), currentAttributes);
 
-        Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getAttributeName() + ".type_level_value_length");
+        Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + ".type_level_value_length");
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 

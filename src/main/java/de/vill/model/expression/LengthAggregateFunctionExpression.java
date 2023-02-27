@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LengthAggregateFunctionExpression extends AggregateFunctionExpression {
-    public LengthAggregateFunctionExpression(String featureName) {
-        super(featureName);
+    public LengthAggregateFunctionExpression(final String featureName) {
+        super(featureName, null);
     }
 
     @Override
-    public String toString(boolean withSubmodels, String currentAlias) {
+    public String toString(final boolean withSubmodels, final String currentAlias) {
         return super.toString(withSubmodels, "len", currentAlias);
     }
 

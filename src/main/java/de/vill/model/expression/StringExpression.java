@@ -8,27 +8,27 @@ import java.util.Set;
 
 public class StringExpression extends Expression {
     public String getString() {
-        return value;
+        return this.value;
     }
 
-    public void setString(String value) {
+    public void setString(final String value) {
         this.value = value;
     }
 
     private String value;
 
-    public StringExpression(String value) {
+    public StringExpression(final String value) {
         this.value = value;
     }
 
     @Override
     public String toString() {
-        return toString(true, "");
+        return this.toString(true, "");
     }
 
     @Override
-    public String toString(boolean withSubmodels, String currentAlias) {
-        return value;
+    public String toString(final boolean withSubmodels, final String currentAlias) {
+        return this.value;
     }
 
     @Override
@@ -37,15 +37,15 @@ public class StringExpression extends Expression {
     }
 
     @Override
-    public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
-        if (oldSubExpression instanceof StringExpression && ((StringExpression) oldSubExpression).getString().equals(value) &&
+    public void replaceExpressionSubPart(final Expression oldSubExpression, final Expression newSubExpression) {
+        if (oldSubExpression instanceof StringExpression && ((StringExpression) oldSubExpression).getString().equals(this.value) &&
             newSubExpression instanceof StringExpression) {
-            value = ((StringExpression) newSubExpression).value;
+            this.value = ((StringExpression) newSubExpression).value;
         }
     }
 
     @Override
-    public double evaluate(Set<Feature> selectedFeatures) {
+    public double evaluate(final Set<Feature> selectedFeatures) {
         return 0;
     }
 
@@ -53,24 +53,24 @@ public class StringExpression extends Expression {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash(value);
+        result = prime * result + Objects.hash(this.value);
         return result;
     }
 
     @Override
-    public int hashCode(int level) {
-        return 31 * level + Objects.hashCode(value);
+    public int hashCode(final int level) {
+        return 31 * level + Objects.hashCode(this.value);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
-        StringExpression other = (StringExpression) obj;
-        return Objects.equals(value, other.value);
+        final StringExpression other = (StringExpression) obj;
+        return Objects.equals(this.value, other.value);
     }
 }

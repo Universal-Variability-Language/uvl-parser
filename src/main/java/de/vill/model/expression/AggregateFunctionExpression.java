@@ -75,10 +75,12 @@ public class AggregateFunctionExpression extends Expression {
             } else {
                 result.append(addNecessaryQuotes(getRootFeatureName()));
             }
-            result.append(", ");
         }
 
-        result.append(addNecessaryQuotes(getAttributeName()));
+        if (getAttributeName() != null) {
+            result.append(", ");
+            result.append(addNecessaryQuotes(getAttributeName()));
+        }
         result.append(")");
         return result.toString();
     }

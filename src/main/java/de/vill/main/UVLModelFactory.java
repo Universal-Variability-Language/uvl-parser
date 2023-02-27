@@ -433,33 +433,23 @@ public class UVLModelFactory {
         }
     }
 
-    private void referenceAttributesInConstraints(FeatureModel featureModel) {
-        List<FeatureModel> subModelList = createSubModelList(featureModel);
+    private void referenceAttributesInConstraints(final FeatureModel featureModel) {
+        final List<FeatureModel> subModelList = createSubModelList(featureModel);
         List<LiteralExpression> literalExpressions = featureModel.getLiteralExpressions();
-        for (LiteralExpression expression : literalExpressions) {
-            String reference = expression.getAttributeName();
-            String[] referenceParts = reference.split("\\.");
-            String attributeName = referenceParts[referenceParts.length - 1].replace("\'", "");
-            String featureName = reference.substring(0, reference.length() - attributeName.length() - 1).replace("\'", "");
-            expression.setAttributeName(attributeName);
-            Feature referencedFeature = featureModel.getFeatureMap().get(featureName);
-            if (referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null) {
-                throw new ParseError("Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!", expression.getLineNumber());
+        for (final LiteralExpression expression : literalExpressions) {
+            final Feature referencedFeature = featureModel.getFeatureMap().get(expression.getFeatureName());
+            if (referencedFeature == null || (expression.getAttributeName() != null && referencedFeature.getAttributes().get(expression.getAttributeName()) == null)) {
+                throw new ParseError("Attribute " + expression.getFeatureName() + "." + expression.getAttributeName() + " is referenced in a constraint in " + featureModel.getNamespace() + " but does not exist as feature in the tree!", expression.getLineNumber());
             } else {
                 expression.setFeature(referencedFeature);
             }
         }
-        for (FeatureModel subModel : subModelList) {
+        for (final FeatureModel subModel : subModelList) {
             literalExpressions = subModel.getLiteralExpressions();
-            for (LiteralExpression expression : literalExpressions) {
-                String reference = expression.getAttributeName();
-                String[] referenceParts = reference.split("\\.");
-                String attributeName = referenceParts[referenceParts.length - 1].replace("\'", "");
-                String featureName = reference.substring(0, reference.length() - attributeName.length() - 1).replace("\'", "");
-                expression.setAttributeName(attributeName);
-                Feature referencedFeature = subModel.getFeatureMap().get(featureName);
-                if (referencedFeature == null || referencedFeature.getAttributes().get(attributeName) == null) {
-                    throw new ParseError("Attribute " + featureName + "." + attributeName + " is referenced in a constraint in " + subModel.getNamespace() + " but does not exist as feature in the tree!", expression.getLineNumber());
+            for (final LiteralExpression expression : literalExpressions) {
+                final Feature referencedFeature = subModel.getFeatureMap().get(expression.getFeatureName());
+                if (referencedFeature == null || referencedFeature.getAttributes().get(expression.getAttributeName()) == null) {
+                    throw new ParseError("Attribute " + expression.getFeatureName() + "." + expression.getAttributeName() + " is referenced in a constraint in " + subModel.getNamespace() + " but does not exist as feature in the tree!", expression.getLineNumber());
                 } else {
                     expression.setFeature(referencedFeature);
                 }
@@ -468,10 +458,10 @@ public class UVLModelFactory {
     }
 
     private void referenceRootFeaturesInAggregateFunctions(FeatureModel featureModel) {
-        List<FeatureModel> subModelList = createSubModelList(featureModel);
+        final List<FeatureModel> subModelList = createSubModelList(featureModel);
         List<AggregateFunctionExpression> aggregateFunctionExpressions = featureModel.getAggregateFunctionsWithRootFeature();
-        for (AggregateFunctionExpression expression : aggregateFunctionExpressions) {
-            Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName().replace("\"", ""));
+        for (final AggregateFunctionExpression expression : aggregateFunctionExpressions) {
+            final Feature referencedFeature = featureModel.getFeatureMap().get(expression.getRootFeatureName().replace("\"", ""));
             if (referencedFeature == null) {
                 throw new ParseError("Feature " + expression.getRootFeatureName() + " is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!", expression.getLineNumber());
             } else {
@@ -480,8 +470,8 @@ public class UVLModelFactory {
         }
         for (FeatureModel subModel : subModelList) {
             aggregateFunctionExpressions = subModel.getAggregateFunctionsWithRootFeature();
-            for (AggregateFunctionExpression expression : aggregateFunctionExpressions) {
-                Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName().replace("\"", ""));
+            for (final AggregateFunctionExpression expression : aggregateFunctionExpressions) {
+                final Feature referencedFeature = subModel.getFeatureMap().get(expression.getRootFeatureName().replace("\"", ""));
                 if (referencedFeature == null) {
                     throw new ParseError("Feature " + expression.getRootFeatureName() + " is used in aggregate function " + expression.toString() + " but does not exist as feature in the tree!", expression.getLineNumber());
                 } else {
