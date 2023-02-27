@@ -42,7 +42,10 @@ public class NumberExpression extends Expression {
 
     @Override
     public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
-
+        if (oldSubExpression instanceof NumberExpression && ((NumberExpression) oldSubExpression).getNumber() == number &&
+            newSubExpression instanceof NumberExpression) {
+            number = ((NumberExpression) newSubExpression).number;
+        }
     }
 
     @Override

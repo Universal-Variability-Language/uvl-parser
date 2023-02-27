@@ -1,7 +1,7 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -28,79 +28,50 @@ public class StringExpression extends Expression {
 
     @Override
     public String toString(boolean withSubmodels, String currentAlias) {
-        return null;
+        return value;
     }
 
     @Override
     public List<Expression> getExpressionSubParts() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
-
+        if (oldSubExpression instanceof StringExpression && ((StringExpression) oldSubExpression).getString().equals(value) &&
+            newSubExpression instanceof StringExpression) {
+            value = ((StringExpression) newSubExpression).value;
+        }
     }
 
+    //TODO:
     @Override
     public double evaluate(Set<Feature> selectedFeatures) {
         return 0;
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(value);
+        return result;
+    }
+
+    @Override
     public int hashCode(int level) {
-        return 0;
+        return 31 * level + Objects.hashCode(value);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        StringExpression other = (StringExpression) obj;
+        return Objects.equals(value, other.value);
     }
-
-//    @Override
-//    public String toString(boolean withSubmodels, String currentAlias) {
-//        if (number == Math.floor(number) && !Double.isInfinite(number)) {
-//            return Integer.toString((int) number);
-//        }
-//        return Double.toString(number);
-//    }
-//
-//    @Override
-//    public List<Expression> getExpressionSubParts() {
-//        return Arrays.asList();
-//    }
-//
-//    @Override
-//    public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
-//
-//    }
-//
-//    @Override
-//    public double evaluate(Set<Feature> selectedFeatures) {
-//        return number;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        final int prime = 31;
-//        int result = super.hashCode();
-//        result = prime * result + Objects.hash(number);
-//        return result;
-//    }
-//
-//    @Override
-//    public int hashCode(int level) {
-//        return 31 * level + Double.hashCode(number);
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) {
-//            return true;
-//        }
-//        if ((obj == null) || (getClass() != obj.getClass())) {
-//            return false;
-//        }
-//        StringExpression other = (StringExpression) obj;
-//        return Double.doubleToLongBits(number) == Double.doubleToLongBits(other.number);
-//    }
 }

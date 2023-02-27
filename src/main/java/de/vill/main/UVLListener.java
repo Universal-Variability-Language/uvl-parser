@@ -535,7 +535,7 @@ public class UVLListener extends UVLBaseListener {
     public void exitStringLiteralExpression(UVLParser.StringLiteralExpressionContext ctx) {
         //TODO: check these
         featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_CONSTRAINTS);
         Expression expression = new StringExpression(ctx.STRING().getText());
         expressionStack.push(expression);
         Token t = ctx.getStart();
@@ -560,16 +560,16 @@ public class UVLListener extends UVLBaseListener {
         if (featureModel.getFeatureMap().containsKey(reference)) {
             if (FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType())) {
                 featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-                featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_CONSTRAINTS);
             } else if (FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType()) || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())) {
                 featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-                featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_CONSTRAINTS);
             } else {
                 featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
             }
         } else {
             featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-            featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+            featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_CONSTRAINTS);
             expression = new StringExpression(reference);
         }
 
@@ -662,7 +662,7 @@ public class UVLListener extends UVLBaseListener {
 
     @Override public void exitLengthAggregateFunction(UVLParser.LengthAggregateFunctionContext ctx) {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_CONSTRAINTS);
 
         String reference = ctx.reference().getText().replace("\"", "");
         if (!(featureModel.getFeatureMap().containsKey(reference) && FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType()))) {

@@ -17,8 +17,7 @@ public enum LanguageLevel {
     GROUP_CARDINALITY(2, "group-cardinality"),
     FEATURE_CARDINALITY(4, "feature-cardinality"),
     AGGREGATE_FUNCTION(4, "aggregate-function"),
-    STRING_CONSTRAINTS(6, "string-constraints"),
-    NUMERIC_CONSTRAINTS(6, "numeric-constraints"),
+    TYPE_CONSTRAINTS(6, "type-constraints"),
     ;
 
     private final int value;
@@ -43,7 +42,7 @@ public enum LanguageLevel {
     }
 
     public static List<LanguageLevel> valueOf(final int languageLevel) {
-        return (List<LanguageLevel>) valueMap.get(languageLevel);
+        return valueMap.get(languageLevel);
     }
 
     public static LanguageLevel getLevelByName(final String name) {

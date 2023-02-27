@@ -183,16 +183,6 @@ string
     : ID_NOT_STRICT
     | STRING;
 
-inequality
-    : EQUAL
-    | GREATER
-    | GREATER_EQUALS
-    | LOWER
-    | LOWER_EQUALS
-    | NOT_EQUALS
-    ;
-
-
 reference: (id '.')* id;
 featureType: 'String' | 'Integer' | 'Boolean' | 'Real';
 id: ID_STRICT | ID_NOT_STRICT;
@@ -227,7 +217,7 @@ BOOLEAN: 'true' | 'false';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
 MAJORLEVEL: 'SAT-level' | 'SMT-level' | 'TYPE-level';
-MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-constraints' | 'numeric-constraints';
+MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'type-constraints';
 
 COMMA: ',';
 

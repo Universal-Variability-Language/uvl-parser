@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DropNumericConstraints implements IConversionStrategy {
+public class DropTypeConstraints implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_CONSTRAINTS));
+        return new HashSet<>(Collections.singletonList(LanguageLevel.TYPE_CONSTRAINTS));
     }
 
     @Override

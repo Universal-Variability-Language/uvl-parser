@@ -62,7 +62,10 @@ public class LiteralExpression extends Expression {
 
     @Override
     public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
-
+        if (oldSubExpression instanceof LiteralExpression && ((LiteralExpression) oldSubExpression).getAttributeName().equals(attributeName) &&
+            newSubExpression instanceof LiteralExpression) {
+            attributeName = ((LiteralExpression) newSubExpression).attributeName;
+        }
     }
 
     @Override
