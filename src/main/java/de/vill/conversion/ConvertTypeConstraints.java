@@ -35,67 +35,68 @@ public class ConvertTypeConstraints implements IConversionStrategy {
     public void convertFeatureModel(final FeatureModel rootFeatureModel, final FeatureModel featureModel) {
         this.rootFeatureModel = rootFeatureModel;
         rootFeatureModel.getOwnConstraints().forEach(this::convertAggregateFunctionInExpressionConstraint);
-        traverseFeatures(rootFeatureModel.getRootFeature());
+        this.traverseFeatures(rootFeatureModel.getRootFeature());
     }
 
-    private void convertAggregateFunctionInExpressionConstraint(Constraint constraint) {
+    private void convertAggregateFunctionInExpressionConstraint(final Constraint constraint) {
         if (constraint instanceof ExpressionConstraint) {
-            for (Expression expression : ((ExpressionConstraint) constraint).getExpressionSubParts()) {
+            for (final Expression expression : ((ExpressionConstraint) constraint).getExpressionSubParts()) {
                 if (expression instanceof LengthAggregateFunctionExpression) {
-                    replaceAggregateFunctionInExpressionConstraint((ExpressionConstraint) constraint, (AggregateFunctionExpression) expression);
+                    this.replaceAggregateFunctionInExpressionConstraint((ExpressionConstraint) constraint, (AggregateFunctionExpression) expression);
                 } else {
-                    convertAggregateFunctionInExpression(expression);
+                    this.convertAggregateFunctionInExpression(expression);
                 }
             }
         } else {
-            for (Constraint subConstraint : constraint.getConstraintSubParts()) {
-                convertAggregateFunctionInExpressionConstraint(subConstraint);
+            for (final Constraint subConstraint : constraint.getConstraintSubParts()) {
+                this.convertAggregateFunctionInExpressionConstraint(subConstraint);
             }
         }
     }
 
-    private void convertAggregateFunctionInExpression(Expression expression) {
-        for (Expression subExpression : expression.getExpressionSubParts()) {
+    private void convertAggregateFunctionInExpression(final Expression expression) {
+        for (final Expression subExpression : expression.getExpressionSubParts()) {
             if (subExpression instanceof LengthAggregateFunctionExpression) {
-                replaceAggregateFunctionInExpression(expression, (LengthAggregateFunctionExpression) subExpression);
+                this.replaceAggregateFunctionInExpression(expression, (LengthAggregateFunctionExpression) subExpression);
             } else {
-                convertAggregateFunctionInExpression(subExpression);
+                this.convertAggregateFunctionInExpression(subExpression);
             }
         }
     }
 
-    private void replaceAggregateFunctionInExpression(Expression parentExpression, AggregateFunctionExpression aggregateFunctionExpression) {
-        Map<String, Attribute> currentAttributes =
-            rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()).getAttributes();
+    private void replaceAggregateFunctionInExpression(final Expression parentExpression,
+                                                      final AggregateFunctionExpression aggregateFunctionExpression) {
+        final Map<String, Attribute> currentAttributes =
+            this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()).getAttributes();
         currentAttributes.put(
             "type_level_value_length",
             new Attribute<>(
                 "type_level_value_length",
                 this.computeStringLength(
-                    rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName())).toString()
+                    this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName())).toString()
             )
         );
         this.featuresToBeUpdated.put(aggregateFunctionExpression.getRootFeatureName(), currentAttributes);
 
-        Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + ".type_level_value_length");
+        final Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + ".type_level_value_length");
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
-    private void replaceAggregateFunctionInExpressionConstraint(ExpressionConstraint parentExpression,
-                                                                AggregateFunctionExpression aggregateFunctionExpression) {
-        Map<String, Attribute> currentAttributes =
-            rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()).getAttributes();
+    private void replaceAggregateFunctionInExpressionConstraint(final ExpressionConstraint parentExpression,
+                                                                final AggregateFunctionExpression aggregateFunctionExpression) {
+        final Map<String, Attribute> currentAttributes =
+            this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()).getAttributes();
         currentAttributes.put(
             "type_level_value_length",
             new Attribute<>(
                 "type_level_value_length",
                 this.computeStringLength(
-                    rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName())).toString()
+                    this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName())).toString()
             )
         );
         this.featuresToBeUpdated.put(aggregateFunctionExpression.getRootFeatureName(), currentAttributes);
 
-        Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + ".type_level_value_length");
+        final Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + ".type_level_value_length");
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 

@@ -31,19 +31,19 @@ public class ConvertTypeLevel implements IConversionStrategy {
         this.traverseFeatures(featureModel.getRootFeature());
     }
 
-    private void convertFeaturesInExpressionConstraint(Constraint constraint) {
+    private void convertFeaturesInExpressionConstraint(final Constraint constraint) {
         if (constraint instanceof ExpressionConstraint) {
-            for (Expression expression : ((ExpressionConstraint) constraint).getExpressionSubParts()) {
-                replaceFeatureInExpression(expression);
+            for (final Expression expression : ((ExpressionConstraint) constraint).getExpressionSubParts()) {
+                this.replaceFeatureInExpression(expression);
             }
         } else {
-            for (Constraint subConstraint : constraint.getConstraintSubParts()) {
-                convertFeaturesInExpressionConstraint(subConstraint);
+            for (final Constraint subConstraint : constraint.getConstraintSubParts()) {
+                this.convertFeaturesInExpressionConstraint(subConstraint);
             }
         }
     }
 
-    private void replaceFeatureInExpression(Expression expression) {
+    private void replaceFeatureInExpression(final Expression expression) {
         if (expression instanceof LiteralExpression) {
             if (((LiteralExpression) expression).getAttributeName() == null) {
                 expression.replaceExpressionSubPart(expression, new LiteralExpression(
@@ -51,8 +51,8 @@ public class ConvertTypeLevel implements IConversionStrategy {
                 );
             }
         }
-        for (Expression expr : expression.getExpressionSubParts()) {
-            replaceFeatureInExpression(expr);
+        for (final Expression expr : expression.getExpressionSubParts()) {
+            this.replaceFeatureInExpression(expr);
         }
     }
 

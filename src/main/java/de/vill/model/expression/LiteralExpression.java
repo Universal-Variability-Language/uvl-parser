@@ -69,10 +69,10 @@ public class LiteralExpression extends Expression {
 
     @Override
     public String getReturnType() {
-        if (feature != null) {
-            if (FeatureType.STRING.equals(feature.getFeatureType())) {
+        if (this.feature != null) {
+            if (FeatureType.STRING.equals(this.feature.getFeatureType())) {
                 return "string";
-            } else if (FeatureType.BOOL.equals(feature.getFeatureType())) {
+            } else if (FeatureType.BOOL.equals(this.feature.getFeatureType())) {
                 return "boolean";
             } else {
                 return "number";

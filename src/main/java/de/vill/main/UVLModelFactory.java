@@ -484,39 +484,39 @@ public class UVLModelFactory {
         }
     }
 
-    private void validateTypeLevelConstraints(FeatureModel featureModel) {
-        List<Constraint> constraints = featureModel.getOwnConstraints();
-        for (Constraint constraint: constraints) {
+    private void validateTypeLevelConstraints(final FeatureModel featureModel) {
+        final List<Constraint> constraints = featureModel.getOwnConstraints();
+        for (final Constraint constraint: constraints) {
             if (!validateTypeLevelConstraint(constraint)) {
                 throw new ParseError("Invalid Constraint in line - " + constraint.getLineNumber());
             }
         }
     }
 
-    private boolean validateTypeLevelConstraint(Constraint constraint) {
+    private boolean validateTypeLevelConstraint(final Constraint constraint) {
         boolean result = true;
         if (constraint instanceof ExpressionConstraint) {
             result = result && ((ExpressionConstraint) constraint).getLeft().getReturnType().equalsIgnoreCase(((ExpressionConstraint) constraint).getRight().getReturnType());
             if (!result) {
                 return result;
             }
-            for (Expression expr: ((ExpressionConstraint) constraint).getExpressionSubParts()) {
+            for (final Expression expr: ((ExpressionConstraint) constraint).getExpressionSubParts()) {
                 result = result && validateTypeLevelExpression(expr);
             }
         }
 
-        for (Constraint subCons: constraint.getConstraintSubParts()) {
+        for (final Constraint subCons: constraint.getConstraintSubParts()) {
             result = result && validateTypeLevelConstraint(subCons);
         }
 
         return result;
     }
 
-    private boolean validateTypeLevelExpression(Expression expression) {
+    private boolean validateTypeLevelExpression(final Expression expression) {
         final String initial = expression.getReturnType();
         boolean result = true;
 
-        for (Expression expr: expression.getExpressionSubParts()) {
+        for (final Expression expr: expression.getExpressionSubParts()) {
             result = result && validateTypeLevelExpression(expr) && initial.equalsIgnoreCase(expr.getReturnType());
         }
 

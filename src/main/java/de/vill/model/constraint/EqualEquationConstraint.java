@@ -1,16 +1,14 @@
 package de.vill.model.constraint;
 
 import de.vill.model.expression.Expression;
-
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class EqualEquationConstraint extends ExpressionConstraint {
-    private Expression left;
-    private Expression right;
+    private final Expression left;
+    private final Expression right;
 
-    public EqualEquationConstraint(Expression left, Expression right) {
+    public EqualEquationConstraint(final Expression left, final Expression right) {
         super(left, right, "==");
         this.left = left;
         this.right = right;

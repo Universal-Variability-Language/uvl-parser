@@ -13,7 +13,7 @@ import java.util.Set;
 public abstract class ExpressionConstraint extends Constraint {
     private Expression left;
     private Expression right;
-    private String expressionSymbol;
+    private final String expressionSymbol;
 
     public ExpressionConstraint(Expression left, Expression right, String expressionSymbol) {
         this.left = left;
@@ -27,10 +27,6 @@ public abstract class ExpressionConstraint extends Constraint {
 
     public Expression getRight() {
         return right;
-    }
-
-    public String getExpressionSymbol() {
-        return expressionSymbol;
     }
 
     @Override
