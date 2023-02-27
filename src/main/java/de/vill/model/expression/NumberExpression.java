@@ -76,4 +76,9 @@ public class NumberExpression extends Expression {
         NumberExpression other = (NumberExpression) obj;
         return Double.doubleToLongBits(number) == Double.doubleToLongBits(other.number);
     }
+
+    @Override
+    public String getReturnType() {
+        return "number";
+    }
 }

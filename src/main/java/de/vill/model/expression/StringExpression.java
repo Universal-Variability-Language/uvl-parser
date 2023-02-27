@@ -73,4 +73,9 @@ public class StringExpression extends Expression {
         final StringExpression other = (StringExpression) obj;
         return Objects.equals(this.value, other.value);
     }
+
+    @Override
+    public String getReturnType() {
+        return "string";
+    }
 }

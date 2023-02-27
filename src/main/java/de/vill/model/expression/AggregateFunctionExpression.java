@@ -50,6 +50,12 @@ public class AggregateFunctionExpression extends Expression {
     }
 
     @Override
+    public String getReturnType() {
+        // implement in children
+        return "number";
+    }
+
+    @Override
     public List<Expression> getExpressionSubParts() {
         return Arrays.asList();
     }

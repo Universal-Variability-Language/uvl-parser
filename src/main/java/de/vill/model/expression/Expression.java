@@ -22,6 +22,8 @@ public abstract class Expression {
 
     public abstract String toString(boolean withSubmodels, String currentAlias);
 
+    public abstract String getReturnType();
+
     public abstract List<Expression> getExpressionSubParts();
 
     public abstract void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression);

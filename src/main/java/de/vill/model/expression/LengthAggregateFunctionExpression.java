@@ -17,4 +17,9 @@ public class LengthAggregateFunctionExpression extends AggregateFunctionExpressi
     public List<Expression> getExpressionSubParts() {
         return Arrays.asList();
     }
+
+    @Override
+    public String getReturnType() {
+        return "number";
+    }
 }

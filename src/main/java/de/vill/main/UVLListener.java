@@ -667,6 +667,7 @@ public class UVLListener extends UVLBaseListener {
         }
 
         AggregateFunctionExpression expression = new LengthAggregateFunctionExpression(reference);
+        featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         expressionStack.push(expression);
         Token t = ctx.getStart();
         int line = t.getLine();

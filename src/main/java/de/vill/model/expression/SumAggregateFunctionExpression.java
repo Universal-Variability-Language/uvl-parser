@@ -22,4 +22,9 @@ public class SumAggregateFunctionExpression extends AggregateFunctionExpression 
     public List<Expression> getExpressionSubParts() {
         return Collections.emptyList();
     }
+
+    @Override
+    public String getReturnType() {
+        return "number";
+    }
 }

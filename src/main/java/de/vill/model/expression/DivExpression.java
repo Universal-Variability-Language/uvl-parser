@@ -23,6 +23,11 @@ public class DivExpression extends Expression {
     }
 
     @Override
+    public String getReturnType() {
+        return "number";
+    }
+
+    @Override
     public List<Expression> getExpressionSubParts() {
         return Arrays.asList(left, right);
     }

@@ -73,4 +73,9 @@ public class MulExpression extends Expression {
         MulExpression other = (MulExpression) obj;
         return Objects.equals(left, other.left) && Objects.equals(right, other.right);
     }
+
+    @Override
+    public String getReturnType() {
+        return "number";
+    }
 }

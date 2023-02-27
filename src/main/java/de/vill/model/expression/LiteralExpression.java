@@ -4,6 +4,7 @@ import static de.vill.util.Util.addNecessaryQuotes;
 
 import de.vill.model.Attribute;
 import de.vill.model.Feature;
+import de.vill.model.FeatureType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -64,6 +65,21 @@ public class LiteralExpression extends Expression {
         }
         return addNecessaryQuotes(
             this.feature.getReferenceFromSpecificSubmodel(currentAlias) + (this.getAttributeName() != null ? "." + this.getAttributeName() : ""));
+    }
+
+    @Override
+    public String getReturnType() {
+        if (feature != null) {
+            if (FeatureType.STRING.equals(feature.getFeatureType())) {
+                return "string";
+            } else if (FeatureType.BOOL.equals(feature.getFeatureType())) {
+                return "boolean";
+            } else {
+                return "number";
+            }
+        }
+        //todo
+        return "";
     }
 
     @Override

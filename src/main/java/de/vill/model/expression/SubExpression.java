@@ -73,4 +73,9 @@ public class SubExpression extends Expression {
         SubExpression other = (SubExpression) obj;
         return Objects.equals(left, other.left) && Objects.equals(right, other.right);
     }
+
+    @Override
+    public String getReturnType() {
+        return "number";
+    }
 }

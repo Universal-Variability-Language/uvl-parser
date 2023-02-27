@@ -61,4 +61,9 @@ public class ParenthesisExpression extends Expression {
         ParenthesisExpression other = (ParenthesisExpression) obj;
         return Objects.equals(content, other.content);
     }
+
+    @Override
+    public String getReturnType() {
+        return content.getReturnType();
+    }
 }

@@ -21,6 +21,18 @@ public abstract class ExpressionConstraint extends Constraint {
         this.expressionSymbol = expressionSymbol;
     }
 
+    public Expression getLeft() {
+        return left;
+    }
+
+    public Expression getRight() {
+        return right;
+    }
+
+    public String getExpressionSymbol() {
+        return expressionSymbol;
+    }
+
     @Override
     public String toString(boolean withSubmodels, String currentAlias) {
         return left.toString(withSubmodels, currentAlias) +

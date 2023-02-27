@@ -23,8 +23,10 @@ import de.vill.model.Group;
 import de.vill.model.Import;
 import de.vill.model.LanguageLevel;
 import de.vill.model.constraint.Constraint;
+import de.vill.model.constraint.ExpressionConstraint;
 import de.vill.model.constraint.LiteralConstraint;
 import de.vill.model.expression.AggregateFunctionExpression;
+import de.vill.model.expression.Expression;
 import de.vill.model.expression.LiteralExpression;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -125,6 +127,7 @@ public class UVLModelFactory {
         referenceFeaturesInConstraints(featureModel);
         referenceAttributesInConstraints(featureModel);
         referenceRootFeaturesInAggregateFunctions(featureModel);
+        validateTypeLevelConstraints(featureModel);
         return featureModel;
     }
 
@@ -479,5 +482,44 @@ public class UVLModelFactory {
                 }
             }
         }
+    }
+
+    private void validateTypeLevelConstraints(FeatureModel featureModel) {
+        List<Constraint> constraints = featureModel.getOwnConstraints();
+        for (Constraint constraint: constraints) {
+            if (!validateTypeLevelConstraint(constraint)) {
+                throw new ParseError("Invalid Constraint in line - " + constraint.getLineNumber());
+            }
+        }
+    }
+
+    private boolean validateTypeLevelConstraint(Constraint constraint) {
+        boolean result = true;
+        if (constraint instanceof ExpressionConstraint) {
+            result = result && ((ExpressionConstraint) constraint).getLeft().getReturnType().equalsIgnoreCase(((ExpressionConstraint) constraint).getRight().getReturnType());
+            if (!result) {
+                return result;
+            }
+            for (Expression expr: ((ExpressionConstraint) constraint).getExpressionSubParts()) {
+                result = result && validateTypeLevelExpression(expr);
+            }
+        }
+
+        for (Constraint subCons: constraint.getConstraintSubParts()) {
+            result = result && validateTypeLevelConstraint(subCons);
+        }
+
+        return result;
+    }
+
+    private boolean validateTypeLevelExpression(Expression expression) {
+        final String initial = expression.getReturnType();
+        boolean result = true;
+
+        for (Expression expr: expression.getExpressionSubParts()) {
+            result = result && validateTypeLevelExpression(expr) && initial.equalsIgnoreCase(expr.getReturnType());
+        }
+
+        return result;
     }
 }
