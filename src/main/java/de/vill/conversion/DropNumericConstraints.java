@@ -4,17 +4,17 @@ import de.vill.model.FeatureModel;
 import de.vill.model.LanguageLevel;
 import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.ExpressionConstraint;
-import de.vill.model.expression.AvgAggregateFunctionExpression;
+import de.vill.model.expression.CeilAggregateFunctionExpression;
 import de.vill.model.expression.Expression;
-import de.vill.model.expression.SumAggregateFunctionExpression;
-import java.util.Arrays;
+import de.vill.model.expression.FloorAggregateFunctionExpression;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DropAggregateFunction implements IConversionStrategy {
+public class DropNumericConstraints implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Arrays.asList(LanguageLevel.AGGREGATE_FUNCTION));
+        return new HashSet<>(Collections.singletonList(LanguageLevel.NUMERIC_CONSTRAINTS));
     }
 
     @Override
@@ -24,19 +24,19 @@ public class DropAggregateFunction implements IConversionStrategy {
 
     @Override
     public void convertFeatureModel(final FeatureModel rootFeatureModel, final FeatureModel featureModel) {
-        featureModel.getOwnConstraints().removeIf(this::constraintContainsAggregateFunction);
+        featureModel.getOwnConstraints().removeIf(this::constraintContainsNumericAggregateFunction);
     }
 
-    private boolean constraintContainsAggregateFunction(final Constraint constraint) {
+    private boolean constraintContainsNumericAggregateFunction(final Constraint constraint) {
         if (constraint instanceof ExpressionConstraint) {
             for (final Expression subExpression : ((ExpressionConstraint) constraint).getExpressionSubParts()) {
-                if (expressionContainsAggregateFunction(subExpression)) {
+                if (this.expressionContainsNumericAggregateFunction(subExpression)) {
                     return true;
                 }
             }
         } else {
             for (final Constraint subConstraint : constraint.getConstraintSubParts()) {
-                if (constraintContainsAggregateFunction(subConstraint)) {
+                if (this.constraintContainsNumericAggregateFunction(subConstraint)) {
                     return true;
                 }
             }
@@ -45,12 +45,12 @@ public class DropAggregateFunction implements IConversionStrategy {
         return false;
     }
 
-    private boolean expressionContainsAggregateFunction(final Expression expression) {
-        if (expression instanceof AvgAggregateFunctionExpression || expression instanceof SumAggregateFunctionExpression) {
+    private boolean expressionContainsNumericAggregateFunction(final Expression expression) {
+        if (expression instanceof FloorAggregateFunctionExpression || expression instanceof CeilAggregateFunctionExpression) {
             return true;
         } else {
             for (final Expression subExpression : expression.getExpressionSubParts()) {
-                if (expressionContainsAggregateFunction(subExpression)) {
+                if (this.expressionContainsNumericAggregateFunction(subExpression)) {
                     return true;
                 }
             }

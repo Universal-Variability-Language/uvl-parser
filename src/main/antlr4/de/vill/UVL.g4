@@ -176,16 +176,23 @@ expression:
 aggregateFunction
     : 'sum' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # SumAggregateFunction
     | 'avg' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # AvgAggregateFunction
-    | 'len' OPEN_PAREN reference CLOSE_PAREN                       # LengthAggregateFunction
+    | stringAggregateFunction                                      # StringAggregateFunctionExpression
+    | numericAggregateFunction                                     # NumericAggregateFunctionExpression
     ;
 
-string
-    : ID_NOT_STRICT
-    | STRING;
+stringAggregateFunction
+    : 'len' OPEN_PAREN reference CLOSE_PAREN                                    # LengthAggregateFunction
+    ;
 
+numericAggregateFunction
+    : 'floor' OPEN_PAREN reference CLOSE_PAREN      # FloorAggregateFunction
+    | 'ceil' OPEN_PAREN reference CLOSE_PAREN       # CeilAggregateFunction
+    ;
+
+string: ID_NOT_STRICT| STRING;
 reference: (id '.')* id;
-featureType: 'String' | 'Integer' | 'Boolean' | 'Real';
 id: ID_STRICT | ID_NOT_STRICT;
+featureType: 'String' | 'Integer' | 'Boolean' | 'Real';
 
 ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
@@ -217,7 +224,7 @@ BOOLEAN: 'true' | 'false';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
 MAJORLEVEL: 'SAT-level' | 'SMT-level' | 'TYPE-level';
-MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'type-constraints';
+MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-constraints' | 'numeric-constraints';
 
 COMMA: ',';
 

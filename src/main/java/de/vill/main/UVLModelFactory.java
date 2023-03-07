@@ -5,13 +5,15 @@ import de.vill.UVLParser;
 import de.vill.conversion.ConvertAggregateFunction;
 import de.vill.conversion.ConvertFeatureCardinality;
 import de.vill.conversion.ConvertGroupCardinality;
+import de.vill.conversion.ConvertNumericConstraints;
 import de.vill.conversion.ConvertSMTLevel;
-import de.vill.conversion.ConvertTypeConstraints;
+import de.vill.conversion.ConvertStringConstraints;
 import de.vill.conversion.ConvertTypeLevel;
 import de.vill.conversion.DropAggregateFunction;
 import de.vill.conversion.DropFeatureCardinality;
 import de.vill.conversion.DropGroupCardinality;
-import de.vill.conversion.DropTypeConstraints;
+import de.vill.conversion.DropNumericConstraints;
+import de.vill.conversion.DropStringConstraints;
 import de.vill.conversion.DropSMTLevel;
 import de.vill.conversion.DropTypeLevel;
 import de.vill.conversion.IConversionStrategy;
@@ -63,14 +65,16 @@ public class UVLModelFactory {
         this.conversionStrategiesDrop.put(LanguageLevel.AGGREGATE_FUNCTION, DropAggregateFunction.class);
         this.conversionStrategiesDrop.put(LanguageLevel.SMT_LEVEL, DropSMTLevel.class);
         this.conversionStrategiesDrop.put(LanguageLevel.TYPE_LEVEL, DropTypeLevel.class);
-        this.conversionStrategiesDrop.put(LanguageLevel.TYPE_CONSTRAINTS, DropTypeConstraints.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.STRING_CONSTRAINTS, DropStringConstraints.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.NUMERIC_CONSTRAINTS, DropNumericConstraints.class);
         this.conversionStrategiesConvert = new HashMap<>();
         this.conversionStrategiesConvert.put(LanguageLevel.GROUP_CARDINALITY, ConvertGroupCardinality.class);
         this.conversionStrategiesConvert.put(LanguageLevel.FEATURE_CARDINALITY, ConvertFeatureCardinality.class);
         this.conversionStrategiesConvert.put(LanguageLevel.AGGREGATE_FUNCTION, ConvertAggregateFunction.class);
         this.conversionStrategiesConvert.put(LanguageLevel.SMT_LEVEL, ConvertSMTLevel.class);
         this.conversionStrategiesConvert.put(LanguageLevel.TYPE_LEVEL, ConvertTypeLevel.class);
-        this.conversionStrategiesConvert.put(LanguageLevel.TYPE_CONSTRAINTS, ConvertTypeConstraints.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.STRING_CONSTRAINTS, ConvertStringConstraints.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.NUMERIC_CONSTRAINTS, ConvertNumericConstraints.class);
     }
 
     /**

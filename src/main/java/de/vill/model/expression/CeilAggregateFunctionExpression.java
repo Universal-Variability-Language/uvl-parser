@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class LengthAggregateFunctionExpression extends AggregateFunctionExpression {
+public class CeilAggregateFunctionExpression extends AggregateFunctionExpression {
     private final String featureName;
 
-    public LengthAggregateFunctionExpression(final String featureName) {
+    public CeilAggregateFunctionExpression(final String featureName) {
         super(featureName, null);
         this.featureName = featureName;
     }
@@ -36,10 +36,8 @@ public class LengthAggregateFunctionExpression extends AggregateFunctionExpressi
             .findFirst();
 
         if (feature.isPresent()) {
-            if (feature.get().getAttributes().containsKey("type_level_value_length")) {
-                return Double.parseDouble(feature.get().getAttributes().get("type_level_value_length").getValue().toString());
-            } else if (feature.get().getAttributes().containsKey("type_level_value")) {
-                return feature.get().getAttributes().get("type_level_value").getValue().toString().length();
+            if (feature.get().getAttributes().containsKey("type_level_value")) {
+                return Math.ceil(Double.parseDouble(feature.get().getAttributes().get("type_level_value").getValue().toString()));
             }
         }
 

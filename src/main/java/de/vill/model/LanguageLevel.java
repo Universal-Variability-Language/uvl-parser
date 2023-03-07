@@ -17,7 +17,8 @@ public enum LanguageLevel {
     GROUP_CARDINALITY(2, "group-cardinality"),
     FEATURE_CARDINALITY(4, "feature-cardinality"),
     AGGREGATE_FUNCTION(4, "aggregate-function"),
-    TYPE_CONSTRAINTS(6, "type-constraints"),
+    STRING_CONSTRAINTS(6, "string-constraints"),
+    NUMERIC_CONSTRAINTS(6, "numeric-constraints"),
     ;
 
     private final int value;

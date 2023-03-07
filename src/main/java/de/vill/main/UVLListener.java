@@ -28,8 +28,10 @@ import de.vill.model.constraint.ParenthesisConstraint;
 import de.vill.model.expression.AddExpression;
 import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.AvgAggregateFunctionExpression;
+import de.vill.model.expression.CeilAggregateFunctionExpression;
 import de.vill.model.expression.DivExpression;
 import de.vill.model.expression.Expression;
+import de.vill.model.expression.FloorAggregateFunctionExpression;
 import de.vill.model.expression.LengthAggregateFunctionExpression;
 import de.vill.model.expression.LiteralExpression;
 import de.vill.model.expression.MulExpression;
@@ -534,7 +536,6 @@ public class UVLListener extends UVLBaseListener {
     @Override
     public void exitStringLiteralExpression(UVLParser.StringLiteralExpressionContext ctx) {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_CONSTRAINTS);
         Expression expression = new StringExpression(ctx.STRING().getText());
         expressionStack.push(expression);
         Token t = ctx.getStart();
@@ -657,7 +658,7 @@ public class UVLListener extends UVLBaseListener {
     @Override
     public void exitLengthAggregateFunction(UVLParser.LengthAggregateFunctionContext ctx) {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_CONSTRAINTS);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
 
         String reference = ctx.reference().getText().replace("\"", "");
         if (!(featureModel.getFeatureMap().containsKey(reference) && FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType()))) {
@@ -666,6 +667,48 @@ public class UVLListener extends UVLBaseListener {
         }
 
         AggregateFunctionExpression expression = new LengthAggregateFunctionExpression(reference);
+        featureModel.getAggregateFunctionsWithRootFeature().add(expression);
+        expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
+    }
+
+    @Override public void exitFloorAggregateFunction(UVLParser.FloorAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
+
+        String reference = ctx.reference().getText().replace("\"", "");
+        if (!(featureModel.getFeatureMap().containsKey(reference) && (
+            FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+                || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+        ))) {
+            errorList.add(new ParseError("Floor Aggregate Function can only be used with Integer or Real features"));
+            return;
+        }
+
+        AggregateFunctionExpression expression = new FloorAggregateFunctionExpression(reference);
+        featureModel.getAggregateFunctionsWithRootFeature().add(expression);
+        expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
+    }
+
+    @Override public void exitCeilAggregateFunction(UVLParser.CeilAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
+
+        String reference = ctx.reference().getText().replace("\"", "");
+        if (!(featureModel.getFeatureMap().containsKey(reference) && (
+            FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+                || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+        ))) {
+            errorList.add(new ParseError("Ceil Aggregate Function can only be used with Integer or Real features"));
+            return;
+        }
+
+        AggregateFunctionExpression expression = new CeilAggregateFunctionExpression(reference);
         featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         expressionStack.push(expression);
         Token t = ctx.getStart();
