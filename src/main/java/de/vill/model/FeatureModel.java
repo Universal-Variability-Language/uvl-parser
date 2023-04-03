@@ -89,7 +89,9 @@ public class FeatureModel {
      */
     public String getNamespace() {
         if (namespace == null) {
-            return rootFeature.getFeatureName();
+            if(rootFeature != null) {
+                return rootFeature.getFeatureName();
+            }
         }
         return namespace;
     }

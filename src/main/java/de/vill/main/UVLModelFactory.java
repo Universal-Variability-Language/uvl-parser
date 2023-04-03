@@ -339,51 +339,53 @@ public class UVLModelFactory {
             throw parseErrorList;
         }
 
+        //if featuremodel has not namespace and no root feature getNamespace returns null
+        if(featureModel.getNamespace() != null) {
+            visitedImports.put(featureModel.getNamespace(), null);
 
-        visitedImports.put(featureModel.getNamespace(), null);
+            for (Import importLine : featureModel.getImports()) {
+                if (visitedImports.containsKey(importLine.getNamespace()) && visitedImports.get(importLine.getNamespace()) == null) {
+                    throw new ParseError("Cyclic import detected! " + "The import of " + importLine.getNamespace() + " in " + featureModel.getNamespace() + " creates a cycle", importLine.getLineNumber());
+                } else {
+                    try {
+                        String path = fileLoader.apply(importLine.getNamespace());
+                        Path filePath = Paths.get(path);
+                        String content = new String(Files.readAllBytes(filePath));
+                        FeatureModel subModel = parseFeatureModelWithImports(content, fileLoader, visitedImports);
+                        importLine.setFeatureModel(subModel);
+                        subModel.getRootFeature().setRelatedImport(importLine);
+                        visitedImports.put(importLine.getNamespace(), importLine);
 
-        for (Import importLine : featureModel.getImports()) {
-            if (visitedImports.containsKey(importLine.getNamespace()) && visitedImports.get(importLine.getNamespace()) == null) {
-                throw new ParseError("Cyclic import detected! " + "The import of " + importLine.getNamespace() + " in " + featureModel.getNamespace() + " creates a cycle", importLine.getLineNumber());
-            } else {
-                try {
-                    String path = fileLoader.apply(importLine.getNamespace());
-                    Path filePath = Paths.get(path);
-                    String content = new String(Files.readAllBytes(filePath));
-                    FeatureModel subModel = parseFeatureModelWithImports(content, fileLoader, visitedImports);
-                    importLine.setFeatureModel(subModel);
-                    subModel.getRootFeature().setRelatedImport(importLine);
-                    visitedImports.put(importLine.getNamespace(), importLine);
-
-                    //adjust namespaces of imported features
-                    for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
-                        Feature feature = entry.getValue();
-                        if (feature.getNameSpace().equals("")) {
-                            feature.setNameSpace(importLine.getAlias());
-                        } else {
-                            feature.setNameSpace(importLine.getAlias() + "." + feature.getNameSpace());
-                        }
-                    }
-
-                    //check if submodel is acutally used
-                    if (featureModel.getFeatureMap().containsKey(subModel.getRootFeature().getReferenceFromSpecificSubmodel(""))) {
-                        importLine.setReferenced(true);
-                    }
-                    // if submodel is used add features
-                    if (importLine.isReferenced()) {
+                        //adjust namespaces of imported features
                         for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
                             Feature feature = entry.getValue();
-                            if (!featureModel.getFeatureMap().containsKey(feature.getNameSpace() + "." + entry.getValue().getFeatureName())) {
-                                if (importLine.isReferenced()) {
-                                    featureModel.getFeatureMap().put(feature.getNameSpace() + "." + entry.getValue().getFeatureName(), feature);
+                            if (feature.getNameSpace().equals("")) {
+                                feature.setNameSpace(importLine.getAlias());
+                            } else {
+                                feature.setNameSpace(importLine.getAlias() + "." + feature.getNameSpace());
+                            }
+                        }
+
+                        //check if submodel is acutally used
+                        if (featureModel.getFeatureMap().containsKey(subModel.getRootFeature().getReferenceFromSpecificSubmodel(""))) {
+                            importLine.setReferenced(true);
+                        }
+                        // if submodel is used add features
+                        if (importLine.isReferenced()) {
+                            for (Map.Entry<String, Feature> entry : subModel.getFeatureMap().entrySet()) {
+                                Feature feature = entry.getValue();
+                                if (!featureModel.getFeatureMap().containsKey(feature.getNameSpace() + "." + entry.getValue().getFeatureName())) {
+                                    if (importLine.isReferenced()) {
+                                        featureModel.getFeatureMap().put(feature.getNameSpace() + "." + entry.getValue().getFeatureName(), feature);
+                                    }
                                 }
                             }
                         }
+
+
+                    } catch (IOException e) {
+                        throw new ParseError("Could not resolve import: " + e.getMessage(), importLine.getLineNumber());
                     }
-
-
-                } catch (IOException e) {
-                    throw new ParseError("Could not resolve import: " + e.getMessage(), importLine.getLineNumber());
                 }
             }
         }
