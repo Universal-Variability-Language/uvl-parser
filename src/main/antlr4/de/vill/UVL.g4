@@ -181,7 +181,7 @@ aggregateFunction
     ;
 
 stringAggregateFunction
-    : 'len' OPEN_PAREN reference CLOSE_PAREN                                    # LengthAggregateFunction
+    : 'len' OPEN_PAREN reference CLOSE_PAREN        # LengthAggregateFunction
     ;
 
 numericAggregateFunction
@@ -240,7 +240,7 @@ CLOSE_COMMENT: '*/' {this.opened -= 1;};
 ID_NOT_STRICT: '"'~[\r\n".]+'"';
 ID_STRICT: [a-zA-Z]([a-zA-Z0-9_] | '#' | '§' | '%' | '?' | '\\' | '\'' | 'ä' | 'ü' | 'ö' | 'ß' | ';')*;
 
-STRING: '"'~[\r?\n"]*'"';
+STRING: '\''~[\r?\n"]*'\'';
 
 NEWLINE
  : ( {atStartOfInput()}?   SPACES

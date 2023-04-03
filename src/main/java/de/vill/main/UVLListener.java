@@ -535,8 +535,7 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitStringLiteralExpression(UVLParser.StringLiteralExpressionContext ctx) {
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-        Expression expression = new StringExpression(ctx.STRING().getText());
+        Expression expression = new StringExpression(ctx.STRING().getText().replace("'", ""));
         expressionStack.push(expression);
         Token t = ctx.getStart();
         int line = t.getLine();
@@ -555,23 +554,13 @@ public class UVLListener extends UVLBaseListener {
     @Override
     public void exitLiteralExpression(UVLParser.LiteralExpressionContext ctx) {
         String reference = ctx.reference().getText().replace("\"", "");
-        Expression expression = new LiteralExpression(reference);
-
-        if (featureModel.getFeatureMap().containsKey(reference)) {
-            if (FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType()) || FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType()) || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())) {
-                featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-            } else {
-                featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
-            }
-        } else {
-            featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
-            expression = new StringExpression(reference);
+        LiteralExpression expression = new LiteralExpression(reference);
+        String[] splitReference = reference.split("\\.");
+        if (splitReference.length > 1) {
+            featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
         }
-
         expressionStack.push(expression);
-        if (expression instanceof LiteralExpression) {
-            featureModel.getLiteralExpressions().add((LiteralExpression)expression);
-        }
+        featureModel.getLiteralExpressions().add(expression);
         Token t = ctx.getStart();
         int line = t.getLine();
         expression.setLineNumber(line);

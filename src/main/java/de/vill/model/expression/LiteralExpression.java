@@ -70,7 +70,9 @@ public class LiteralExpression extends Expression {
     @Override
     public String getReturnType() {
         if (this.feature != null) {
-            if (FeatureType.STRING.equals(this.feature.getFeatureType())) {
+            if (this.attributeName != null) {
+                return "true";
+            } else if (FeatureType.STRING.equals(this.feature.getFeatureType())) {
                 return "string";
             } else if (FeatureType.BOOL.equals(this.feature.getFeatureType())) {
                 return "boolean";
@@ -78,7 +80,7 @@ public class LiteralExpression extends Expression {
                 return "number";
             }
         }
-        //todo
+
         return "";
     }
 

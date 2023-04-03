@@ -500,9 +500,15 @@ public class UVLModelFactory {
     private boolean validateTypeLevelConstraint(final Constraint constraint) {
         boolean result = true;
         if (constraint instanceof ExpressionConstraint) {
-            result = result && ((ExpressionConstraint) constraint).getLeft().getReturnType().equalsIgnoreCase(((ExpressionConstraint) constraint).getRight().getReturnType());
+            String leftReturnType = ((ExpressionConstraint) constraint).getLeft().getReturnType();
+            String rightReturnType = ((ExpressionConstraint) constraint).getRight().getReturnType();
+
+            if (!(leftReturnType.equalsIgnoreCase("true") || rightReturnType.equalsIgnoreCase("true"))) {
+                // if not attribute constraint
+                result = result && ((ExpressionConstraint) constraint).getLeft().getReturnType().equalsIgnoreCase(((ExpressionConstraint) constraint).getRight().getReturnType());
+            }
             if (!result) {
-                return result;
+                return false;
             }
             for (final Expression expr: ((ExpressionConstraint) constraint).getExpressionSubParts()) {
                 result = result && validateTypeLevelExpression(expr);

@@ -28,7 +28,7 @@ public class StringExpression extends Expression {
 
     @Override
     public String toString(final boolean withSubmodels, final String currentAlias) {
-        return this.value;
+        return "'" + this.value + "'" ;
     }
 
     @Override
