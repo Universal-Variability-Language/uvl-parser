@@ -1,6 +1,7 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
+import de.vill.util.Constants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +77,6 @@ public class MulExpression extends Expression {
 
     @Override
     public String getReturnType() {
-        return "number";
+        return Constants.NUMBER;
     }
 }

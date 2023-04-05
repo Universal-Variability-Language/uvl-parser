@@ -1,6 +1,7 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
+import de.vill.util.Constants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class LengthAggregateFunctionExpression extends AggregateFunctionExpressi
 
     @Override
     public String getReturnType() {
-        return "number";
+        return Constants.NUMBER;
     }
 
     @Override

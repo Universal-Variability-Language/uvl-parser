@@ -5,6 +5,7 @@ import static de.vill.util.Util.addNecessaryQuotes;
 import de.vill.model.Attribute;
 import de.vill.model.Feature;
 import de.vill.model.FeatureType;
+import de.vill.util.Constants;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -71,13 +72,13 @@ public class LiteralExpression extends Expression {
     public String getReturnType() {
         if (this.feature != null) {
             if (this.attributeName != null) {
-                return "true";
+                return Constants.TRUE;
             } else if (FeatureType.STRING.equals(this.feature.getFeatureType())) {
-                return "string";
+                return Constants.STRING;
             } else if (FeatureType.BOOL.equals(this.feature.getFeatureType())) {
-                return "boolean";
+                return Constants.BOOLEAN;
             } else {
-                return "number";
+                return Constants.NUMBER;
             }
         }
 

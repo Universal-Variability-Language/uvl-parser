@@ -1,5 +1,6 @@
 package de.vill.model.expression;
 
+import de.vill.util.Constants;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,6 @@ public class SumAggregateFunctionExpression extends AggregateFunctionExpression 
 
     @Override
     public String getReturnType() {
-        return "number";
+        return Constants.NUMBER;
     }
 }

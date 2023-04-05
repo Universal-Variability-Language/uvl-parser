@@ -1,6 +1,7 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
+import de.vill.util.Constants;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -79,6 +80,6 @@ public class NumberExpression extends Expression {
 
     @Override
     public String getReturnType() {
-        return "number";
+        return Constants.NUMBER;
     }
 }

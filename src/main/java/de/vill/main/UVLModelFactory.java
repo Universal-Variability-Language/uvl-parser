@@ -30,6 +30,7 @@ import de.vill.model.constraint.LiteralConstraint;
 import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.Expression;
 import de.vill.model.expression.LiteralExpression;
+import de.vill.util.Constants;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -505,7 +506,7 @@ public class UVLModelFactory {
             String leftReturnType = ((ExpressionConstraint) constraint).getLeft().getReturnType();
             String rightReturnType = ((ExpressionConstraint) constraint).getRight().getReturnType();
 
-            if (!(leftReturnType.equalsIgnoreCase("true") || rightReturnType.equalsIgnoreCase("true"))) {
+            if (!(leftReturnType.equalsIgnoreCase(Constants.TRUE) || rightReturnType.equalsIgnoreCase(Constants.TRUE))) {
                 // if not attribute constraint
                 result = result && ((ExpressionConstraint) constraint).getLeft().getReturnType().equalsIgnoreCase(((ExpressionConstraint) constraint).getRight().getReturnType());
             }

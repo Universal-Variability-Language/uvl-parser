@@ -1,5 +1,6 @@
 package de.vill.model.expression;
 
+import de.vill.util.Constants;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +25,6 @@ public class AvgAggregateFunctionExpression extends AggregateFunctionExpression 
 
     @Override
     public String getReturnType() {
-        return "number";
+        return Constants.NUMBER;
     }
 }
