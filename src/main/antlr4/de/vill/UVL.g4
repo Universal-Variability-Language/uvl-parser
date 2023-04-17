@@ -127,7 +127,7 @@ attribute
 valueAttribute: key value?;
 
 key: id;
-value: BOOLEAN | FLOAT | INTEGER | string | attributes | vector;
+value: BOOLEAN | FLOAT | INTEGER | STRING | attributes | vector;
 vector: OPEN_BRACK (value (COMMA value)*)? CLOSE_BRACK;
 
 constraintAttribute
@@ -189,7 +189,6 @@ numericAggregateFunction
     | 'ceil' OPEN_PAREN reference CLOSE_PAREN       # CeilAggregateFunction
     ;
 
-string: ID_NOT_STRICT| STRING;
 reference: (id '.')* id;
 id: ID_STRICT | ID_NOT_STRICT;
 featureType: 'String' | 'Integer' | 'Boolean' | 'Real';
@@ -240,7 +239,7 @@ CLOSE_COMMENT: '*/' {this.opened -= 1;};
 ID_NOT_STRICT: '"'~[\r\n".]+'"';
 ID_STRICT: [a-zA-Z]([a-zA-Z0-9_] | '#' | '§' | '%' | '?' | '\\' | '\'' | 'ä' | 'ü' | 'ö' | 'ß' | ';')*;
 
-STRING: '\''~[\r?\n"]*'\'';
+STRING: '\''~[\r\n'.]+'\'';
 
 NEWLINE
  : ( {atStartOfInput()}?   SPACES

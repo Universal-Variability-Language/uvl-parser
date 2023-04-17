@@ -110,9 +110,9 @@ public class Attribute<T> {
             result.deleteCharAt(result.length() - 1);
             result.append("]");
         } else if (value instanceof String) {
-            result.append("\"");
+            result.append("'");
             result.append((String) value);
-            result.append("\"");
+            result.append("'");
         } else if (value instanceof Constraint) {
             result.append(((Constraint) value).toString(withSubmodels, currentAlias));
         }

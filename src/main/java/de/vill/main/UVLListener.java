@@ -320,16 +320,16 @@ public class UVLListener extends UVLBaseListener {
             Attribute<Boolean> attribute = new Attribute(attributeName, true);
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().BOOLEAN() != null) {
-            Attribute<Boolean> attribute = new Attribute(attributeName, Boolean.parseBoolean(ctx.value().getText()));
+            Attribute<Boolean> attribute = new Attribute(attributeName, Boolean.parseBoolean(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().INTEGER() != null) {
-            Attribute<Integer> attribute = new Attribute(attributeName, Long.parseLong(ctx.value().getText()));
+            Attribute<Integer> attribute = new Attribute(attributeName, Long.parseLong(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().FLOAT() != null) {
-            Attribute<Double> attribute = new Attribute(attributeName, Double.parseDouble(ctx.value().getText()));
+            Attribute<Double> attribute = new Attribute(attributeName, Double.parseDouble(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
-        } else if (ctx.value().string() != null) {
-            Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText().replace("\"", ""));
+        } else if (ctx.value().STRING() != null) {
+            Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText().replace("'", ""));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().vector() != null) {
             String vectorString = ctx.value().getText();
@@ -536,6 +536,15 @@ public class UVLListener extends UVLBaseListener {
     @Override
     public void exitStringLiteralExpression(UVLParser.StringLiteralExpressionContext ctx) {
         Expression expression = new StringExpression(ctx.STRING().getText().replace("'", ""));
+        if (expressionStack.peek() instanceof LiteralExpression) {
+            LiteralExpression literalExpression = (LiteralExpression) expressionStack.peek();
+            if (literalExpression.getAttributeName() == null) {
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+            } else {
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+            }
+        }
         expressionStack.push(expression);
         Token t = ctx.getStart();
         int line = t.getLine();

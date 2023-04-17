@@ -96,20 +96,20 @@ public class ConvertStringConstraints implements IConversionStrategy {
             this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()).getAttributes();
         currentAttributes.put(
             "type_level_value_length",
-            new Attribute<>(
+            new Attribute<Long>(
                 "type_level_value_length",
                 this.computeStringLength(
-                    this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName())).toString()
+                    this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()))
             )
         );
         this.featuresToBeUpdated.put(aggregateFunctionExpression.getRootFeatureName(), currentAttributes);
     }
 
-    private Integer computeStringLength(final Feature feature) {
+    private Long computeStringLength(final Feature feature) {
         if (feature.getAttributes().containsKey("type_level_value")) {
-            return feature.getAttributes().get("type_level_value").getValue().toString().length();
+            return (long) feature.getAttributes().get("type_level_value").getValue().toString().length();
         }
 
-        return 0;
+        return 0L;
     }
 }
