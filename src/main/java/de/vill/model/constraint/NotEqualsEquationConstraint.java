@@ -4,12 +4,12 @@ import de.vill.model.expression.Expression;
 import java.util.Collections;
 import java.util.List;
 
-public class GreaterEquationConstraint extends ExpressionConstraint {
+public class NotEqualsEquationConstraint extends ExpressionConstraint {
     private final Expression left;
     private final Expression right;
 
-    public GreaterEquationConstraint(final Expression left, final Expression right) {
-        super(left, right, ">");
+    public NotEqualsEquationConstraint(final Expression left, final Expression right) {
+        super(left, right, "!=");
         this.left = left;
         this.right = right;
     }
@@ -21,6 +21,6 @@ public class GreaterEquationConstraint extends ExpressionConstraint {
 
     @Override
     public Constraint clone() {
-        return new GreaterEquationConstraint(this.left, this.right);
+        return new NotEqualsEquationConstraint(this.left, this.right);
     }
 }

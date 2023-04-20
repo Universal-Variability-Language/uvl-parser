@@ -1,11 +1,10 @@
 package de.vill.model.expression;
 
-import java.util.Arrays;
+import de.vill.util.Constants;
+import java.util.Collections;
 import java.util.List;
 
 public class AvgAggregateFunctionExpression extends AggregateFunctionExpression {
-
-
     public AvgAggregateFunctionExpression(String attributeName) {
         super(attributeName);
     }
@@ -21,6 +20,11 @@ public class AvgAggregateFunctionExpression extends AggregateFunctionExpression 
 
     @Override
     public List<Expression> getExpressionSubParts() {
-        return Arrays.asList();
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getReturnType() {
+        return Constants.NUMBER;
     }
 }

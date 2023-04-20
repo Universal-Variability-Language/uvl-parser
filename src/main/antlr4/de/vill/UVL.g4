@@ -114,7 +114,7 @@ group
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
-feature: reference featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
+feature: featureType? reference featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
 
 featureCardinality: 'cardinality' CARDINALITY;
 
@@ -127,7 +127,7 @@ attribute
 valueAttribute: key value?;
 
 key: id;
-value: BOOLEAN | FLOAT | INTEGER | string | attributes | vector;
+value: BOOLEAN | FLOAT | INTEGER | STRING | attributes | vector;
 vector: OPEN_BRACK (value (COMMA value)*)? CLOSE_BRACK;
 
 constraintAttribute
@@ -143,7 +143,7 @@ constraintLine: constraint NEWLINE;
 constraint
     : equation                              # EquationConstraint
     | reference                             # LiteralConstraint
-    | OPEN_PAREN constraint CLOSE_PAREN      # ParenthesisConstraint
+    | OPEN_PAREN constraint CLOSE_PAREN     # ParenthesisConstraint
     | NOT constraint                        # NotConstraint
     | constraint AND constraint             # AndConstraint
     | constraint OR constraint              # OrConstraint
@@ -152,34 +152,46 @@ constraint
 	;
 
 equation
-    : expression EQUAL expression       # EqualEquation
-    | expression LOWER expression       # LowerEquation
-    | expression GREATER expression     # GreaterEquation
+    : expression EQUAL expression           # EqualEquation
+    | expression LOWER expression           # LowerEquation
+    | expression GREATER expression         # GreaterEquation
+    | expression LOWER_EQUALS expression    # LowerEqualsEquation
+    | expression GREATER_EQUALS expression  # GreaterEqualsEquation
+    | expression NOT_EQUALS expression      # NotEqualsEquation
     ;
 
 expression:
     FLOAT                                   # FloatLiteralExpression
     | INTEGER                               # IntegerLiteralExpression
+    | STRING                                # StringLiteralExpression
     | aggregateFunction                     # AggregateFunctionExpression
-    | reference                             # AttributeLiteralExpression
+    | reference                             # LiteralExpression
     | OPEN_PAREN expression CLOSE_PAREN     # BracketExpression
     | expression ADD expression             # AddExpression
     | expression SUB expression             # SubExpression
     | expression MUL expression             # MulExpression
-    | expression DIV expression             # DivExpresssion
+    | expression DIV expression             # DivExpression
     ;
 
 aggregateFunction
     : 'sum' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # SumAggregateFunction
     | 'avg' OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN    # AvgAggregateFunction
+    | stringAggregateFunction                                      # StringAggregateFunctionExpression
+    | numericAggregateFunction                                     # NumericAggregateFunctionExpression
     ;
 
-string
-    : ID_NOT_STRICT
-    | STRING;
+stringAggregateFunction
+    : 'len' OPEN_PAREN reference CLOSE_PAREN        # LengthAggregateFunction
+    ;
+
+numericAggregateFunction
+    : 'floor' OPEN_PAREN reference CLOSE_PAREN      # FloorAggregateFunction
+    | 'ceil' OPEN_PAREN reference CLOSE_PAREN       # CeilAggregateFunction
+    ;
 
 reference: (id '.')* id;
 id: ID_STRICT | ID_NOT_STRICT;
+featureType: 'String' | 'Integer' | 'Boolean' | 'Real';
 
 ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
@@ -195,7 +207,10 @@ IMPLICATION: '=>';
 
 EQUAL: '==';
 LOWER: '<';
+LOWER_EQUALS: '<=';
 GREATER: '>';
+GREATER_EQUALS: '>=';
+NOT_EQUALS: '!=';
 
 DIV: '/';
 MUL: '*';
@@ -207,8 +222,8 @@ INTEGER: '0' | '-'?[1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
-MAJORLEVEL: 'SAT-level' | 'SMT-level';
-MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function';
+MAJORLEVEL: 'SAT-level' | 'SMT-level' | 'TYPE-level';
+MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-constraints' | 'numeric-constraints';
 
 COMMA: ',';
 
@@ -224,7 +239,7 @@ CLOSE_COMMENT: '*/' {this.opened -= 1;};
 ID_NOT_STRICT: '"'~[\r\n".]+'"';
 ID_STRICT: [a-zA-Z]([a-zA-Z0-9_] | '#' | '§' | '%' | '?' | '\\' | '\'' | 'ä' | 'ü' | 'ö' | 'ß' | ';')*;
 
-STRING: '"'~[\r?\n"]*'"';
+STRING: '\''~[\r\n'.]+'\'';
 
 NEWLINE
  : ( {atStartOfInput()}?   SPACES

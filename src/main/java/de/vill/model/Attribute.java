@@ -50,6 +50,15 @@ public class Attribute<T> {
     }
 
     /**
+     * Returns the name of the attribute.
+     *
+     * @return Name of the attribute (never null)
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * Returns a uvl representation of the attribute as string (different for the possible types of the value)
      *
      * @return attribute as string
@@ -101,9 +110,9 @@ public class Attribute<T> {
             result.deleteCharAt(result.length() - 1);
             result.append("]");
         } else if (value instanceof String) {
-            result.append("\"");
+            result.append("'");
             result.append((String) value);
-            result.append("\"");
+            result.append("'");
         } else if (value instanceof Constraint) {
             result.append(((Constraint) value).toString(withSubmodels, currentAlias));
         }

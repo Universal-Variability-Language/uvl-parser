@@ -4,12 +4,51 @@ import de.vill.UVLBaseListener;
 import de.vill.UVLParser;
 import de.vill.exception.ParseError;
 import de.vill.exception.ParseErrorList;
-import de.vill.model.*;
-import de.vill.model.constraint.*;
-import de.vill.model.expression.*;
+import de.vill.model.Attribute;
+import de.vill.model.Feature;
+import de.vill.model.FeatureModel;
+import de.vill.model.FeatureType;
+import de.vill.model.Group;
+import de.vill.model.Import;
+import de.vill.model.LanguageLevel;
+import de.vill.model.constraint.AndConstraint;
+import de.vill.model.constraint.Constraint;
+import de.vill.model.constraint.EqualEquationConstraint;
+import de.vill.model.constraint.EquivalenceConstraint;
+import de.vill.model.constraint.GreaterEqualsEquationConstraint;
+import de.vill.model.constraint.GreaterEquationConstraint;
+import de.vill.model.constraint.ImplicationConstraint;
+import de.vill.model.constraint.LiteralConstraint;
+import de.vill.model.constraint.LowerEqualsEquationConstraint;
+import de.vill.model.constraint.LowerEquationConstraint;
+import de.vill.model.constraint.NotConstraint;
+import de.vill.model.constraint.NotEqualsEquationConstraint;
+import de.vill.model.constraint.OrConstraint;
+import de.vill.model.constraint.ParenthesisConstraint;
+import de.vill.model.expression.AddExpression;
+import de.vill.model.expression.AggregateFunctionExpression;
+import de.vill.model.expression.AvgAggregateFunctionExpression;
+import de.vill.model.expression.CeilAggregateFunctionExpression;
+import de.vill.model.expression.DivExpression;
+import de.vill.model.expression.Expression;
+import de.vill.model.expression.FloorAggregateFunctionExpression;
+import de.vill.model.expression.LengthAggregateFunctionExpression;
+import de.vill.model.expression.LiteralExpression;
+import de.vill.model.expression.MulExpression;
+import de.vill.model.expression.NumberExpression;
+import de.vill.model.expression.ParenthesisExpression;
+import de.vill.model.expression.StringExpression;
+import de.vill.model.expression.SubExpression;
+import de.vill.model.expression.SumAggregateFunctionExpression;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 import org.antlr.v4.runtime.Token;
-
-import java.util.*;
 
 public class UVLListener extends UVLBaseListener {
     private FeatureModel featureModel = new FeatureModel();
@@ -229,6 +268,13 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
+    public void enterFeatureType(final UVLParser.FeatureTypeContext ctx) {
+        final Feature feature = this.featureStack.peek();
+        feature.setFeatureType(FeatureType.fromString(ctx.getText().toLowerCase()));
+        this.featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+    }
+
+    @Override
     public void exitFeatureCardinality(UVLParser.FeatureCardinalityContext ctx) {
         String lowerBound;
         String upperBound;
@@ -274,16 +320,16 @@ public class UVLListener extends UVLBaseListener {
             Attribute<Boolean> attribute = new Attribute(attributeName, true);
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().BOOLEAN() != null) {
-            Attribute<Boolean> attribute = new Attribute(attributeName, Boolean.parseBoolean(ctx.value().getText()));
+            Attribute<Boolean> attribute = new Attribute(attributeName, Boolean.parseBoolean(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().INTEGER() != null) {
-            Attribute<Integer> attribute = new Attribute(attributeName, Long.parseLong(ctx.value().getText()));
+            Attribute<Integer> attribute = new Attribute(attributeName, Long.parseLong(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().FLOAT() != null) {
-            Attribute<Double> attribute = new Attribute(attributeName, Double.parseDouble(ctx.value().getText()));
+            Attribute<Double> attribute = new Attribute(attributeName, Double.parseDouble(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
-        } else if (ctx.value().string() != null) {
-            Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText().replace("\"", ""));
+        } else if (ctx.value().STRING() != null) {
+            Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText().replace("'", ""));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().vector() != null) {
             String vectorString = ctx.value().getText();
@@ -437,6 +483,39 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
+    public void exitLowerEqualsEquation(UVLParser.LowerEqualsEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new LowerEqualsEquationConstraint(left, right);
+        constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
+    }
+
+    @Override
+    public void exitGreaterEqualsEquation(UVLParser.GreaterEqualsEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new GreaterEqualsEquationConstraint(left, right);
+        constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
+    }
+
+    @Override
+    public void exitNotEqualsEquation(UVLParser.NotEqualsEquationContext ctx) {
+        Expression right = expressionStack.pop();
+        Expression left = expressionStack.pop();
+        Constraint constraint = new NotEqualsEquationConstraint(left, right);
+        constraintStack.push(constraint);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        constraint.setLineNumber(line);
+    }
+
+    @Override
     public void exitBracketExpression(UVLParser.BracketExpressionContext ctx) {
         ParenthesisExpression expression = new ParenthesisExpression(expressionStack.pop());
         expressionStack.push(expression);
@@ -455,6 +534,24 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
+    public void exitStringLiteralExpression(UVLParser.StringLiteralExpressionContext ctx) {
+        Expression expression = new StringExpression(ctx.STRING().getText().replace("'", ""));
+        if (expressionStack.peek() instanceof LiteralExpression) {
+            LiteralExpression literalExpression = (LiteralExpression) expressionStack.peek();
+            if (literalExpression.getAttributeName() == null) {
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+            } else {
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+            }
+        }
+        expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
+    }
+
+    @Override
     public void exitFloatLiteralExpression(UVLParser.FloatLiteralExpressionContext ctx) {
         Expression expression = new NumberExpression(Double.parseDouble(ctx.FLOAT().getText()));
         expressionStack.push(expression);
@@ -464,8 +561,13 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void exitAttributeLiteralExpression(UVLParser.AttributeLiteralExpressionContext ctx) {
-        LiteralExpression expression = new LiteralExpression(ctx.reference().getText().replace("\"", ""));
+    public void exitLiteralExpression(UVLParser.LiteralExpressionContext ctx) {
+        String reference = ctx.reference().getText().replace("\"", "");
+        LiteralExpression expression = new LiteralExpression(reference);
+        String[] splitReference = reference.split("\\.");
+        if (splitReference.length > 1) {
+            featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        }
         expressionStack.push(expression);
         featureModel.getLiteralExpressions().add(expression);
         Token t = ctx.getStart();
@@ -507,7 +609,7 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void exitDivExpresssion(UVLParser.DivExpresssionContext ctx) {
+    public void exitDivExpression(UVLParser.DivExpressionContext ctx) {
         Expression right = expressionStack.pop();
         Expression left = expressionStack.pop();
         Expression expression = new DivExpression(left, right);
@@ -519,6 +621,8 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
         AggregateFunctionExpression expression;
         if (ctx.reference().size() > 1) {
             expression = new SumAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
@@ -534,6 +638,8 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
         AggregateFunctionExpression expression;
         if (ctx.reference().size() > 1) {
             expression = new AvgAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
@@ -548,14 +654,64 @@ public class UVLListener extends UVLBaseListener {
     }
 
     @Override
-    public void enterAggregateFunctionExpression(UVLParser.AggregateFunctionExpressionContext ctx) {
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
+    public void exitLengthAggregateFunction(UVLParser.LengthAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
+
+        String reference = ctx.reference().getText().replace("\"", "");
+        if (!(featureModel.getFeatureMap().containsKey(reference) && FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType()))) {
+            errorList.add(new ParseError("Length Aggregate Function can only be used with String features"));
+            return;
+        }
+
+        AggregateFunctionExpression expression = new LengthAggregateFunctionExpression(reference);
+        featureModel.getAggregateFunctionsWithRootFeature().add(expression);
+        expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
-    @Override
-    public void enterEquationConstraint(UVLParser.EquationConstraintContext ctx) {
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+    @Override public void exitFloorAggregateFunction(UVLParser.FloorAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
+
+        String reference = ctx.reference().getText().replace("\"", "");
+        if (!(featureModel.getFeatureMap().containsKey(reference) && (
+            FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+                || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+        ))) {
+            errorList.add(new ParseError("Floor Aggregate Function can only be used with Integer or Real features"));
+            return;
+        }
+
+        AggregateFunctionExpression expression = new FloorAggregateFunctionExpression(reference);
+        featureModel.getAggregateFunctionsWithRootFeature().add(expression);
+        expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
+    }
+
+    @Override public void exitCeilAggregateFunction(UVLParser.CeilAggregateFunctionContext ctx) {
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
+
+        String reference = ctx.reference().getText().replace("\"", "");
+        if (!(featureModel.getFeatureMap().containsKey(reference) && (
+            FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+                || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+        ))) {
+            errorList.add(new ParseError("Ceil Aggregate Function can only be used with Integer or Real features"));
+            return;
+        }
+
+        AggregateFunctionExpression expression = new CeilAggregateFunctionExpression(reference);
+        featureModel.getAggregateFunctionsWithRootFeature().add(expression);
+        expressionStack.push(expression);
+        Token t = ctx.getStart();
+        int line = t.getLine();
+        expression.setLineNumber(line);
     }
 
     @Override

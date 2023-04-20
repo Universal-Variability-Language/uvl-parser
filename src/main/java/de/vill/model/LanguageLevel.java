@@ -5,28 +5,35 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * An enum that represents all possible language levels this uvl library supports.
+ * An enum that represents all possible language levels this UVL library supports.
  */
 public enum LanguageLevel {
+    // MAJOR LEVELS (logic: val % 2 != 0)
+    SAT_LEVEL(1, "SAT-level"),
+    SMT_LEVEL(3, "SMT-level"),
+    TYPE_LEVEL(5, "TYPE-level"),
+
+    // MINOR LEVELS (logic: val % 2 == 0)
     GROUP_CARDINALITY(2, "group-cardinality"),
     FEATURE_CARDINALITY(4, "feature-cardinality"),
     AGGREGATE_FUNCTION(4, "aggregate-function"),
-    SAT_LEVEL(1, "SAT-level"),
-    SMT_LEVEL(3, "SMT-level");
+    STRING_CONSTRAINTS(6, "string-constraints"),
+    NUMERIC_CONSTRAINTS(6, "numeric-constraints"),
+    ;
 
-    private int value;
+    private final int value;
+    private final String name;
 
-    private String name;
-    private static HashMap<Integer, List<LanguageLevel>> valueMap = new HashMap<>();
-    private static HashMap<String, LanguageLevel> nameMap = new HashMap<>();
+    private static final HashMap<Integer, List<LanguageLevel>> valueMap = new HashMap<>();
+    private static final HashMap<String, LanguageLevel> nameMap = new HashMap<>();
 
-    LanguageLevel(int value, String name) {
+    LanguageLevel(final int value, final String name) {
         this.value = value;
         this.name = name;
     }
 
     static {
-        for (LanguageLevel level : LanguageLevel.values()) {
+        for (final LanguageLevel level : LanguageLevel.values()) {
             if (!valueMap.containsKey(level.value)) {
                 valueMap.put(level.value, new LinkedList<>());
             }
@@ -35,23 +42,23 @@ public enum LanguageLevel {
         }
     }
 
-    public static List<LanguageLevel> valueOf(int languageLevel) {
-        return (List<LanguageLevel>) valueMap.get(languageLevel);
+    public static List<LanguageLevel> valueOf(final int languageLevel) {
+        return valueMap.get(languageLevel);
     }
 
-    public static LanguageLevel getLevelByName(String name) {
+    public static LanguageLevel getLevelByName(final String name) {
         return nameMap.get(name);
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public static boolean isMajorLevel(LanguageLevel languageLevel) {
+    public static boolean isMajorLevel(final LanguageLevel languageLevel) {
         return languageLevel.getValue() % 2 != 0;
     }
 
     public int getValue() {
-        return value;
+        return this.value;
     }
 }

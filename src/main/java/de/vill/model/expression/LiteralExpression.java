@@ -1,73 +1,109 @@
 package de.vill.model.expression;
 
+import static de.vill.util.Util.addNecessaryQuotes;
+
 import de.vill.model.Attribute;
 import de.vill.model.Feature;
-
-import java.util.Arrays;
+import de.vill.model.FeatureType;
+import de.vill.util.Constants;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static de.vill.util.Util.addNecessaryQuotes;
-
 public class LiteralExpression extends Expression {
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
-    }
-
+    private String content;
     private String attributeName;
-
-    public Attribute getAttribute() {
-        return getFeature().getAttributes().get(attributeName);
-    }
-
+    private String featureName;
     private Feature feature;
 
+    public LiteralExpression(final String content) {
+        this.content = content;
+        final String[] contentSplit = content.split("\\.");
+        this.featureName = contentSplit[0];
+        this.attributeName = contentSplit.length == 2 ? contentSplit[1] : null;
+    }
+
+    public String getContent() {
+        return this.content;
+    }
+
+    public String getAttributeName() {
+        return this.attributeName;
+    }
+
+    public String getFeatureName() {
+        return this.featureName;
+    }
+
+    public Attribute getAttribute() {
+        if (this.feature == null) {
+            return null;
+        }
+        return this.getFeature().getAttributes().get(this.attributeName);
+    }
+
     public Feature getFeature() {
-        return feature;
+        return this.feature;
     }
 
-    public void setFeature(Feature feature) {
+    public void setFeature(final Feature feature) {
         this.feature = feature;
-    }
-
-    public LiteralExpression(String content) {
-        this.attributeName = content;
     }
 
     @Override
     public String toString() {
-        return toString(true, "");
+        return this.toString(true, "");
     }
 
     @Override
-    public String toString(boolean withSubmodels, String currentAlias) {
-        if (getFeature() == null) {
-            return addNecessaryQuotes(getAttributeName());
+    public String toString(final boolean withSubmodels, final String currentAlias) {
+        if (this.getFeature() == null) {
+            return addNecessaryQuotes(this.getContent());
         }
         if (withSubmodels) {
-            return addNecessaryQuotes(getFeature().getFullReference() + "." + getAttributeName());
+            return addNecessaryQuotes(this.getFeature().getFullReference() + (this.getAttributeName() != null ? "." + this.getAttributeName() : ""));
         }
-        return addNecessaryQuotes(feature.getReferenceFromSpecificSubmodel(currentAlias) + "." + getAttributeName());
+        return addNecessaryQuotes(
+            this.feature.getReferenceFromSpecificSubmodel(currentAlias) + (this.getAttributeName() != null ? "." + this.getAttributeName() : ""));
+    }
+
+    @Override
+    public String getReturnType() {
+        if (this.feature != null) {
+            if (this.attributeName != null) {
+                return Constants.TRUE;
+            } else if (FeatureType.STRING.equals(this.feature.getFeatureType())) {
+                return Constants.STRING;
+            } else if (FeatureType.BOOL.equals(this.feature.getFeatureType())) {
+                return Constants.BOOLEAN;
+            } else {
+                return Constants.NUMBER;
+            }
+        }
+
+        return "";
     }
 
     @Override
     public List<Expression> getExpressionSubParts() {
-        return Arrays.asList();
+        return Collections.emptyList();
     }
 
     @Override
-    public void replaceExpressionSubPart(Expression oldSubExpression, Expression newSubExpression) {
-
+    public void replaceExpressionSubPart(final Expression oldSubExpression, final Expression newSubExpression) {
+        if (oldSubExpression instanceof LiteralExpression && ((LiteralExpression) oldSubExpression).getContent().equals(this.content) &&
+            newSubExpression instanceof LiteralExpression) {
+            this.content = ((LiteralExpression) newSubExpression).content;
+            this.featureName = ((LiteralExpression) newSubExpression).featureName;
+            this.attributeName = ((LiteralExpression) newSubExpression).attributeName;
+            this.feature = ((LiteralExpression) newSubExpression).feature;
+        }
     }
 
     @Override
-    public double evaluate(Set<Feature> selectedFeatures) {
-        Object attributeValue = feature.getAttributes().get(attributeName).getValue();
+    public double evaluate(final Set<Feature> selectedFeatures) {
+        final Object attributeValue = this.feature.getAttributes().get(this.attributeName).getValue();
         if (attributeValue instanceof Integer) {
             return ((Integer) attributeValue).doubleValue();
         }
@@ -81,25 +117,25 @@ public class LiteralExpression extends Expression {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash(attributeName);
+        result = prime * result + Objects.hash(this.attributeName);
         return result;
     }
 
     @Override
-    public int hashCode(int level) {
-        return 31 * level + (attributeName == null ? 0 : attributeName.hashCode());
+    public int hashCode(final int level) {
+        return 31 * level + (this.attributeName == null ? 0 : this.attributeName.hashCode());
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
-        LiteralExpression other = (LiteralExpression) obj;
-        return Objects.equals(attributeName, other.attributeName);
+        final LiteralExpression other = (LiteralExpression) obj;
+        return Objects.equals(this.attributeName, other.attributeName);
     }
 
 }

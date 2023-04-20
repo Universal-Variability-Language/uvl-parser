@@ -3,7 +3,12 @@ package de.vill.model;
 import de.vill.config.Configuration;
 import de.vill.util.Util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import static de.vill.util.Util.addNecessaryQuotes;
 
@@ -22,6 +27,7 @@ public class Feature {
     private String upperBound;
     private final List<Group> children;
     private final Map<String, Attribute> attributes;
+    private FeatureType featureType;
     private boolean isSubmodelRoot = false;
 
     private Group parent;
@@ -288,6 +294,24 @@ public class Feature {
     }
 
     /**
+     * Adds the feature type of the feature (if supported by the language level)
+     *
+     * @param featureType
+     */
+    public void setFeatureType(final FeatureType featureType) {
+        this.featureType = featureType;
+    }
+
+    /**
+     * Returns the type of the feature if supported by the language level
+     *
+     * @return the type of the feature
+     */
+    public FeatureType getFeatureType() {
+        return this.featureType;
+    }
+
+    /**
      * This method returns a uvl valid name for the feature. This name is unique
      * even if the feature model is composed with other submodels. It does that by
      * using the namespace (from root to feature over all imports) and a unique ID
@@ -396,6 +420,9 @@ public class Feature {
     public String toStringAsRoot(String currentAlias) {
         StringBuilder result = new StringBuilder();
 
+        if (featureType != null) {
+            result.append(featureType.getName()).append(" ");
+        }
         result.append(addNecessaryQuotes(getFeatureName()));
         result.append(cardinalityToString());
         result.append(attributesToString(false, currentAlias));
@@ -420,6 +447,9 @@ public class Feature {
      */
     public String toString(boolean withSubmodels, String currentAlias) {
         StringBuilder result = new StringBuilder();
+        if (featureType != null) {
+            result.append(featureType.getName()).append(" ");
+        }
         if (withSubmodels) {
             result.append(addNecessaryQuotes(getFullReference()));
         } else {
@@ -542,6 +572,7 @@ public class Feature {
         feature.setUpperBound(getUpperBound());
         feature.setSubmodelRoot(isSubmodelRoot);
         feature.setRelatedImport(getRelatedImport());
+        feature.setFeatureType(this.getFeatureType());
         feature.getAttributes().putAll(getAttributes());
         for (Group group : getChildren()) {
             feature.getChildren().add(group.clone());

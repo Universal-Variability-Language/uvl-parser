@@ -1,7 +1,7 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
-
+import de.vill.util.Constants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -18,11 +18,14 @@ public class DivExpression extends Expression {
 
     @Override
     public String toString(boolean withSubmodels, String currentAlias) {
-        StringBuilder result = new StringBuilder();
-        result.append(left.toString(withSubmodels, currentAlias));
-        result.append(" / ");
-        result.append(right.toString(withSubmodels, currentAlias));
-        return result.toString();
+        return left.toString(withSubmodels, currentAlias) +
+            " / " +
+            right.toString(withSubmodels, currentAlias);
+    }
+
+    @Override
+    public String getReturnType() {
+        return Constants.NUMBER;
     }
 
     @Override
@@ -49,7 +52,7 @@ public class DivExpression extends Expression {
         }
         double rightResult;
         if (right instanceof LiteralExpression
-                && !selectedFeatures.contains(((LiteralExpression) right).getFeature())) {
+            && !selectedFeatures.contains(((LiteralExpression) right).getFeature())) {
             rightResult = 1;
         } else {
             rightResult = right.evaluate(selectedFeatures);

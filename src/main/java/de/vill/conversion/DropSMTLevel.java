@@ -4,7 +4,6 @@ import de.vill.model.FeatureModel;
 import de.vill.model.LanguageLevel;
 import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.ExpressionConstraint;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,16 +20,16 @@ public class DropSMTLevel implements IConversionStrategy {
     }
 
     @Override
-    public void convertFeatureModel(FeatureModel rootFeatureModel, FeatureModel featureModel) {
-        featureModel.getOwnConstraints().removeIf(x -> constraintContainsEquation(x));
+    public void convertFeatureModel(final FeatureModel rootFeatureModel, final FeatureModel featureModel) {
+        featureModel.getOwnConstraints().removeIf(x -> this.constraintContainsEquation(x));
     }
 
-    private boolean constraintContainsEquation(Constraint constraint) {
+    private boolean constraintContainsEquation(final Constraint constraint) {
         if (constraint instanceof ExpressionConstraint) {
             return true;
         } else {
-            for (Constraint subConstraint : constraint.getConstraintSubParts()) {
-                if (constraintContainsEquation(subConstraint)) {
+            for (final Constraint subConstraint : constraint.getConstraintSubParts()) {
+                if (this.constraintContainsEquation(subConstraint)) {
                     return true;
                 }
             }

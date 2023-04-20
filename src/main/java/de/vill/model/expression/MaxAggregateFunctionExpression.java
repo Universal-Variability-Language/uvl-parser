@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MaxAggregateFunctionExpression extends AggregateFunctionExpression {
-
-
     public MaxAggregateFunctionExpression(String attributeName) {
         super(attributeName);
     }

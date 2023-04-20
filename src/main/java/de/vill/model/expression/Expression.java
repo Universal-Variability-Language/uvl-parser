@@ -1,7 +1,6 @@
 package de.vill.model.expression;
 
 import de.vill.model.Feature;
-
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +21,8 @@ public abstract class Expression {
     }
 
     public abstract String toString(boolean withSubmodels, String currentAlias);
+
+    public abstract String getReturnType();
 
     public abstract List<Expression> getExpressionSubParts();
 

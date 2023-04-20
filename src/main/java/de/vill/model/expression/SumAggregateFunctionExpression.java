@@ -1,11 +1,11 @@
 package de.vill.model.expression;
 
+import de.vill.util.Constants;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SumAggregateFunctionExpression extends AggregateFunctionExpression {
-
-
     public SumAggregateFunctionExpression(String attributeName) {
         super(attributeName);
     }
@@ -21,6 +21,11 @@ public class SumAggregateFunctionExpression extends AggregateFunctionExpression 
 
     @Override
     public List<Expression> getExpressionSubParts() {
-        return Arrays.asList();
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getReturnType() {
+        return Constants.NUMBER;
     }
 }
