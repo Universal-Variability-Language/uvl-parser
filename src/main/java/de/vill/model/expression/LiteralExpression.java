@@ -17,8 +17,9 @@ public class LiteralExpression extends Expression {
     private String featureName;
     private Feature feature;
 
-    public LiteralExpression(final String featureName, final String attributeName) {
-        this.featureName = featureName;
+    public LiteralExpression(final Feature feature, final String attributeName) {
+        this.feature = feature;
+        this.featureName = feature.getFeatureName();
         this.attributeName = attributeName;
         this.content = featureName + "." + attributeName;
     }
