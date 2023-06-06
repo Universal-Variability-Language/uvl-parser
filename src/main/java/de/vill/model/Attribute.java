@@ -1,6 +1,7 @@
 package de.vill.model;
 
 import de.vill.model.constraint.Constraint;
+import de.vill.util.Constants;
 
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,22 @@ public class Attribute<T> {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the type of the attribute
+     * @return Name of the attribute (never null)
+     */
+    public String getType() {
+        if (value instanceof Long | value instanceof Integer | value instanceof Double | value instanceof Float) {
+            return Constants.NUMBER;
+        } else if (value instanceof Boolean) {
+            return Constants.BOOLEAN;
+        } else if (value instanceof String) {
+            return Constants.STRING;
+        } else {
+            return Constants.UNDEF;
+        }
     }
 
     /**

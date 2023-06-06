@@ -17,6 +17,12 @@ public class LiteralExpression extends Expression {
     private String featureName;
     private Feature feature;
 
+    public LiteralExpression(final String featureName, final String attributeName) {
+        this.featureName = featureName;
+        this.attributeName = attributeName;
+        this.content = featureName + "." + attributeName;
+    }
+
     public LiteralExpression(final String content) {
         this.content = content;
         final String[] contentSplit = content.split("\\.");
@@ -72,7 +78,7 @@ public class LiteralExpression extends Expression {
     public String getReturnType() {
         if (this.feature != null) {
             if (this.attributeName != null) {
-                return Constants.TRUE;
+                return getAttribute().getType();
             } else if (FeatureType.STRING.equals(this.feature.getFeatureType())) {
                 return Constants.STRING;
             } else if (FeatureType.BOOL.equals(this.feature.getFeatureType())) {
