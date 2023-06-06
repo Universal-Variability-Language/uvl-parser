@@ -3,12 +3,15 @@ package de.vill.conversion;
 import de.vill.model.Attribute;
 import de.vill.model.Feature;
 import de.vill.model.FeatureModel;
+import de.vill.model.FeatureType;
 import de.vill.model.Group;
 import de.vill.model.LanguageLevel;
 import de.vill.model.constraint.Constraint;
 import de.vill.model.constraint.ExpressionConstraint;
 import de.vill.model.expression.Expression;
 import de.vill.model.expression.LiteralExpression;
+import de.vill.util.Constants;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +50,7 @@ public class ConvertTypeLevel implements IConversionStrategy {
         if (expression instanceof LiteralExpression) {
             if (((LiteralExpression) expression).getAttributeName() == null) {
                 expression.replaceExpressionSubPart(expression, new LiteralExpression(
-                    ((LiteralExpression) expression).getContent() + ".type_level_value")
+                    ((LiteralExpression) expression).getContent() + "." + Constants.TYPE_LEVEL_VALUE)
                 );
             }
         }
@@ -62,6 +65,7 @@ public class ConvertTypeLevel implements IConversionStrategy {
                 "feature_type",
                 new Attribute<>("feature_type", feature.getFeatureType().getName())
             );
+            feature.getAttributes().put(Constants.TYPE_LEVEL_VALUE, getDefaultAttribute(feature.getFeatureType()));
             feature.setFeatureType(null);
         }
 
@@ -71,4 +75,18 @@ public class ConvertTypeLevel implements IConversionStrategy {
             }
         }
     }
+
+
+    private Attribute getDefaultAttribute(FeatureType type) {
+        if (type == FeatureType.BOOL) {
+            return new Attribute<Boolean>(Constants.TYPE_LEVEL_VALUE, true);
+        } else if (type == FeatureType.INT) {
+            return new Attribute<Long>(Constants.TYPE_LEVEL_VALUE, 0l);
+        } else if (type == FeatureType.REAL) {
+            return new Attribute<Double>(Constants.TYPE_LEVEL_VALUE, 0d);
+        } else  {
+            return new Attribute<String>(Constants.TYPE_LEVEL_VALUE, "");
+        }
+    }
+
 }

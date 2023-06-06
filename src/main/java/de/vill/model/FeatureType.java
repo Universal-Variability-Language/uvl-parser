@@ -44,4 +44,16 @@ public enum FeatureType {
         }
         return null;
     }
+
+    public static Object getDefaultValue(FeatureType type) {
+        if (type == BOOL) {
+            return true;
+        } else if (type == INT) {
+            return 0;
+        } else if (type == REAL) {
+            return 0;
+        } else  {
+            return "";
+        }
+    }
 }
