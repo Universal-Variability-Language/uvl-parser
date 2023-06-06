@@ -90,33 +90,31 @@ public class ConvertAggregateFunction implements IConversionStrategy {
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
-    private Expression getSum(List<Feature> attributes, String attributeName) {
-        if (attributes.size() == 0) {
+    private Expression getSum(List<Feature> relevantFeatures, String attributeName) {
+        if (relevantFeatures.size() == 0) {
             return new NumberExpression(0);
-        } else if (attributes.size() == 1) {
-            LiteralExpression literalExpression = new LiteralExpression(attributeName);
-            literalExpression.setFeature(attributes.get(0));
-            attributes.remove(0);
+        } else if (relevantFeatures.size() == 1) {
+            LiteralExpression literalExpression = new LiteralExpression(relevantFeatures.get(0), attributeName);
+            relevantFeatures.remove(0);
 
             return literalExpression;
         } else {
-            LiteralExpression literalExpression = new LiteralExpression(attributeName);
-            literalExpression.setFeature(attributes.get(0));
-            attributes.remove(0);
+            LiteralExpression literalExpression = new LiteralExpression(relevantFeatures.get(0), attributeName);
+            relevantFeatures.remove(0);
 
-            return new AddExpression(literalExpression, getSum(attributes, attributeName));
+            return new AddExpression(literalExpression, getSum(relevantFeatures, attributeName));
         }
     }
 
-    private Expression getAvg(List<Feature> attributes, String attributeName) {
-        if (attributes.size() == 0) {
+    private Expression getAvg(List<Feature> relevantFeatures, String attributeName) {
+        if (relevantFeatures.size() == 0) {
             return new NumberExpression(0);
         } else {
-            for (Feature feature : attributes) {
+            for (Feature feature : relevantFeatures) {
                 feature.getAttributes().put("avg_counter__", new Attribute<Long>("avg_counter__", 1L));
             }
-            Expression n = getSum(new LinkedList<>(attributes), "avg_counter__");
-            Expression sum = getSum(attributes, attributeName);
+            Expression n = getSum(new LinkedList<>(relevantFeatures), "avg_counter__");
+            Expression sum = getSum(relevantFeatures, attributeName);
             Expression avg = new ParenthesisExpression(new DivExpression(new ParenthesisExpression(sum), new ParenthesisExpression(n)));
 
             return avg;
