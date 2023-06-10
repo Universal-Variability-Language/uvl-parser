@@ -10,4 +10,5 @@ public class Constants {
 
     // Default attribtues
     public static final String TYPE_LEVEL_VALUE = "type_level_value";
+    public static final String TYPE_LEVEL_LENGTH = "type_level_value_length";
 }

@@ -16,6 +16,11 @@ public class LiteralExpression extends Expression {
     private String attributeName;
     private String featureName;
     private Feature feature;
+    private Boolean boolValue; // just used for bool constants
+
+    public LiteralExpression(Boolean value) {
+        this.boolValue = value;
+    }
 
     public LiteralExpression(final Feature feature, final String attributeName) {
         this.feature = feature;
@@ -66,6 +71,9 @@ public class LiteralExpression extends Expression {
     @Override
     public String toString(final boolean withSubmodels, final String currentAlias) {
         if (this.getFeature() == null) {
+            if (boolValue != null) {
+                return String.valueOf(boolValue);
+            }
             return addNecessaryQuotes(this.getContent());
         }
         if (withSubmodels) {
@@ -83,6 +91,8 @@ public class LiteralExpression extends Expression {
             } else if (FeatureType.STRING.equals(this.feature.getFeatureType())) {
                 return Constants.STRING;
             } else if (FeatureType.BOOL.equals(this.feature.getFeatureType())) {
+                return Constants.BOOLEAN;
+            } else if (this.boolValue != null) {
                 return Constants.BOOLEAN;
             } else {
                 return Constants.NUMBER;
@@ -110,6 +120,9 @@ public class LiteralExpression extends Expression {
 
     @Override
     public double evaluate(final Set<Feature> selectedFeatures) {
+        if (boolValue != null) {
+            return 0d;
+        }
         final Object attributeValue = this.feature.getAttributes().get(this.attributeName).getValue();
         if (attributeValue instanceof Integer) {
             return ((Integer) attributeValue).doubleValue();
