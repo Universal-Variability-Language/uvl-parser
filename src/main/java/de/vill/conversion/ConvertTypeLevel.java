@@ -25,7 +25,7 @@ public class ConvertTypeLevel implements IConversionStrategy {
 
     @Override
     public Set<LanguageLevel> getTargetLevelsOfConversion() {
-        return new HashSet<>(Collections.singletonList(LanguageLevel.SMT_LEVEL));
+        return new HashSet<>(Collections.singletonList(LanguageLevel.ARITHMETIC_LEVEL));
     }
 
     @Override

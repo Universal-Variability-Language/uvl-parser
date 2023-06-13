@@ -52,7 +52,7 @@ import org.antlr.v4.runtime.Token;
 
 public class UVLListener extends UVLBaseListener {
     private FeatureModel featureModel = new FeatureModel();
-    private Set<LanguageLevel> importedLanguageLevels = new HashSet<>(Arrays.asList(LanguageLevel.SAT_LEVEL));
+    private Set<LanguageLevel> importedLanguageLevels = new HashSet<>(Arrays.asList(LanguageLevel.BOOLEAN_LEVEL));
     private Stack<Feature> featureStack = new Stack<>();
     private Stack<Group> groupStack = new Stack<>();
 
@@ -73,7 +73,7 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitIncludeLine(UVLParser.IncludeLineContext ctx) {
-        String[] levels = ctx.LANGUAGELEVEL().getText().split("\\.");
+        String[] levels = ctx.languageLevel().getText().split("\\.");
         if (levels.length == 1) {
             LanguageLevel majorLevel = LanguageLevel.getLevelByName(levels[0]);
             importedLanguageLevels.add(majorLevel);
@@ -94,7 +94,7 @@ public class UVLListener extends UVLBaseListener {
                 importedLanguageLevels.add(minorLevel);
             }
         } else {
-            errorList.add(new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText()));
+            errorList.add(new ParseError("Invalid import Statement: " + ctx.languageLevel().getText()));
             //throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
         }
     }
@@ -294,7 +294,7 @@ public class UVLListener extends UVLBaseListener {
         feature.setLowerBound(lowerBound);
         feature.setUpperBound(upperBound);
 
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.ARITHMETIC_LEVEL);
         featureModel.getUsedLanguageLevels().add(LanguageLevel.FEATURE_CARDINALITY);
     }
 
@@ -542,7 +542,7 @@ public class UVLListener extends UVLBaseListener {
                 featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
                 featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
             } else {
-                featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+                featureModel.getUsedLanguageLevels().add(LanguageLevel.ARITHMETIC_LEVEL);
             }
         }
         expressionStack.push(expression);
@@ -566,7 +566,7 @@ public class UVLListener extends UVLBaseListener {
         LiteralExpression expression = new LiteralExpression(reference);
         String[] splitReference = reference.split("\\.");
         if (splitReference.length > 1) {
-            featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+            featureModel.getUsedLanguageLevels().add(LanguageLevel.ARITHMETIC_LEVEL);
         }
         expressionStack.push(expression);
         featureModel.getLiteralExpressions().add(expression);
@@ -621,7 +621,7 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitSumAggregateFunction(UVLParser.SumAggregateFunctionContext ctx) {
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.ARITHMETIC_LEVEL);
         featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
         AggregateFunctionExpression expression;
         if (ctx.reference().size() > 1) {
@@ -638,7 +638,7 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitAvgAggregateFunction(UVLParser.AvgAggregateFunctionContext ctx) {
-        featureModel.getUsedLanguageLevels().add(LanguageLevel.SMT_LEVEL);
+        featureModel.getUsedLanguageLevels().add(LanguageLevel.ARITHMETIC_LEVEL);
         featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
         AggregateFunctionExpression expression;
         if (ctx.reference().size() > 1) {

@@ -11,7 +11,7 @@ import java.util.Set;
 public class DropSMTLevel implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Arrays.asList(LanguageLevel.SMT_LEVEL));
+        return new HashSet<>(Arrays.asList(LanguageLevel.ARITHMETIC_LEVEL));
     }
 
     @Override
