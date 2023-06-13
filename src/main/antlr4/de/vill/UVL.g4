@@ -191,7 +191,7 @@ numericAggregateFunction
 
 reference: (id '.')* id;
 id: ID_STRICT | ID_NOT_STRICT;
-featureType: 'String' | 'Integer' | 'Boolean' | 'Real';
+featureType: 'String' | 'Integer' | BOOLEAN_KEY | 'Real';
 
 ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
@@ -222,8 +222,10 @@ INTEGER: '0' | '-'?[1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
 
 LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
-MAJORLEVEL: 'SAT-level' | 'SMT-level' | 'TYPE-level';
-MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-constraints' | 'numeric-constraints';
+MAJORLEVEL: BOOLEAN_KEY | 'Arithmetic' | 'Type';
+MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-constraints';
+
+BOOLEAN_KEY : 'Boolean';
 
 COMMA: ',';
 

@@ -16,7 +16,7 @@ public class ConvertFeatureCardinality implements IConversionStrategy {
 
     @Override
     public Set<LanguageLevel> getTargetLevelsOfConversion() {
-        return new HashSet<>(Arrays.asList(LanguageLevel.SMT_LEVEL));
+        return new HashSet<>(Arrays.asList(LanguageLevel.ARITHMETIC_LEVEL));
     }
 
     @Override

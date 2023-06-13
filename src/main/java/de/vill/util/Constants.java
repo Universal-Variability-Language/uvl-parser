@@ -11,4 +11,11 @@ public class Constants {
     // Default attribtues
     public static final String TYPE_LEVEL_VALUE = "type_level_value";
     public static final String TYPE_LEVEL_LENGTH = "type_level_value_length";
+
+
+    // Language Levels
+    public static final String BOOLEAN_LEVEL = "Boolean";
+    public static final String ARITHMETIC_LEVEL = "Arithmetic";
+    public static final String TYPE_LEVEL = "Type";
+
 }

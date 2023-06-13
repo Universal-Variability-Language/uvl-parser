@@ -64,7 +64,7 @@ public class UVLModelFactory {
         this.conversionStrategiesDrop.put(LanguageLevel.GROUP_CARDINALITY, DropGroupCardinality.class);
         this.conversionStrategiesDrop.put(LanguageLevel.FEATURE_CARDINALITY, DropFeatureCardinality.class);
         this.conversionStrategiesDrop.put(LanguageLevel.AGGREGATE_FUNCTION, DropAggregateFunction.class);
-        this.conversionStrategiesDrop.put(LanguageLevel.SMT_LEVEL, DropSMTLevel.class);
+        this.conversionStrategiesDrop.put(LanguageLevel.ARITHMETIC_LEVEL, DropSMTLevel.class);
         this.conversionStrategiesDrop.put(LanguageLevel.TYPE_LEVEL, DropTypeLevel.class);
         this.conversionStrategiesDrop.put(LanguageLevel.STRING_CONSTRAINTS, DropStringConstraints.class);
         this.conversionStrategiesDrop.put(LanguageLevel.NUMERIC_CONSTRAINTS, DropNumericConstraints.class);
@@ -72,7 +72,7 @@ public class UVLModelFactory {
         this.conversionStrategiesConvert.put(LanguageLevel.GROUP_CARDINALITY, ConvertGroupCardinality.class);
         this.conversionStrategiesConvert.put(LanguageLevel.FEATURE_CARDINALITY, ConvertFeatureCardinality.class);
         this.conversionStrategiesConvert.put(LanguageLevel.AGGREGATE_FUNCTION, ConvertAggregateFunction.class);
-        this.conversionStrategiesConvert.put(LanguageLevel.SMT_LEVEL, ConvertSMTLevel.class);
+        this.conversionStrategiesConvert.put(LanguageLevel.ARITHMETIC_LEVEL, ConvertSMTLevel.class);
         this.conversionStrategiesConvert.put(LanguageLevel.TYPE_LEVEL, ConvertTypeLevel.class);
         this.conversionStrategiesConvert.put(LanguageLevel.STRING_CONSTRAINTS, ConvertStringConstraints.class);
         this.conversionStrategiesConvert.put(LanguageLevel.NUMERIC_CONSTRAINTS, ConvertNumericConstraints.class);
@@ -268,7 +268,7 @@ public class UVLModelFactory {
 
 
     private LanguageLevel getMaxLanguageLevel(Set<LanguageLevel> languageLevels) {
-        LanguageLevel max = LanguageLevel.SAT_LEVEL;
+        LanguageLevel max = LanguageLevel.BOOLEAN_LEVEL;
         for (LanguageLevel languageLevel : languageLevels) {
             if (languageLevel.getValue() > max.getValue()) {
                 max = languageLevel;
@@ -312,7 +312,7 @@ public class UVLModelFactory {
             }
         }
         //SAT-level can not be removed
-        completeOrderedLevelsToRemove.remove(LanguageLevel.SAT_LEVEL);
+        completeOrderedLevelsToRemove.remove(LanguageLevel.BOOLEAN_LEVEL);
 
         return completeOrderedLevelsToRemove;
     }

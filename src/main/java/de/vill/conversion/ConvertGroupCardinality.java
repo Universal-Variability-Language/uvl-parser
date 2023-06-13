@@ -19,7 +19,7 @@ public class ConvertGroupCardinality implements IConversionStrategy {
 
     @Override
     public Set<LanguageLevel> getTargetLevelsOfConversion() {
-        return new HashSet<>(Arrays.asList(LanguageLevel.SAT_LEVEL));
+        return new HashSet<>(Arrays.asList(LanguageLevel.BOOLEAN_LEVEL));
     }
 
     @Override

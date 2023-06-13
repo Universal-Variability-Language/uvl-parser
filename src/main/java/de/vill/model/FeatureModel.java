@@ -18,7 +18,7 @@ import static de.vill.util.Util.addNecessaryQuotes;
 public class FeatureModel {
     private final Set<LanguageLevel> usedLanguageLevels = new HashSet<LanguageLevel>() {
         {
-            add(LanguageLevel.SAT_LEVEL);
+            add(LanguageLevel.BOOLEAN_LEVEL);
         }
     };
     private String namespace;

@@ -11,12 +11,12 @@ import java.util.*;
 public class ConvertSMTLevel implements IConversionStrategy {
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
-        return new HashSet<>(Arrays.asList(LanguageLevel.SMT_LEVEL));
+        return new HashSet<>(Arrays.asList(LanguageLevel.ARITHMETIC_LEVEL));
     }
 
     @Override
     public Set<LanguageLevel> getTargetLevelsOfConversion() {
-        return new HashSet<>(Arrays.asList(LanguageLevel.SAT_LEVEL));
+        return new HashSet<>(Arrays.asList(LanguageLevel.BOOLEAN_LEVEL));
     }
 
     @Override

@@ -4,14 +4,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.vill.util.Constants;
+
 /**
  * An enum that represents all possible language levels this UVL library supports.
  */
 public enum LanguageLevel {
     // MAJOR LEVELS (logic: val % 2 != 0)
-    SAT_LEVEL(1, "SAT-level"),
-    SMT_LEVEL(3, "SMT-level"),
-    TYPE_LEVEL(5, "TYPE-level"),
+    BOOLEAN_LEVEL(1, Constants.BOOLEAN_LEVEL),
+    ARITHMETIC_LEVEL(3, Constants.ARITHMETIC_LEVEL),
+    TYPE_LEVEL(5, Constants.TYPE_LEVEL),
 
     // MINOR LEVELS (logic: val % 2 == 0)
     GROUP_CARDINALITY(2, "group-cardinality"),
