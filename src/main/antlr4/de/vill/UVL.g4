@@ -95,7 +95,7 @@ tokens { INDENT, DEDENT }
 featureModel: namespace? NEWLINE? includes? NEWLINE? imports? NEWLINE? features? NEWLINE? constraints? EOF;
 
 includes: 'include' NEWLINE INDENT includeLine* DEDENT;
-includeLine: LANGUAGELEVEL NEWLINE;
+includeLine: languageLevel NEWLINE;
 
 namespace: 'namespace' reference;
 
@@ -193,6 +193,12 @@ reference: (id '.')* id;
 id: ID_STRICT | ID_NOT_STRICT;
 featureType: 'String' | 'Integer' | BOOLEAN_KEY | 'Real';
 
+
+
+languageLevel: majorLevel ('.' (minorLevel | '*'))?;
+majorLevel: BOOLEAN_KEY | 'Arithmetic' | 'Type';
+minorLevel: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-constraints';
+
 ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
 OPTIONAL: 'optional';
@@ -220,10 +226,6 @@ SUB: '-';
 FLOAT: '-'?[0-9]*[.][0-9]+;
 INTEGER: '0' | '-'?[1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
-
-LANGUAGELEVEL: MAJORLEVEL ('.' (MINORLEVEL | '*'))?;
-MAJORLEVEL: BOOLEAN_KEY | 'Arithmetic' | 'Type';
-MINORLEVEL: 'group-cardinality' | 'feature-cardinality' | 'aggregate-function' | 'string-constraints';
 
 BOOLEAN_KEY : 'Boolean';
 

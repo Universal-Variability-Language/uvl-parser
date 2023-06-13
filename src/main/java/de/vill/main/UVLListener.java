@@ -73,7 +73,7 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void exitIncludeLine(UVLParser.IncludeLineContext ctx) {
-        String[] levels = ctx.LANGUAGELEVEL().getText().split("\\.");
+        String[] levels = ctx.languageLevel().getText().split("\\.");
         if (levels.length == 1) {
             LanguageLevel majorLevel = LanguageLevel.getLevelByName(levels[0]);
             importedLanguageLevels.add(majorLevel);
@@ -94,7 +94,7 @@ public class UVLListener extends UVLBaseListener {
                 importedLanguageLevels.add(minorLevel);
             }
         } else {
-            errorList.add(new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText()));
+            errorList.add(new ParseError("Invalid import Statement: " + ctx.languageLevel().getText()));
             //throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
         }
     }
