@@ -6,11 +6,15 @@ import de.vill.model.FeatureModel;
 import de.vill.model.Group;
 import de.vill.model.LanguageLevel;
 import de.vill.model.constraint.Constraint;
+import de.vill.model.constraint.EqualEquationConstraint;
 import de.vill.model.constraint.ExpressionConstraint;
 import de.vill.model.expression.AggregateFunctionExpression;
 import de.vill.model.expression.Expression;
 import de.vill.model.expression.LengthAggregateFunctionExpression;
 import de.vill.model.expression.LiteralExpression;
+import de.vill.model.expression.StringExpression;
+import de.vill.util.Constants;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,7 +39,26 @@ public class ConvertStringConstraints implements IConversionStrategy {
     public void convertFeatureModel(final FeatureModel rootFeatureModel, final FeatureModel featureModel) {
         this.rootFeatureModel = rootFeatureModel;
         rootFeatureModel.getOwnConstraints().forEach(this::convertStringAggregateFunctionInExpressionConstraint);
+        rootFeatureModel.getOwnConstraints().removeIf(x -> containsStringEqualityExpression(x));
         this.traverseFeatures(rootFeatureModel.getRootFeature());
+    }
+
+    private Boolean containsStringEqualityExpression(final Constraint constraint) {
+        if (constraint instanceof EqualEquationConstraint) {
+            for (final Expression expression : ((EqualEquationConstraint)constraint).getExpressionSubParts()) {
+                if (expression instanceof StringExpression) {
+                    System.out.println("Warning: String equality constraint in line " + constraint.getLineNumber() + " was dropped.");
+                    return true;
+                }
+            }
+        } else {
+            for (final Constraint subConstraint : constraint.getConstraintSubParts()) {
+                if (this.containsStringEqualityExpression(subConstraint)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void convertStringAggregateFunctionInExpressionConstraint(final Constraint constraint) {
@@ -75,7 +98,7 @@ public class ConvertStringConstraints implements IConversionStrategy {
     private void replaceStringAggregateFunctionInExpressionConstraint(final ExpressionConstraint parentExpression,
                                                                       final AggregateFunctionExpression aggregateFunctionExpression) {
         this.addAttribute(aggregateFunctionExpression);
-        final Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + ".type_level_value_length");
+        final Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + "." + Constants.TYPE_LEVEL_LENGTH);
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
@@ -95,9 +118,9 @@ public class ConvertStringConstraints implements IConversionStrategy {
         final Map<String, Attribute> currentAttributes =
             this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()).getAttributes();
         currentAttributes.put(
-            "type_level_value_length",
+            Constants.TYPE_LEVEL_LENGTH,
             new Attribute<Long>(
-                "type_level_value_length",
+                Constants.TYPE_LEVEL_LENGTH,
                 this.computeStringLength(
                     this.rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName()))
             )

@@ -224,6 +224,25 @@ public class UVLModelFactory {
         convertLanguageLevel(featureModel, allLevels);
     }
 
+    /**
+     * This method takes a {@link FeatureModel} converts all language levels higher than the specified {@link LanguageLevel}.
+     * For instance, providing the SMT major level will remove all SMT minor and type levels.
+     * @param featureModel Reference to feature model to be converted
+     * @param supportedLanguageLevel Highest language level to be maintained
+     */
+    public void convertAllMoreComplexLanguageLevels(FeatureModel featureModel, LanguageLevel supportedLanguageLevel) {
+        Set<LanguageLevel> levelsToConvert = new HashSet<>();
+
+        for (LanguageLevel level : LanguageLevel.values()) {
+            if (level.getValue() > supportedLanguageLevel.getValue()) {
+                levelsToConvert.add(level);
+            }
+        }
+
+        convertLanguageLevel(featureModel, levelsToConvert);
+
+    }
+
     private void convertFeatureModel(FeatureModel rootFeatureModel, FeatureModel featureModel, Set<LanguageLevel> levelsToRemove, Map<LanguageLevel, Class<? extends IConversionStrategy>> conversionStrategies) {
         List<LanguageLevel> levelsToRemoveActually = getActualLanguageLevelsToRemoveInOrder(featureModel, levelsToRemove);
         while (!levelsToRemoveActually.isEmpty()) {
@@ -242,7 +261,7 @@ public class UVLModelFactory {
                     }
                 }
             } catch (Exception e) {
-                System.err.println("Could not instantiate conversion strategy: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
