@@ -85,7 +85,9 @@ public class AggregateFunctionExpression extends Expression {
         }
 
         if (getAttributeName() != null) {
-            result.append(", ");
+            if (getRootFeature() != null) {
+                result.append(", ");
+            }
             result.append(addNecessaryQuotes(getAttributeName()));
         }
         result.append(")");
