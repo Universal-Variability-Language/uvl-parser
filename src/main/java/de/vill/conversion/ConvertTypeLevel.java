@@ -65,7 +65,6 @@ public class ConvertTypeLevel implements IConversionStrategy {
                 "feature_type",
                 new Attribute<>("feature_type", feature.getFeatureType().getName())
             );
-            feature.getAttributes().put(Constants.TYPE_LEVEL_VALUE, getDefaultAttribute(feature.getFeatureType()));
             feature.setFeatureType(null);
         }
 
@@ -75,18 +74,4 @@ public class ConvertTypeLevel implements IConversionStrategy {
             }
         }
     }
-
-
-    private Attribute getDefaultAttribute(FeatureType type) {
-        if (type == FeatureType.BOOL) {
-            return new Attribute<Boolean>(Constants.TYPE_LEVEL_VALUE, true);
-        } else if (type == FeatureType.INT) {
-            return new Attribute<Long>(Constants.TYPE_LEVEL_VALUE, 0l);
-        } else if (type == FeatureType.REAL) {
-            return new Attribute<Double>(Constants.TYPE_LEVEL_VALUE, 0d);
-        } else  {
-            return new Attribute<String>(Constants.TYPE_LEVEL_VALUE, "");
-        }
-    }
-
 }

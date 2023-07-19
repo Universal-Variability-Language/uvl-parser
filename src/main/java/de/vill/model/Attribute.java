@@ -91,6 +91,9 @@ public class Attribute<T> {
         } else if (value instanceof Long) {
             //long to string
             result.append(Long.toString((Long) value));
+        } else if (value instanceof Integer) {
+            //integer to string
+            result.append(Integer.toString((Integer) value));
         } else if (value instanceof Boolean) {
             //boolean to string
             result.append(Boolean.toString((Boolean) value));
