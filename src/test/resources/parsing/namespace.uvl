@@ -1,0 +1,7 @@
+namespace nicenamespace
+
+features
+    A
+        or
+            B
+            C
