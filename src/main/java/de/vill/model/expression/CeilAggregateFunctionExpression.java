@@ -18,7 +18,7 @@ public class CeilAggregateFunctionExpression extends AggregateFunctionExpression
 
     @Override
     public String toString(final boolean withSubmodels, final String currentAlias) {
-        return super.toString(withSubmodels, "len", currentAlias);
+        return super.toString(withSubmodels, "ceil", currentAlias);
     }
 
     @Override

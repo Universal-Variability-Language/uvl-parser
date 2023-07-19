@@ -17,7 +17,7 @@ public class FloorAggregateFunctionExpression extends AggregateFunctionExpressio
 
     @Override
     public String toString(final boolean withSubmodels, final String currentAlias) {
-        return super.toString(withSubmodels, "len", currentAlias);
+        return super.toString(withSubmodels, "floor", currentAlias);
     }
 
     @Override
