@@ -1,0 +1,8 @@
+include
+    Type
+
+features
+    Real A
+        or
+            Integer B
+            String C

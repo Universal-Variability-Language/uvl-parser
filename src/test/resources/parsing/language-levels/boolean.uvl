@@ -1,0 +1,8 @@
+include
+    Boolean
+
+features
+    A
+        or
+            B
+            C
