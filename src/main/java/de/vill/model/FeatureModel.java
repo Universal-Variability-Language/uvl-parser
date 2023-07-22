@@ -27,6 +27,7 @@ public class FeatureModel {
     private final Map<String, Feature> featureMap = new HashMap<>();
     private final List<Constraint> ownConstraints = new LinkedList<>();
     private boolean explicitLanguageLevels = false;
+    public HashSet<String> faultyReferences = new HashSet<>();
 
     /*
      * These three lists are just for performance. They contain all points where
@@ -408,5 +409,14 @@ public class FeatureModel {
      */
     public List<AggregateFunctionExpression> getAggregateFunctionsWithRootFeature() {
         return aggregateFunctionsWithRootFeature;
+    }
+
+
+    public void resolveFaultyFeatureNames() {
+        for (String faultyName : faultyReferences) {
+            Feature faultyFeature = getFeatureMap().get(faultyName);
+            String correctedName = "\"" + faultyName + "\"";
+            faultyFeature.setFeatureName(correctedName);
+        }
     }
 }

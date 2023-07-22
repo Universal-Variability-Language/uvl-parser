@@ -2,6 +2,8 @@ package de.vill.main;
 
 import de.vill.UVLBaseListener;
 import de.vill.UVLParser;
+import de.vill.UVLParser.IdContext;
+import de.vill.exception.FaultyReference;
 import de.vill.exception.ParseError;
 import de.vill.exception.ParseErrorList;
 import de.vill.model.Attribute;
@@ -67,6 +69,13 @@ public class UVLListener extends UVLBaseListener {
     private List<ParseError> errorList = new LinkedList<>();
 
     @Override
+    public void enterPossiblyFaultyId(UVLParser.PossiblyFaultyIdContext ctx) {
+        if (ctx.ID_FAULTY_STRICT() != null) {
+            featureModel.faultyReferences.add(ctx.ID_FAULTY_STRICT().getText());
+        }
+    }
+
+    @Override
     public void enterIncludes(UVLParser.IncludesContext ctx) {
         featureModel.setExplicitLanguageLevels(true);
     }
@@ -89,19 +98,22 @@ public class UVLListener extends UVLBaseListener {
             importedLanguageLevels.add(majorLevel);
             for (LanguageLevel minorLevel : minorLevels) {
                 if (minorLevel.getValue() - 1 != majorLevel.getValue()) {
-                    throw new ParseError("Minor language level " + minorLevel.getName() + " does not correspond to major language level " + majorLevel + " but to " + LanguageLevel.valueOf(minorLevel.getValue() - 1));
+                    throw new ParseError("Minor language level " + minorLevel.getName()
+                            + " does not correspond to major language level " + majorLevel + " but to "
+                            + LanguageLevel.valueOf(minorLevel.getValue() - 1));
                 }
                 importedLanguageLevels.add(minorLevel);
             }
         } else {
             errorList.add(new ParseError("Invalid import Statement: " + ctx.languageLevel().getText()));
-            //throw new ParseError("Invalid import Statement: " + ctx.LANGUAGELEVEL().getText());
+            // throw new ParseError("Invalid import Statement: " +
+            // ctx.LANGUAGELEVEL().getText());
         }
     }
 
     @Override
     public void exitNamespace(UVLParser.NamespaceContext ctx) {
-        featureModel.setNamespace(ctx.reference().getText().replace("\"", ""));
+        featureModel.setNamespace(ctx.id().getText().replace("\"", ""));
     }
 
     @Override
@@ -222,7 +234,7 @@ public class UVLListener extends UVLBaseListener {
 
     @Override
     public void enterFeature(UVLParser.FeatureContext ctx) {
-        String featureReference = ctx.reference().getText().replace("\"", "");
+        String featureReference = ctx.possiblyFaultyReference().getText().replace("\"", "");
         String[] featureReferenceParts = featureReference.split("\\.");
         String featureName;
         String featureNamespace;
@@ -245,8 +257,10 @@ public class UVLListener extends UVLBaseListener {
                 }
             }
             if (feature.getRelatedImport() == null) {
-                errorList.add(new ParseError("Feature " + featureReference + " is imported, but there is no import named " + featureNamespace));
-                //throw new ParseError("Feature " + featureReference + " is imported, but there is no import named " + featureNamespace);
+                errorList.add(new ParseError("Feature " + featureReference
+                        + " is imported, but there is no import named " + featureNamespace));
+                // throw new ParseError("Feature " + featureReference + " is imported, but there
+                // is no import named " + featureNamespace);
             }
         }
 
@@ -286,8 +300,10 @@ public class UVLListener extends UVLBaseListener {
             upperBound = lowerBound;
         }
         if (upperBound.equals("*")) {
-            errorList.add(new ParseError("Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")"));
-            //throw new ParseError("Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")");
+            errorList.add(new ParseError(
+                    "Feature Cardinality must not have * as upper bound! (" + ctx.CARDINALITY().getText() + ")"));
+            // throw new ParseError("Feature Cardinality must not have * as upper bound! ("
+            // + ctx.CARDINALITY().getText() + ")");
         }
 
         Feature feature = featureStack.peek();
@@ -311,7 +327,6 @@ public class UVLListener extends UVLBaseListener {
         }
     }
 
-
     @Override
     public void exitValueAttribute(UVLParser.ValueAttributeContext ctx) {
         String attributeName = ctx.key().getText().replace("\"", "");
@@ -320,13 +335,16 @@ public class UVLListener extends UVLBaseListener {
             Attribute<Boolean> attribute = new Attribute(attributeName, true);
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().BOOLEAN() != null) {
-            Attribute<Boolean> attribute = new Attribute(attributeName, Boolean.parseBoolean(ctx.value().getText().replace("'", "")));
+            Attribute<Boolean> attribute = new Attribute(attributeName,
+                    Boolean.parseBoolean(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().INTEGER() != null) {
-            Attribute<Integer> attribute = new Attribute(attributeName, Long.parseLong(ctx.value().getText().replace("'", "")));
+            Attribute<Integer> attribute = new Attribute(attributeName,
+                    Long.parseLong(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().FLOAT() != null) {
-            Attribute<Double> attribute = new Attribute(attributeName, Double.parseDouble(ctx.value().getText().replace("'", "")));
+            Attribute<Double> attribute = new Attribute(attributeName,
+                    Double.parseDouble(ctx.value().getText().replace("'", "")));
             attributeStack.peek().put(attributeName, attribute);
         } else if (ctx.value().STRING() != null) {
             Attribute<String> attribute = new Attribute(attributeName, ctx.value().getText().replace("'", ""));
@@ -342,7 +360,8 @@ public class UVLListener extends UVLBaseListener {
             attributeStack.peek().put(attributeName, attribute);
         } else {
             errorList.add(new ParseError(ctx.value().getText() + " is no value of any supported attribute type!"));
-            //throw new ParseError(ctx.value().getText() + " is no value of any supported attribute type!");
+            // throw new ParseError(ctx.value().getText() + " is no value of any supported
+            // attribute type!");
         }
     }
 
@@ -361,7 +380,6 @@ public class UVLListener extends UVLBaseListener {
         Attribute<String> attribute = new Attribute("constraints", constraintList);
         attributeStack.peek().put("constraints", attribute);
     }
-
 
     @Override
     public void exitLiteralConstraint(UVLParser.LiteralConstraintContext ctx) {
@@ -625,7 +643,8 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
         AggregateFunctionExpression expression;
         if (ctx.reference().size() > 1) {
-            expression = new SumAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
+            expression = new SumAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""),
+                    ctx.reference().get(0).getText().replace("\"", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         } else {
             expression = new SumAggregateFunctionExpression(ctx.reference().get(0).getText().replace("\"", ""));
@@ -642,7 +661,8 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.AGGREGATE_FUNCTION);
         AggregateFunctionExpression expression;
         if (ctx.reference().size() > 1) {
-            expression = new AvgAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""), ctx.reference().get(0).getText().replace("\"", ""));
+            expression = new AvgAggregateFunctionExpression(ctx.reference().get(1).getText().replace("\"", ""),
+                    ctx.reference().get(0).getText().replace("\"", ""));
             featureModel.getAggregateFunctionsWithRootFeature().add(expression);
         } else {
             expression = new AvgAggregateFunctionExpression(ctx.reference().get(0).getText().replace("\"", ""));
@@ -659,7 +679,8 @@ public class UVLListener extends UVLBaseListener {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.STRING_CONSTRAINTS);
 
         String reference = ctx.reference().getText().replace("\"", "");
-        if (!(featureModel.getFeatureMap().containsKey(reference) && FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType()))) {
+        if (!(featureModel.getFeatureMap().containsKey(reference)
+                && FeatureType.STRING.equals(featureModel.getFeatureMap().get(reference).getFeatureType()))) {
             errorList.add(new ParseError("Length Aggregate Function can only be used with String features"));
             return;
         }
@@ -672,15 +693,15 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitFloorAggregateFunction(UVLParser.FloorAggregateFunctionContext ctx) {
+    @Override
+    public void exitFloorAggregateFunction(UVLParser.FloorAggregateFunctionContext ctx) {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
         featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
 
         String reference = ctx.reference().getText().replace("\"", "");
-        if (!(featureModel.getFeatureMap().containsKey(reference) && (
-            FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
-                || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
-        ))) {
+        if (!(featureModel.getFeatureMap().containsKey(reference)
+                && (FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+                        || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())))) {
             errorList.add(new ParseError("Floor Aggregate Function can only be used with Integer or Real features"));
             return;
         }
@@ -693,15 +714,15 @@ public class UVLListener extends UVLBaseListener {
         expression.setLineNumber(line);
     }
 
-    @Override public void exitCeilAggregateFunction(UVLParser.CeilAggregateFunctionContext ctx) {
+    @Override
+    public void exitCeilAggregateFunction(UVLParser.CeilAggregateFunctionContext ctx) {
         featureModel.getUsedLanguageLevels().add(LanguageLevel.TYPE_LEVEL);
         featureModel.getUsedLanguageLevels().add(LanguageLevel.NUMERIC_CONSTRAINTS);
 
         String reference = ctx.reference().getText().replace("\"", "");
-        if (!(featureModel.getFeatureMap().containsKey(reference) && (
-            FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
-                || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
-        ))) {
+        if (!(featureModel.getFeatureMap().containsKey(reference)
+                && (FeatureType.INT.equals(featureModel.getFeatureMap().get(reference).getFeatureType())
+                        || FeatureType.REAL.equals(featureModel.getFeatureMap().get(reference).getFeatureType())))) {
             errorList.add(new ParseError("Ceil Aggregate Function can only be used with Integer or Real features"));
             return;
         }
@@ -712,6 +733,13 @@ public class UVLListener extends UVLBaseListener {
         Token t = ctx.getStart();
         int line = t.getLine();
         expression.setLineNumber(line);
+    }
+
+    @Override
+    public void enterConstraints(UVLParser.ConstraintsContext ctx) {
+        if (!featureModel.faultyReferences.isEmpty()) {
+            throw new FaultyReference(featureModel);
+        }
     }
 
     @Override
@@ -739,34 +767,37 @@ public class UVLListener extends UVLBaseListener {
         return featureModel;
     }
 
-
     @Override
     public void exitFeatureModel(UVLParser.FeatureModelContext ctx) {
-        if (featureModel.isExplicitLanguageLevels() && !featureModel.getUsedLanguageLevels().equals(importedLanguageLevels)) {
-            errorList.add(new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString()));
-            //throw new ParseError("Imported and actually used language levels do not match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used: " + featureModel.getUsedLanguageLevels().toString());
+        if (featureModel.isExplicitLanguageLevels()
+                && !featureModel.getUsedLanguageLevels().equals(importedLanguageLevels)) {
+            errorList.add(new ParseError("Imported and actually used language levels do not match! \n Imported: "
+                    + importedLanguageLevels.toString() + "\nAcutally Used: "
+                    + featureModel.getUsedLanguageLevels().toString()));
+            // throw new ParseError("Imported and actually used language levels do not
+            // match! \n Imported: " + importedLanguageLevels.toString() + "\nAcutally Used:
+            // " + featureModel.getUsedLanguageLevels().toString());
         }
     }
 
     /*
-
-    @Override public void exitFeatures(UVLParser.FeaturesContext ctx) {
-        System.out.println("features");
-    }
-
-    @Override public void exitRootFeature(UVLParser.RootFeatureContext ctx) {
-        System.out.println("rootFeature");
-    }
-
-    @Override public void exitGroup(UVLParser.GroupContext ctx) {
-        System.out.println("group");
-    }
-
-    @Override public void exitFeature(UVLParser.FeatureContext ctx) {
-        System.out.println("feature");
-    }
-
- */
-
+     * 
+     * @Override public void exitFeatures(UVLParser.FeaturesContext ctx) {
+     * System.out.println("features");
+     * }
+     * 
+     * @Override public void exitRootFeature(UVLParser.RootFeatureContext ctx) {
+     * System.out.println("rootFeature");
+     * }
+     * 
+     * @Override public void exitGroup(UVLParser.GroupContext ctx) {
+     * System.out.println("group");
+     * }
+     * 
+     * @Override public void exitFeature(UVLParser.FeatureContext ctx) {
+     * System.out.println("feature");
+     * }
+     * 
+     */
 
 }

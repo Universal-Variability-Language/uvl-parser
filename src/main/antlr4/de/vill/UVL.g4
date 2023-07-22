@@ -97,7 +97,7 @@ featureModel: namespace? NEWLINE? includes? NEWLINE? imports? NEWLINE? features?
 includes: 'include' NEWLINE INDENT includeLine* DEDENT;
 includeLine: languageLevel NEWLINE;
 
-namespace: 'namespace' reference;
+namespace: 'namespace' id;
 
 imports: 'imports' NEWLINE INDENT importLine* DEDENT;
 importLine: ns=reference ('as' alias=reference)? NEWLINE;
@@ -114,7 +114,7 @@ group
 
 groupSpec: NEWLINE INDENT feature+ DEDENT;
 
-feature: featureType? reference featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
+feature: featureType? possiblyFaultyReference featureCardinality? attributes? NEWLINE (INDENT group+ DEDENT)?;
 
 featureCardinality: 'cardinality' CARDINALITY;
 
@@ -190,6 +190,8 @@ numericAggregateFunction
     ;
 
 reference: (id '.')* id;
+possiblyFaultyReference: (possiblyFaultyId '.')* possiblyFaultyId;
+possiblyFaultyId : ID_STRICT | ID_NOT_STRICT | ID_FAULTY_STRICT;
 id: ID_STRICT | ID_NOT_STRICT;
 featureType: 'String' | 'Integer' | BOOLEAN_KEY | 'Real';
 
@@ -242,6 +244,8 @@ CLOSE_COMMENT: '*/' {this.opened -= 1;};
 
 ID_NOT_STRICT: '"'~[\r\n".]+'"';
 ID_STRICT: [a-zA-Z]([a-zA-Z0-9_] | '#' | '§' | '%' | '?' | '\\' | '\'' | 'ä' | 'ü' | 'ö' | 'ß' | ';')*;
+ID_FAULTY_STRICT : ~[\r\n".{}]+;
+
 
 STRING: '\''~[\r\n'.]+'\'';
 
