@@ -1,0 +1,6 @@
+features
+    A
+        [2..3]
+            B
+            C
+            D

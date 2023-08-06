@@ -1,0 +1,17 @@
+features
+    A
+        mandatory
+            B
+                or
+                    C
+                    D
+            E
+                alternative
+                    F
+                    G
+
+constraints
+    A & B
+    C | D
+    E => G
+    A <=> B
