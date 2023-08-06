@@ -1,0 +1,26 @@
+features
+    Bike
+        mandatory
+            Brake {Weight 3}
+            String Manufacturer
+            Integer Inch
+        [1..3]
+            Bell {Weight 1}
+            "Training Wheels" cardinality [1..5] {Manufacturer 'Wheelio', Price 5}
+                optional
+                    Blah
+            "Light System"
+                or
+                    Front {Weight 2}
+                    Back {Weight 1.5}
+            Dynamo {Weight 3}
+
+constraints
+    sum(Weight) < 10
+    Inch > 22 => !"Training Wheels"
+    sum(Price) < 10
+    Front | Back => Dynamo
+    "Training Wheels" => (Manufacturer == "Training Wheels".Manufacturer)
+    Inch == 22 => !"Training Wheels"
+
+

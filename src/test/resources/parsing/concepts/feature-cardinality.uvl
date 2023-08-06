@@ -1,0 +1,6 @@
+features
+    A cardinality [1..4]
+        alternative
+            B
+            C
+            D

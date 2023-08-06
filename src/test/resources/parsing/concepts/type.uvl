@@ -1,0 +1,7 @@
+features
+    A
+        optional
+            Real B
+            Integer C
+            String D
+            Boolean F
