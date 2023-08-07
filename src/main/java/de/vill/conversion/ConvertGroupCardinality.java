@@ -29,7 +29,9 @@ public class ConvertGroupCardinality implements IConversionStrategy {
 
     private void searchGroupCardinalities(Feature feature, FeatureModel featureModel) {
         for (Group group : feature.getChildren()) {
-            removeGroupCardinality(group, featureModel);
+            if (group.GROUPTYPE.equals(Group.GroupType.GROUP_CARDINALITY)) {
+                removeGroupCardinality(group, featureModel);
+            }
             for (Feature subFeature : group.getFeatures()) {
                 if (!subFeature.isSubmodelRoot()) {
                     searchGroupCardinalities(subFeature, featureModel);
@@ -60,7 +62,8 @@ public class ConvertGroupCardinality implements IConversionStrategy {
         for (Set<Feature> configuration : featureCombinations) {
             disjunction.add(createConjunction(configuration, new HashSet<>(groupMembers)));
         }
-        featureModel.getOwnConstraints().add(new ParenthesisConstraint(createDisjunction(disjunction)));
+
+        featureModel.getOwnConstraints().add(new ImplicationConstraint(new LiteralConstraint(group.getParentFeature().getFeatureName()), new ParenthesisConstraint(createDisjunction(disjunction))));
     }
 
     private Constraint createConjunction(Set<Feature> selectedFeatures, Set<Feature> allFeatures) {

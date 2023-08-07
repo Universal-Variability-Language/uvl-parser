@@ -124,7 +124,7 @@ public class ParsingTests {
         testModelParsing(path, true);
     }
 
-    private void testModelParsing(String path, boolean expectSuccess) {
+    public static FeatureModel testModelParsing(String path, boolean expectSuccess) {
         UVLModelFactory uvlModelFactory = new UVLModelFactory();
         String content;
         FeatureModel result = null;
@@ -139,6 +139,8 @@ public class ParsingTests {
         boolean actuallySuccess = !error & (result != null);
 
         assertEquals(expectSuccess, actuallySuccess, "Exception! Failed to assert: " + path);
+
+        return result;
     }
 
     private void checkAllModelsInDirectory(String dirPath) throws IOException {
