@@ -8,3 +8,4 @@ constraints
     len(C) == 3
     D == C
     C == 'Fun'
+    'Fun' == D

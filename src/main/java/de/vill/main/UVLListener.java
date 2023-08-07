@@ -536,6 +536,7 @@ public class UVLListener extends UVLBaseListener {
     @Override
     public void exitStringLiteralExpression(UVLParser.StringLiteralExpressionContext ctx) {
         Expression expression = new StringExpression(ctx.STRING().getText().replace("'", ""));
+        expressionStack.push(expression);
         if (expressionStack.peek() instanceof LiteralExpression) {
             LiteralExpression literalExpression = (LiteralExpression) expressionStack.peek();
             if (literalExpression.getAttributeName() == null) {
@@ -545,7 +546,6 @@ public class UVLListener extends UVLBaseListener {
                 featureModel.getUsedLanguageLevels().add(LanguageLevel.ARITHMETIC_LEVEL);
             }
         }
-        expressionStack.push(expression);
         Token t = ctx.getStart();
         int line = t.getLine();
         expression.setLineNumber(line);
