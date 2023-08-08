@@ -409,4 +409,62 @@ public class FeatureModel {
     public List<AggregateFunctionExpression> getAggregateFunctionsWithRootFeature() {
         return aggregateFunctionsWithRootFeature;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof FeatureModel)) {
+            return false;
+        }
+
+        if (!this.namespace.equals(((FeatureModel) obj).namespace)) {
+            return false;
+        }
+
+        if (!this.getRootFeature().equals(((FeatureModel) obj).getRootFeature())) {
+            return false;
+        }
+
+
+        if (this.getImports().size() != ((FeatureModel) obj).getImports().size()) {
+            return false;
+        }
+
+        if (this.getUsedLanguageLevels().size() != ((FeatureModel) obj).getUsedLanguageLevels().size()) {
+            return false;
+        }
+
+        for (LanguageLevel languageLevel: this.getUsedLanguageLevels()) {
+            if (!(((FeatureModel) obj).getUsedLanguageLevels().contains(languageLevel))) {
+                return false;
+            }
+        }
+
+        List<Import> objImports = ((FeatureModel) obj).getImports();
+        for (Import thisImport: this.getImports()) {
+            final Optional<Import> identicalImport = objImports.stream()
+                    .filter(imp -> imp.getFeatureModel().equals(thisImport.getFeatureModel()))
+                    .findFirst();
+
+            if (!identicalImport.isPresent()) {
+                return false;
+            }
+        }
+
+        if (this.getOwnConstraints().size() != ((FeatureModel) obj).getOwnConstraints().size()) {
+            return false;
+        }
+
+        List<Constraint> objConstraints = ((FeatureModel) obj).getOwnConstraints();
+        for (final Constraint constraint : this.getOwnConstraints()) {
+            final Optional<Constraint> identicalConstraint = objConstraints.stream()
+                    .filter(con -> con.equals(constraint))
+                    .findFirst();
+
+            if (!identicalConstraint.isPresent()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
