@@ -456,11 +456,7 @@ public class FeatureModel {
 
         List<Constraint> objConstraints = ((FeatureModel) obj).getOwnConstraints();
         for (final Constraint constraint : this.getOwnConstraints()) {
-            final Optional<Constraint> identicalConstraint = objConstraints.stream()
-                    .filter(con -> con.equals(constraint))
-                    .findFirst();
-
-            if (!identicalConstraint.isPresent()) {
+            if (!objConstraints.contains(constraint)) {
                 return false;
             }
         }

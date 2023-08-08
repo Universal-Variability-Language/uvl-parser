@@ -627,16 +627,11 @@ public class Feature {
 
         final List<Group> objGroups = ((Feature) obj).getChildren();
         for (final Group currentGroup : this.getChildren()) {
-            final Optional<Group> identicalGroup = objGroups.stream()
-                    .filter(g -> g.equals(currentGroup))
-                    .findFirst();
-
-            if (!identicalGroup.isPresent()) {
+            if (!objGroups.contains(currentGroup)) {
                 return false;
             }
         }
 
         return true;
     }
-
 }

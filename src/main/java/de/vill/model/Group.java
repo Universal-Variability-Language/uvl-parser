@@ -333,11 +333,7 @@ public class Group {
 
         final List<Feature> objFeatures = ((Group) obj).getFeatures();
         for (final Feature currentFeature : this.getFeatures()) {
-            final Optional<Feature> identicalFeature = objFeatures.stream()
-                    .filter(f -> f.equals(currentFeature))
-                    .findFirst();
-
-            if (!identicalFeature.isPresent()) {
+            if (!objFeatures.contains(currentFeature)) {
                 return false;
             }
         }
