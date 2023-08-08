@@ -11,7 +11,7 @@ import de.vill.model.FeatureModel;
 public class ReadWriteTest {
     
     private final static String TEMP_PATH = "temp.uvl";
-    private final static String TEST_MODEL_ONE = "src/test/resources/parsing/bike.uvl";
+    private final static String TEST_MODEL_ONE = "src/test/resources/parsing/complex/bike.uvl";
 
     @Test
     void testReadWrite() throws Exception {

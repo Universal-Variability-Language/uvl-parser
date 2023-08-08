@@ -1,0 +1,8 @@
+features
+	A
+		optional
+			B
+				[2..3]
+					C
+					D
+					E
