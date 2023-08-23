@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ConvertTypeLevel implements IConversionStrategy {
+    FeatureModel rootFeatureModel;
 
     @Override
     public Set<LanguageLevel> getLevelsToBeRemoved() {
@@ -30,7 +31,8 @@ public class ConvertTypeLevel implements IConversionStrategy {
 
     @Override
     public void convertFeatureModel(final FeatureModel rootFeatureModel, final FeatureModel featureModel) {
-        rootFeatureModel.getOwnConstraints().forEach(this::convertFeaturesInExpressionConstraint);
+        this.rootFeatureModel = rootFeatureModel;
+        this.rootFeatureModel.getOwnConstraints().forEach(this::convertFeaturesInExpressionConstraint);
         this.traverseFeatures(featureModel.getRootFeature());
     }
 
@@ -49,8 +51,8 @@ public class ConvertTypeLevel implements IConversionStrategy {
     private void replaceFeatureInExpression(final Expression expression) {
         if (expression instanceof LiteralExpression) {
             if (((LiteralExpression) expression).getAttributeName() == null) {
-                expression.replaceExpressionSubPart(expression, new LiteralExpression(
-                    ((LiteralExpression) expression).getContent() + "." + Constants.TYPE_LEVEL_VALUE)
+                Feature relevantFeature = rootFeatureModel.getFeatureMap().get(((LiteralExpression) expression).getFeatureName());
+                expression.replaceExpressionSubPart(expression, new LiteralExpression(relevantFeature, Constants.TYPE_LEVEL_VALUE)
                 );
             }
         }

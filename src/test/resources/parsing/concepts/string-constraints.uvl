@@ -9,3 +9,4 @@ constraints
     D == C
     C == 'Fun'
     'Fun' == D
+    A
