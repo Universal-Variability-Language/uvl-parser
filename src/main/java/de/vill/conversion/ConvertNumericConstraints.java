@@ -90,7 +90,8 @@ public class ConvertNumericConstraints implements IConversionStrategy {
                 )
             );
         }
-        final Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + "." + attributeName);
+        Feature relevantFeature = rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName());
+        final Expression newExpression = new LiteralExpression(relevantFeature, attributeName);
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
@@ -118,7 +119,8 @@ public class ConvertNumericConstraints implements IConversionStrategy {
                 )
             );
         }
-        final Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + "." + attributeName);
+        Feature relevantFeature = rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName());
+        final Expression newExpression = new LiteralExpression(relevantFeature, attributeName);
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 

@@ -91,14 +91,16 @@ public class ConvertStringConstraints implements IConversionStrategy {
     private void replaceStringAggregateFunctionInExpression(final Expression parentExpression,
                                                             final AggregateFunctionExpression aggregateFunctionExpression) {
         this.addAttribute(aggregateFunctionExpression);
-        final Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + ".type_level_value_length");
+        Feature relevantFeature = rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName());
+        final Expression newExpression = new LiteralExpression(relevantFeature, Constants.TYPE_LEVEL_LENGTH);
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
     private void replaceStringAggregateFunctionInExpressionConstraint(final ExpressionConstraint parentExpression,
                                                                       final AggregateFunctionExpression aggregateFunctionExpression) {
         this.addAttribute(aggregateFunctionExpression);
-        final Expression newExpression = new LiteralExpression(aggregateFunctionExpression.getRootFeatureName() + "." + Constants.TYPE_LEVEL_LENGTH);
+        Feature relevantFeature = rootFeatureModel.getFeatureMap().get(aggregateFunctionExpression.getRootFeatureName());
+        final Expression newExpression = new LiteralExpression(relevantFeature, Constants.TYPE_LEVEL_LENGTH);
         parentExpression.replaceExpressionSubPart(aggregateFunctionExpression, newExpression);
     }
 
