@@ -138,4 +138,21 @@ public class Attribute<T> {
         }
         return result.toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Attribute)) {
+            return false;
+        }
+
+        if (!this.getName().equals(((Attribute) obj).getName())) {
+            return false;
+        }
+
+        if (!this.getType().equals(((Attribute) obj).getType())) {
+            return false;
+        }
+
+        return this.getValue().equals(((Attribute) obj).getValue());
+    }
 }

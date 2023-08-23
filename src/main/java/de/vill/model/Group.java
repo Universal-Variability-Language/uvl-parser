@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 
 /**
  * This class represents all kinds of groups (or, alternative, mandatory,
@@ -306,5 +307,37 @@ public class Group {
      */
     public void setParentFeature(Feature parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Group)) {
+            return false;
+        }
+
+        if (this.GROUPTYPE != ((Group) obj).GROUPTYPE) {
+            return false;
+        }
+
+        if (this.getUpperBound() != null && !(this.getUpperBound().equals(((Group) obj).getUpperBound()))) {
+            return false;
+        }
+
+        if (this.getLowerBound() != null && !(this.getLowerBound().equals(((Group) obj).getLowerBound()))) {
+            return false;
+        }
+
+        if (this.getFeatures().size() != ((Group) obj).getFeatures().size()) {
+            return false;
+        }
+
+        final List<Feature> objFeatures = ((Group) obj).getFeatures();
+        for (final Feature currentFeature : this.getFeatures()) {
+            if (!objFeatures.contains(currentFeature)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

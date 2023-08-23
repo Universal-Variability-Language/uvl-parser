@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
 
 import static de.vill.util.Util.addNecessaryQuotes;
 
@@ -583,4 +584,54 @@ public class Feature {
         return feature;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Feature)) {
+            return false;
+        }
+
+        if (!(this.getFeatureName().equals(((Feature) obj).getFeatureName()))) {
+            return false;
+        }
+
+        if (this.getFeatureType() != null && !(this.getFeatureType().equals(((Feature) obj).getFeatureType()))) {
+            return false;
+        }
+
+        if (this.getUpperBound() != null && !(this.getUpperBound().equals(((Feature) obj).getUpperBound()))) {
+            return false;
+        }
+
+        if (this.getLowerBound() != null && !(this.getLowerBound().equals(((Feature) obj).getLowerBound()))) {
+            return false;
+        }
+
+        // check attributes
+        if (this.getAttributes().size() != ((Feature) obj).getAttributes().size()) {
+            return false;
+        }
+        Map<String, Attribute> objAttributes = ((Feature) obj).getAttributes();
+        for (String key: this.getAttributes().keySet()) {
+            if (!objAttributes.containsKey(key)) {
+                return false;
+            }
+
+            if (!this.getAttributes().get(key).equals(((Feature) obj).getAttributes().get(key))) {
+                return false;
+            }
+        }
+
+        if (this.getChildren().size() != ((Feature) obj).getChildren().size()) {
+            return false;
+        }
+
+        final List<Group> objGroups = ((Feature) obj).getChildren();
+        for (final Group currentGroup : this.getChildren()) {
+            if (!objGroups.contains(currentGroup)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
