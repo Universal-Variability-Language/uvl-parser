@@ -77,10 +77,12 @@ public class LiteralExpression extends Expression {
             return addNecessaryQuotes(this.getContent());
         }
         if (withSubmodels) {
-            return addNecessaryQuotes(this.getFeature().getFullReference() + (this.getAttributeName() != null ? "." + this.getAttributeName() : ""));
+            return addNecessaryQuotes(this.getFeature().getFullReference()
+                    + (this.getAttributeName() != null ? "." + this.getAttributeName() : ""));
         }
         return addNecessaryQuotes(
-            this.feature.getReferenceFromSpecificSubmodel(currentAlias) + (this.getAttributeName() != null ? "." + this.getAttributeName() : ""));
+                this.feature.getReferenceFromSpecificSubmodel(currentAlias)
+                        + (this.getAttributeName() != null ? "." + this.getAttributeName() : ""));
     }
 
     @Override
@@ -109,8 +111,9 @@ public class LiteralExpression extends Expression {
 
     @Override
     public void replaceExpressionSubPart(final Expression oldSubExpression, final Expression newSubExpression) {
-        if (oldSubExpression instanceof LiteralExpression && ((LiteralExpression) oldSubExpression).getContent().equals(this.content) &&
-            newSubExpression instanceof LiteralExpression) {
+        if (oldSubExpression instanceof LiteralExpression
+                && ((LiteralExpression) oldSubExpression).getContent().equals(this.content) &&
+                newSubExpression instanceof LiteralExpression) {
             this.content = ((LiteralExpression) newSubExpression).content;
             this.featureName = ((LiteralExpression) newSubExpression).featureName;
             this.attributeName = ((LiteralExpression) newSubExpression).attributeName;
@@ -120,7 +123,7 @@ public class LiteralExpression extends Expression {
 
     @Override
     public double evaluate(final Set<Feature> selectedFeatures) {
-        if (boolValue != null) {
+        if (boolValue != null || !this.feature.getAttributes().containsKey(this.attributeName)) {
             return 0d;
         }
         final Object attributeValue = this.feature.getAttributes().get(this.attributeName).getValue();
