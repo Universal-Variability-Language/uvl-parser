@@ -1,6 +1,7 @@
 grammar UVL;
 
-tokens { INDENT, DEDENT }
+INDENT : '<INDENT>'; // this pattern should never match in actual input
+DEDENT : '<DEDENT>'; // this pattern should also never match
 
 featureModel: namespace? NEWLINE? includes? NEWLINE? imports? NEWLINE? features? NEWLINE? constraints? EOF;
 
@@ -156,10 +157,38 @@ ID_STRICT: [a-zA-Z]([a-zA-Z0-9_] | '#' | '§' | '%' | '?' | '\\' | '\'' | 'ä' |
 STRING: '\''~[\r\n'.]+'\'';
 
 NEWLINE
- : ( {atStartOfInput()}? SPACES
+ : ( {self.atStartOfInput()}? SPACES
    | ( '\r'? '\n' | '\r' ) SPACES?
-   ) {handleNewline();} 
- ;
+   ) {
+    import re
+    from UVLParser import UVLParser
+    new_line = re.sub(r"[^\r\n\f]+", "", self._interp.getText(self._input)) #.replaceAll("[^\r\n\f]+", "")
+    spaces = re.sub(r"[\r\n\f]+", "", self._interp.getText(self._input)) #.replaceAll("[\r\n\f]+", "")
+    next = self._input.LA(1)
+
+    if self.opened > 0 or next == '\r' or next == '\n' or next == '\f' or next == '#':
+        self.skip()
+    else:
+        self.emitToken(self.common_token(self.NEWLINE, new_line))
+
+        indent = self.getIndentationCount(spaces)
+        if len(self.indents) == 0:
+            previous = 0
+        else:
+            previous = self.indents[-1]
+
+        if indent == previous:
+            self.skip()
+        elif indent > previous:
+            self.indents.append(indent)
+            self.emitToken(self.common_token(UVLParser.INDENT, spaces))
+        else:
+            while len(self.indents) > 0 and self.indents[-1] > indent:
+                self.emitToken(self.create_dedent())
+                del self.indents[-1]
+
+   };
+
 
 SKIP_
   : ( SPACES | COMMENT ) -> skip

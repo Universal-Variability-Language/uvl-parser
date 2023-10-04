@@ -2,9 +2,10 @@
 
 .PHONY: build
 build:
-	antlr4 -Dlanguage=Python3 uvlparser/UVL.g4
+	antlr4 -Dlanguage=Python3 antlr4-grammar/UVL.g4 -o python/
+	mv python/antlr4-grammar/* python
+	rm -rf python/antlr4-grammar
 test:
-	python3 ./uvlparser/main.py ./tests/pizzas.uvl
+	python3 ./python/main.py ./tests/parsing/boolean.uvl
 dev:
-	pip install antlr4-tools
-	pip install -r requirements.txt
+	pip install antlr4-tools antlr4-python3-runtime

@@ -1,6 +1,6 @@
 from antlr4 import CommonTokenStream, FileStream
-from uvlparser.PythonUVLLexer import PythonUVLLexer
-from uvlparser.UVLParser import UVLParser
+from PythonUVLLexer import PythonUVLLexer
+from UVLParser import UVLParser
 from antlr4.error.ErrorListener import ErrorListener
 
 class CustomErrorListener(ErrorListener):

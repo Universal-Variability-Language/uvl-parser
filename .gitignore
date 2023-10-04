@@ -1,6 +1,11 @@
 # User-specific stuff
 .idea
 .vscode
+.env 
+env
+
+python/UVL*
+python/__pycache__/
 
 # AWS User-specific
 .idea/**/aws.xml
