@@ -1,0 +1,31 @@
+name: Build and Deploy Python Parser
+
+on:
+  push:
+    paths:
+    - 'grammar/**'
+    - 'python/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install ANTLR4 and Python dependencies
+      run: |
+        # Add installation steps for ANTLR4 here
+        sudo apt-get update
+        sudo apt-get install -y antlr4 python3 python3-pip
+        pip install setuptools wheel twine
+
+    - name: Generate and Build Python Code
+      run: make python_parser
+
+    - name: Publish to PyPI
+      run: cd python && python -m twine upload dist/*
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}

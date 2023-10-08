@@ -1,0 +1,28 @@
+name: Build and Deploy Java Parser
+
+on:
+  push:
+    paths:
+    - 'grammar/**'
+    - 'java/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install ANTLR4 and Maven
+      run: |
+        # Add installation steps for ANTLR4 here
+        sudo apt-get update
+        sudo apt-get install -y antlr4 maven
+
+    - name: Generate and Compile Java Code
+      run: make java_parser
+
+    - name: Deploy to Maven
+      run: cd java && mvn deploy
+      # Ensure you've set up Maven to deploy to the right repository in your pom.xml and set any necessary credentials using GitHub secrets
