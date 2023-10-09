@@ -1,7 +1,7 @@
 all: java_parser python_parser
 
 java_parser:
-	antlr4 -Dlanguage=Java -o java/src/main/java uvl/UVLJava.g4
+	antlr4 -Dlanguage=Java -o java/src/main/ uvl/UVLJava.g4
 	cd java && mvn compile
 
 python_parser:
