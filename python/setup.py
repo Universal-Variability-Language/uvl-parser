@@ -14,7 +14,7 @@ setup(
     author_email="flamapy@us.es",
     # To find more licenses or classifiers go to: https://pypi.org/classifiers/
     license="GNU General Public License v3 (GPLv3)",
-    packages=['uvlparser'],
+    packages=['uvl'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
