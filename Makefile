@@ -6,7 +6,10 @@ java_parser:
 
 python_parser:
 	antlr4 -Dlanguage=Python3 -o python uvl/UVLPython.g4
+	cp README.md python
 	cd python && python setup.py build
+python_prepare_package:
+	cd python && python3 -m build
 
 clean:
 	# Remove generated Java files except CustomLexer.java and Main.java
@@ -23,4 +26,4 @@ clean:
 test:
 	python3 ./python/main.py ./tests/parsing/boolean.uvl
 dev:
-	pip install antlr4-tools antlr4-python3-runtime setuptools wheel twine
+	pip install antlr4-tools antlr4-python3-runtime setuptools wheel twine build

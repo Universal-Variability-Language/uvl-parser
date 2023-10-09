@@ -1,20 +1,20 @@
 from setuptools import setup
 
-with open("../README.md", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="uvlparser",
-    version="1.2.0",
+    name="UVPPythonParser",
+    version="0.1.0",
     description="This module provides a get_tree function to obtain an ANTLR parse-tree from a UVL-defined feature model",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/flamapy/uvlparser",
-    author="Flamapy",
-    author_email="flamapy@us.es",
+    url="https://github.com/Universal-Variability-Language/uvl-parser-java",
+    author="UVL Team",
+    author_email="jagalindo@us.es",
     # To find more licenses or classifiers go to: https://pypi.org/classifiers/
     license="GNU General Public License v3 (GPLv3)",
-    packages=['uvl'],
+    packages=['.','uvl'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",

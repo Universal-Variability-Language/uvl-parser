@@ -1,1 +1,1 @@
-from uvlparser.main import get_tree
+from python.main import get_tree

@@ -24,8 +24,10 @@ jobs:
     - name: Generate and Build Python Code
       run: make python_parser
 
-    - name: Publish to PyPI
-      run: cd python && python -m twine upload dist/*
+    - name: Build and publish python package
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        python3 -m build
+        twine upload dist/*
