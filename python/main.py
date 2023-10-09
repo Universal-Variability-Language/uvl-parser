@@ -1,6 +1,6 @@
 from antlr4 import CommonTokenStream, FileStream
-from uvl.UVLCustomLexer import PythonUVLLexer
-from uvl.UVLParser import UVLParser
+from uvl.UVLCustomLexer import UVLCustomLexer
+from uvl.UVLPythonParser import UVLPythonParser
 from antlr4.error.ErrorListener import ErrorListener
 
 class CustomErrorListener(ErrorListener):
@@ -16,14 +16,14 @@ class CustomErrorListener(ErrorListener):
 
 def get_tree(argv):
     input_stream = FileStream(argv)
-    lexer = PythonUVLLexer(input_stream)
+    lexer = UVLCustomLexer(input_stream)
     
     # Attach the custom error listener to the lexer
     lexer.removeErrorListeners()
     lexer.addErrorListener(CustomErrorListener())
 
     stream = CommonTokenStream(lexer)
-    parser = UVLParser(stream)
+    parser = UVLPythonParser(stream)
     
     # Attach the custom error listener to the parser
     parser.removeErrorListeners()
@@ -44,14 +44,14 @@ if __name__ == "__main__":
 
     # Parse the provided file
     input_stream = FileStream(sys.argv[1])
-    lexer = PythonUVLLexer(input_stream)
+    lexer = UVLCustomLexer(input_stream)
     
     # Attach the custom error listener to the lexer
     lexer.removeErrorListeners()
     lexer.addErrorListener(CustomErrorListener())
 
     stream = CommonTokenStream(lexer)
-    parser = UVLParser(stream)
+    parser = UVLPythonParser(stream)
     
     # Attach the custom error listener to the parser
     parser.removeErrorListeners()
