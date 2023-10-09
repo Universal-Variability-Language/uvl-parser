@@ -1,10 +1,7 @@
 name: Build and Deploy Python Parser
 
 on:
-  push:
-    paths:
-    - 'uvl/**'
-    - 'python/**'
+  push
 
 jobs:
   build:
