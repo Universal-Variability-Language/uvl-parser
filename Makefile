@@ -10,7 +10,7 @@ python_parser:
 
 clean:
 	# Remove generated Java files except CustomLexer.java and Main.java
-	find java/src/main/java/grammar/ -type f ! -name 'UVLCustomLexer.java' ! -name 'Main.java' -delete
+	find java/src/ -type f ! -name 'UVLCustomLexer.java' ! -name 'Main.java' -delete
 	# Remove generated Python files except custom_lexer.py and main.py
 	find python/uvlparser/ -type f ! -name 'UVLCustomLexer.py' ! -name 'main.py' -delete
 	# Remove compiled Python files

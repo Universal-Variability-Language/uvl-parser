@@ -1,3 +1,4 @@
 # User-specific stuff
 .vscode
 env
+python/__pycache__
