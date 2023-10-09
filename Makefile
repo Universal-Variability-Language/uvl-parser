@@ -8,6 +8,7 @@ python_parser:
 	antlr4 -Dlanguage=Python3 -o python uvl/UVLPython.g4
 	cp README.md python
 	cd python && python setup.py build
+	
 python_prepare_package:
 	cd python && python3 -m build
 

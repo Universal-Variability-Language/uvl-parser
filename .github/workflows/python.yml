@@ -29,5 +29,5 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        python3 -m build
-        twine upload dist/*
+        make python_prepare_package
+        cd python && twine upload dist/*
