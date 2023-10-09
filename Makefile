@@ -1,11 +1,11 @@
 all: java_parser python_parser
 
 java_parser:
-	antlr4 -Dlanguage=Java -o java/src/main/java grammar/UVL-java.g4
+	antlr4 -Dlanguage=Java -o java/src/main/java uvl/UVLJava.g4
 	cd java && mvn compile
 
 python_parser:
-	antlr4 -Dlanguage=Python3 -o python/uvlparser grammar/UVL-python.g4
+	antlr4 -Dlanguage=Python3 -o python/uvlparser uvl/UVLPython.g4
 	cd python && python setup.py build
 
 clean:
