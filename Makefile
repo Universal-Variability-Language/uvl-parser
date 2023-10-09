@@ -23,4 +23,4 @@ clean:
 test:
 	python3 ./python/main.py ./tests/parsing/boolean.uvl
 dev:
-	pip install antlr4-tools antlr4-python3-runtime
+	pip install antlr4-tools antlr4-python3-runtime setuptools wheel twine

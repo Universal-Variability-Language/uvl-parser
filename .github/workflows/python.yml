@@ -3,7 +3,7 @@ name: Build and Deploy Python Parser
 on:
   push:
     paths:
-    - 'grammar/**'
+    - 'uvl/**'
     - 'python/**'
 
 jobs:
@@ -18,8 +18,8 @@ jobs:
       run: |
         # Add installation steps for ANTLR4 here
         sudo apt-get update
-        sudo apt-get install -y antlr4 python3 python3-pip
-        pip install setuptools wheel twine
+        sudo apt-get install -y python3 python3-pip
+        make dev
 
     - name: Generate and Build Python Code
       run: make python_parser
