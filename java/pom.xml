@@ -78,7 +78,7 @@
         <sourceDirectory>src/main/</sourceDirectory>
         <!--<testSourceDirectory>"TO BE DEFINED"</testSourceDirectory>-->
         <plugins>
-            <!-- ANTLR Plugin -->
+            <!-- ANTLR Plugin 
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
@@ -94,7 +94,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+            -->
             <!-- Java Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
