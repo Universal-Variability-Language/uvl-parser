@@ -2,7 +2,7 @@ name: Build and Deploy Java Parser
 
 on:
   push
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,7 +16,12 @@ jobs:
         # Add installation steps for ANTLR4 here
         sudo apt-get update
         sudo apt-get install -y antlr4 maven
-
+    - name: Import GPG key
+      run: |
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export ${GPG_KEY_ID} > public.gpg
+        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export-secret-keys ${GPG_KEY_ID} > private.gpg
+    
     - name: Generate and Compile Java Code
       run: make java_parser
 
@@ -26,12 +31,6 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-
-    - name: Import GPG key
-      run: |
-        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export ${GPG_KEY_ID} > public.gpg
-        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export-secret-keys ${GPG_KEY_ID} > private.gpg
 
     - name: Deploy to Maven Central
       run: mvn clean deploy --settings .github/settings.xml
