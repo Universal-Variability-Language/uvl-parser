@@ -16,20 +16,12 @@ jobs:
         # Add installation steps for ANTLR4 here
         sudo apt-get update
         sudo apt-get install -y antlr4 maven
+        
     - name: Import GPG key
-      run: |
-        gpg-connect-agent killagent /bye
-        gpg-connect-agent /bye
-        mkdir -p ~/.gnupg
-        touch ~/.gnupg/gpg.conf
-        echo "no-tty" >> ~/.gnupg/gpg.conf
-        echo "batch" >> ~/.gnupg/gpg.conf
-        chmod 700 ~/.gnupg
-        gpg-connect-agent /bye
-        export GPG_TTY=$(tty)
-        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --pinentry-mode loopback --import
-        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export C3134853529BEF01 > public.gpg
-        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export-secret-keys C3134853529BEF01 > private.gpg
+      uses: crazy-max/ghaction-import-gpg@v1
+      env:
+         GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+         PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
     
     - name: Generate and Compile Java Code
       run: make java_parser
