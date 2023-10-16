@@ -1,11 +1,8 @@
 name: Build and Deploy Java Parser
 
 on:
-  push:
-    paths:
-    - 'grammar/**'
-    - 'java/**'
-
+  push
+  
 jobs:
   build:
     runs-on: ubuntu-latest
