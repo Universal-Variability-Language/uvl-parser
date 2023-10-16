@@ -2,7 +2,7 @@
 This is a small default library used to parse and print the Universal Variability Language (UVL).
 
 Under the hood it uses [ANTLR4](https://www.antlr.org/) as the parsing library.
-The grammar in EBNF form is located in `src/main/antlr4/de/vill/UVL.g4`
+The grammar in EBNF form is located in `uvl/UVL.g4` and the modifications for Java and Python
 
 ## The Language
 

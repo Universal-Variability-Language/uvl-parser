@@ -1,0 +1,41 @@
+name: Build and Deploy Java Parser
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install ANTLR4 and Maven
+      run: |
+        # Add installation steps for ANTLR4 here
+        sudo apt-get update
+        sudo apt-get install -y antlr4 maven
+
+    - name: Import GPG key
+      uses: crazy-max/ghaction-import-gpg@v1
+      env:
+         GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+         PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+    
+    - name: Generate and Compile Java Code
+      run: make java_parser
+
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Deploy to Maven Central
+      run: cd java && mvn clean deploy --settings ../.github/settings.xml
+      env:
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

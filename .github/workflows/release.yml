@@ -1,0 +1,57 @@
+name: Create Release and publish pypi package
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.*
+
+jobs:
+  released:
+    name: Released
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git repo
+        uses: actions/checkout@v2
+
+      - name: Automated Version Bump
+        id: changelog
+        uses: Requarks/changelog-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{github.ref_name}}
+          writeToFile: 'false'
+
+      - name: Get variables
+        id: get_variables
+        run: |
+          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+          echo ::set-output name=IS_PRERELEASE::"${{contains(github.ref, 'dev')}}"
+
+      - name: Publish release github
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: ${{ steps.get_variables.outputs.IS_PRERELEASE }}
+          tag_name: ${{ steps.get_variables.outputs.VERSION }}
+          body: ${{ steps.changelog.outputs.changes }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies and ANTLR requirements
+        run: |
+          sudo apt-get install antlr4
+          pip install twine build
+
+      - name: Compile
+        run: make build
+
+      - name: Build and publish python package
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          python3 -m build
+          twine upload dist/*

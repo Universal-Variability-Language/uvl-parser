@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>UVL Parser</name>
+    <description>This project host the grammar files and generated source files for the Java version of the UVL parser</description>
+    <url>https://github.com/Universal-Variability-Language/uvl-parser</url>
+
+    <groupId>io.github.universal-variability-language</groupId>
+    <artifactId>uvl-parser</artifactId>
+    <version>0.1</version>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://github.com/Universal-Variability-Language/uvl-parser/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>José A. Galindo</name>
+            <email>jagalindo@us.es</email>
+            <organization>University of Seville</organization>
+            <organizationUrl>https://www.us.es</organizationUrl>
+        </developer>
+        <developer>
+            <name>Chico Sundermann</name>
+            <email>jagalindo@us.es</email>
+            <organization>University of Ulm</organization>
+            <organizationUrl>https://www.uni-ulm.de/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Kevin Feichtinger</name>
+            <email>kevin.feichtinger@jku.at</email>
+            <organization>Johannes Kepler University</organization>
+            <organizationUrl>https://www.jku.at/</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm><!-- TODO-->
+        <connection>scm:git:git@github.com:Universal-Variability-Language/uvl-parser.git</connection>
+        <developerConnection>scm:git:git@github.com:Universal-Variability-Language/uvl-parser.git</developerConnection>
+        <url>https://github.com/Universal-Variability-Language/uvl-parser</url>
+    </scm>
+
+    <properties>
+        <antlr4.version>4.13.1</antlr4.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- ANTLR Runtime -->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr4.version}</version>
+        </dependency>
+    </dependencies>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <build>
+        <sourceDirectory>src/main/</sourceDirectory>
+        <!--<testSourceDirectory>"TO BE DEFINED"</testSourceDirectory>-->
+        <plugins>
+            <!-- ANTLR Plugin -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr4.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Java Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                    <id>sign-artifacts</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>sign</goal>
+                    </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    
+    
+</project>
