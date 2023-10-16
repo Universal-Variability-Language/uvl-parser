@@ -18,7 +18,7 @@ jobs:
         sudo apt-get install -y antlr4 maven
     - name: Import GPG key
       run: |
-        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --pinentry-mode loopback --import
         gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export ${GPG_KEY_ID} > public.gpg
         gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export-secret-keys ${GPG_KEY_ID} > private.gpg
     
