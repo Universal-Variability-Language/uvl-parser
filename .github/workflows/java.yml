@@ -22,11 +22,12 @@ jobs:
         touch ~/.gnupg/gpg.conf
         echo "no-tty" >> ~/.gnupg/gpg.conf
         echo "batch" >> ~/.gnupg/gpg.conf
+        chmod 700 ~/.gnupg
+        gpg-connect-agent /bye
         export GPG_TTY=$(tty)
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --pinentry-mode loopback --import
         gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export ${GPG_KEY_ID} > public.gpg
         gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export-secret-keys ${GPG_KEY_ID} > private.gpg
-    
     
     - name: Generate and Compile Java Code
       run: make java_parser
