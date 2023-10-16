@@ -23,6 +23,22 @@ jobs:
     - name: Generate and Compile Java Code
       run: make java_parser
 
-    - name: Deploy to Maven
-      run: cd java && mvn deploy
-      # Ensure you've set up Maven to deploy to the right repository in your pom.xml and set any necessary credentials using GitHub secrets
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Import GPG key
+      run: |
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export ${GPG_KEY_ID} > public.gpg
+        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export-secret-keys ${GPG_KEY_ID} > private.gpg
+
+    - name: Deploy to Maven Central
+      run: mvn clean deploy --settings .github/settings.xml
+      env:
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

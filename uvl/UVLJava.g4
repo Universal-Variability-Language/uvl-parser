@@ -1,6 +1,8 @@
 grammar UVLJava;
 import UVLBase;
-
+@header {
+package uvl;
+}
 @lexer::members {
   // A queue where extra tokens are pushed on (see the NEWLINE lexer rule).
   private java.util.LinkedList<Token> tokens = new java.util.LinkedList<>();

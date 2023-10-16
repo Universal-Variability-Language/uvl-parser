@@ -3,6 +3,7 @@ all: java_parser python_parser
 java_parser:
 	antlr4 -Dlanguage=Java -o java/src/main/ uvl/UVLJava.g4
 	cd java && mvn compile
+	cd java && mvn install
 
 python_parser:
 	antlr4 -Dlanguage=Python3 -o python uvl/UVLPython.g4
