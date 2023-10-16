@@ -11,7 +11,7 @@
 
     <groupId>io.github.universal-variability-language</groupId>
     <artifactId>uvl-parser</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 
     <licenses>
         <license>
@@ -83,10 +83,13 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>${antlr4.version}</version>
+                <configuration>
+                    <sourceDirectory>../uvl</sourceDirectory>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>antlr4</goal>
+                            <goal>UVLJava</goal>
                         </goals>
                     </execution>
                 </executions>
