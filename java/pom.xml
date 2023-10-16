@@ -89,7 +89,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>UVLJava</goal>
+                            <goal>antlr4</goal>
                         </goals>
                     </execution>
                 </executions>
