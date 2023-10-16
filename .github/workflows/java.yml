@@ -26,8 +26,8 @@ jobs:
         gpg-connect-agent /bye
         export GPG_TTY=$(tty)
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --pinentry-mode loopback --import
-        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export ${GPG_KEY_ID} > public.gpg
-        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export-secret-keys ${GPG_KEY_ID} > private.gpg
+        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export C3134853529BEF01 > public.gpg
+        gpg --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --export-secret-keys C3134853529BEF01 > private.gpg
     
     - name: Generate and Compile Java Code
       run: make java_parser
