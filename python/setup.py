@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="UVPPythonParser",
+    name="uvl-parser",
     version="0.1.0",
     description="This module provides a get_tree function to obtain an ANTLR parse-tree from a UVL-defined feature model",
     long_description=long_description,
