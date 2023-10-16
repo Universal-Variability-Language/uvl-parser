@@ -15,7 +15,8 @@ jobs:
       run: |
         # Add installation steps for ANTLR4 here
         sudo apt-get update
-        sudo apt-get install -y antlr4 maven
+        sudo apt-get install -y maven
+        make dev
 
     - name: Import GPG key
       uses: crazy-max/ghaction-import-gpg@v1
