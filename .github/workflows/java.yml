@@ -16,7 +16,7 @@ jobs:
         # Add installation steps for ANTLR4 here
         sudo apt-get update
         sudo apt-get install -y antlr4 maven
-        
+
     - name: Import GPG key
       uses: crazy-max/ghaction-import-gpg@v1
       env:
@@ -34,7 +34,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
 
     - name: Deploy to Maven Central
-      run: mvn clean deploy --settings .github/settings.xml
+      run: cd java && mvn clean deploy --settings .github/settings.xml
       env:
         SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
