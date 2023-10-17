@@ -93,6 +93,17 @@ package uvl;
   }
 
 }
+
+OPEN_PAREN : '(' {this.opened += 1;};
+CLOSE_PAREN : ')' {this.opened -= 1;};
+OPEN_BRACK : '[' {this.opened += 1;};
+CLOSE_BRACK : ']' {this.opened -= 1;};
+OPEN_BRACE : '{' {this.opened += 1;};
+CLOSE_BRACE : '}' {this.opened -= 1;};
+OPEN_COMMENT: '/*' {this.opened += 1;};
+CLOSE_COMMENT: '*/' {this.opened -= 1;};
+
+
 //This is here because the way python manage tabs and new lines
 NEWLINE
  : ( {atStartOfInput()}?   SPACES

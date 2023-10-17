@@ -143,14 +143,6 @@ BOOLEAN_KEY : 'Boolean';
 
 COMMA: ',';
 
-OPEN_PAREN : '(' {this.opened += 1;};
-CLOSE_PAREN : ')' {this.opened -= 1;};
-OPEN_BRACK : '[' {this.opened += 1;};
-CLOSE_BRACK : ']' {this.opened -= 1;};
-OPEN_BRACE : '{' {this.opened += 1;};
-CLOSE_BRACE : '}' {this.opened -= 1;};
-OPEN_COMMENT: '/*' {this.opened += 1;};
-CLOSE_COMMENT: '*/' {this.opened -= 1;};
 
 ID_NOT_STRICT: '"'~[\r\n".]+'"';
 ID_STRICT: [a-zA-Z]([a-zA-Z0-9_] | '#' | '§' | '%' | '?' | '\\' | '\'' | 'ä' | 'ü' | 'ö' | 'ß' | ';')*;
