@@ -1,0 +1,31 @@
+features
+	GEMA_SPL 
+		mandatory
+			MapViewer 
+				mandatory
+					MV_MapServer 
+						or
+							MV_MS_GeoServer 
+							MV_MS_GeoJSON 
+								optional
+									MV_MS_GJ_Cached 
+								optional
+									MV_MS_GJ_Paginated 
+				mandatory
+					MV_MapManagement 
+						alternative
+							MV_MM_UniqueMapViewer 
+								mandatory
+									MV_MM_UMV_MapCenter 
+										alternative
+											MV_MM_UMV_MC_BBox 
+											MV_MM_UMV_MC_Coordinates 
+											MV_MM_UMV_MC_UserPosition 
+							MV_MM_MultipleMapViewer 
+								optional
+									MV_MM_MMV_MapSelectorInMapViewer 
+								optional
+									MV_MM_MMV_MapSelectorInMenuElement 
+constraints
+	MV_MS_GJ_Paginated => !MV_MS_GJ_Cached
+	MV_MS_GJ_Cached => !MV_MS_GJ_Paginated

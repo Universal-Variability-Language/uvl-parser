@@ -3,3 +3,5 @@
 env
 python/uvl/__pycache__
 uvl/.antlr
+js/node_modules
+js/package-lock.json
