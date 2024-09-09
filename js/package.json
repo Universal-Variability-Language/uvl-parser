@@ -1,8 +1,8 @@
 {
-  "name": "@lbdudc/uvl-js-parser",
+  "name": "uvl-parser",
   "main": "index.js",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.1",
   "scripts": {
     "build-grammar": "antlr4 -Dlanguage=JavaScript -o src/lib -Xexact-output-dir ../uvl/UVLJavaScript.g4",
     "lint": "eslint src --ignore-pattern src/lib/*",
@@ -16,7 +16,6 @@
     "vitest": "^2.0.4"
   },
   "dependencies": {
-    "@lbdudc/uvl-js-parser": "file:",
     "antlr4": "4.12.0"
   },
   "author": {
