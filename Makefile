@@ -11,7 +11,8 @@ python_parser:
 	cd python && python setup.py build
 
 js_parser:
-	antlr4 -Dlanguage=JavaScript -o js/src/lib uvl/UVLJavaScript.g4
+	mkdir -p js/src/lib
+	antlr4 -Dlanguage=JavaScript -o js/src/lib/ uvl/UVLJavaScript.g4
 	
 python_prepare_package:
 	cd python && python3 -m build
