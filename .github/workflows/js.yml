@@ -19,13 +19,12 @@ jobs:
     
     - name: Install ANTLR4
       run: |
-        sudo apt-get update
-        sudo apt-get install -y antlr4
+        make js_parser
 
     - name: Generate and Build Node Code
       run: cd js && npm install && npm run build-grammar
 
     - name: Publish npm package
-      run: npm publish --access public
+      run: cd js && npm publish --access public
       env:
         NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
