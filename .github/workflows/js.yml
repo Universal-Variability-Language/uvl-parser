@@ -1,0 +1,33 @@
+name: Build and Deploy JS Parser
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+          node-version: 19
+          registry-url: https://registry.npmjs.org/
+
+    - name: Generate and Build Node Code
+      run: cd js && npm install && npm run build-grammar
+
+    # - name: Bump npm version
+    #   run: | 
+    #     npm version patch -m "Bump version to %s [skip ci]"
+    #     git config user.name "github-actions"
+    #     git config user.email "github-actions@github.com"
+    #     git push origin main --follow-tags
+
+    - name: Publish npm package
+      run: npm publish --access public
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
