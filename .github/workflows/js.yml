@@ -19,6 +19,7 @@ jobs:
     
     - name: Install ANTLR4
       run: |
+        make dev
         make js_parser
 
     - name: Generate and Build Node Code
