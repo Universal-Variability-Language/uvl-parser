@@ -1,0 +1,21 @@
+features
+	GEMA_SPL 
+		mandatory
+			GraphicalUserInterface 
+				optional
+					GUI_Forms 
+				optional
+					GUI_Lists 
+						optional
+							GUI_L_Sortable 
+						optional
+							GUI_L_Filterable 
+								alternative
+									GUI_L_F_RowFilter 
+									GUI_L_F_BasicSearch 
+						optional
+							GUI_L_LocateInMap 
+						optional
+							GUI_L_ViewListAsMap 
+						optional
+							GUI_L_FormLink 

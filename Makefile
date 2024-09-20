@@ -1,4 +1,4 @@
-all: java_parser python_parser
+all: java_parser python_parser js_parser
 
 java_parser:
 	antlr4 -Dlanguage=Java -o java/src/main/ uvl/UVLJava.g4
@@ -9,6 +9,10 @@ python_parser:
 	antlr4 -Dlanguage=Python3 -o python uvl/UVLPython.g4
 	cp README.md python
 	cd python && python setup.py build
+
+js_parser:
+	mkdir -p js/src/lib
+	antlr4 -Dlanguage=JavaScript -o js/src/lib/ uvl/UVLJavaScript.g4
 	
 python_prepare_package:
 	cd python && python3 -m build
