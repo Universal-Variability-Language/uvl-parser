@@ -83,12 +83,12 @@ additiveExpression
     ;
 
 multiplicativeExpression
-    : multiplicativeExpression MUL atom                # MulExpression
-    | multiplicativeExpression DIV atom                # DivExpression
-    | atom                                             # AtomExpression   
+    : multiplicativeExpression MUL primaryExpression                # MulExpression
+    | multiplicativeExpression DIV primaryExpression                # DivExpression
+    | primaryExpression                                             # PrimaryExpressionExpression   
     ;
 
-atom
+primaryExpression
     : FLOAT                                   # FloatLiteralExpression
     | INTEGER                                 # IntegerLiteralExpression
     | STRING                                  # StringLiteralExpression
