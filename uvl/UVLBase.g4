@@ -72,17 +72,29 @@ equation
     | expression NOT_EQUALS expression      # NotEqualsEquation
     ;
 
-expression:
-    FLOAT                                   # FloatLiteralExpression
-    | INTEGER                               # IntegerLiteralExpression
-    | STRING                                # StringLiteralExpression
-    | aggregateFunction                     # AggregateFunctionExpression
-    | reference                             # LiteralExpression
-    | OPEN_PAREN expression CLOSE_PAREN     # BracketExpression
-    | expression ADD expression             # AddExpression
-    | expression SUB expression             # SubExpression
-    | expression MUL expression             # MulExpression
-    | expression DIV expression             # DivExpression
+expression
+    : additiveExpression
+    ;
+
+additiveExpression
+    : additiveExpression ADD multiplicativeExpression   # AddExpression
+    | additiveExpression SUB multiplicativeExpression   # SubExpression
+    | multiplicativeExpression                          # MultiplicativeExpr
+    ;
+
+multiplicativeExpression
+    : multiplicativeExpression MUL primaryExpression                # MulExpression
+    | multiplicativeExpression DIV primaryExpression                # DivExpression
+    | primaryExpression                                             # PrimaryExpressionExpression   
+    ;
+
+primaryExpression
+    : FLOAT                                   # FloatLiteralExpression
+    | INTEGER                                 # IntegerLiteralExpression
+    | STRING                                  # StringLiteralExpression
+    | aggregateFunction                       # AggregateFunctionExpression
+    | reference                               # LiteralExpression
+    | OPEN_PAREN expression CLOSE_PAREN       # BracketExpression
     ;
 
 aggregateFunction
