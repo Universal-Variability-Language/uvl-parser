@@ -82,11 +82,11 @@ To use UVL in your projects, you can either:
     ### Java Parser
     Include the following dependency in your Maven project:
     ```xml
-        <dependency>
-            <groupId>io.github.universal-variability-language</groupId>
-            <artifactId>uvl-parser</artifactId>
-            <version>0.3</version>
-        </dependency>
+    <dependency>
+        <groupId>io.github.universal-variability-language</groupId>
+        <artifactId>uvl-parser</artifactId>
+        <version>0.3</version>
+    </dependency>
     ```
     ### Python Parser
     Install the package via pip:
