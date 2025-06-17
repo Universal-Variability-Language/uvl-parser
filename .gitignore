@@ -1,7 +1,18 @@
-# User-specific stuff
+# VSCode, Eclipse, and IntelliJ IDEA project files
 .vscode
+.settings
+.classpath
+.project
+.idea
+
+# Python virtual environments
 env
 python/uvl/__pycache__
-uvl/.antlr
+
+# Node.js
 js/node_modules
 js/package-lock.json
+
+# Java build files
+.antlr/
+target/

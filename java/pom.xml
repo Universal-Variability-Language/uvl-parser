@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <name>UVL Parser</name>
@@ -11,7 +11,7 @@
 
     <groupId>io.github.universal-variability-language</groupId>
     <artifactId>uvl-parser</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
 
     <licenses>
         <license>
@@ -40,6 +40,12 @@
             <organization>Johannes Kepler University</organization>
             <organizationUrl>https://www.jku.at/</organizationUrl>
         </developer>
+        <developer>
+            <name>Malte Grave</name>
+            <email>malte.grave@jku.at</email>
+            <organization>Johannes Kepler University</organization>
+            <organizationUrl>https://www.jku.at/</organizationUrl>
+        </developer>
     </developers>
 
     <scm><!-- TODO-->
@@ -49,13 +55,12 @@
     </scm>
 
     <properties>
-        <antlr4.version>4.13.1</antlr4.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <antlr4.version>4.13.2</antlr4.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
-        <!-- ANTLR Runtime -->
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
@@ -75,56 +80,83 @@
     </distributionManagement>
 
     <build>
-        <sourceDirectory>src/main/</sourceDirectory>
-        <!--<testSourceDirectory>"TO BE DEFINED"</testSourceDirectory>-->
+        <!--<testSourceDirectory>"TO
+        BE DEFINED"</testSourceDirectory>-->
         <plugins>
-            <!-- ANTLR Plugin 
+            <!-- ANTLR Plugin  -->
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>${antlr4.version}</version>
                 <configuration>
-                    <sourceDirectory>../uvl</sourceDirectory>
+                    <arguments>
+                        <argument>-lib</argument>
+                        <argument>../uvl</argument>
+                    </arguments>
+                    <sourceDirectory>../uvl/Java</sourceDirectory>
+                    <outputDirectory>${project.build.directory}/generated-sources/antlr4</outputDirectory>
+                    <listener>true</listener>
+                    <visitor>true</visitor>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
+                        <phase>generate-sources</phase>
                     </execution>
                 </executions>
             </plugin>
-            -->
-            <!-- Java Compiler Plugin -->
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/antlr4</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.14.0</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
+                <version>3.2.7</version>
                 <executions>
                     <execution>
-                    <id>sign-artifacts</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>sign</goal>
-                    </goals>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
+                <version>1.7.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
@@ -136,7 +168,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -149,7 +181,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.11.2</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -162,6 +194,5 @@
         </plugins>
     </build>
 
-    
-    
+
 </project>
