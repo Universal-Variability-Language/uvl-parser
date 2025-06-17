@@ -1,18 +1,21 @@
 all: java_parser python_parser js_parser
 
+LIB_FLAG = -lib
+LIB_PATH = uvl
+
+ROOT_DIR = $(shell pwd)
+PYTHON_OUTPUT_DIR = python/uvl
+
 java_parser:
-	antlr4 -Dlanguage=Java -o java/src/main/ uvl/UVLJava.g4
-	cd java && mvn compile
+	cd java && mvn package
 	cd java && mvn install
 
 python_parser:
-	antlr4 -Dlanguage=Python3 -o python uvl/UVLPython.g4
-	cp README.md python
-	cd python && python setup.py build
+	cd uvl/Python && antlr4 $(LIB_FLAG) $(ROOT_DIR)/$(LIB_PATH) -Dlanguage=Python3 -o $(ROOT_DIR)/$(PYTHON_OUTPUT_DIR) UVLPythonLexer.g4 UVLPythonParser.g4
 
 js_parser:
 	mkdir -p js/src/lib
-	antlr4 -Dlanguage=JavaScript -o js/src/lib/ uvl/UVLJavaScript.g4
+	antlr4 $(LIB_FLAG) $(LIB_PATH) -Dlanguage=JavaScript -o js/src/lib/ uvl/UVLJavaScript.g4
 	
 python_prepare_package:
 	cd python && python3 -m build
