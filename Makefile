@@ -1,4 +1,4 @@
-.PHONY: all java_parser python_parser js_parser python_prepare_package build_python clean test dev
+.PHONY: all java_parser python_parser js_parser python_prepare_package clean test dev
 
 all: java_parser python_parser js_parser
 

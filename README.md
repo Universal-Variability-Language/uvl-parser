@@ -17,9 +17,9 @@ This repository contains the **ANTLR4 grammar files** for UVL. With these, you c
 - `uvl/UVLParser.g4` – Base grammar in EBNF form
 - `uvl/UVLLexer.g4` – Base lexer grammar for UVL
 - `uvl/Java/UVLJava*.g4`, `uvl/Python/UVLPython*.g4`, etc. – Language-specific grammar files
-- `java/` – Java-based parser implementation using Maven
-- `python/` – Python-based parser implementation
-- `javascript/` – JavaScript-based parser implementation
+- `java/` – Java-based parser implementation using Maven (generated)
+- `python/` – Python-based parser implementation (generated)
+- `js/` – JavaScript-based parser implementation (generated)
 - `tests/` – UVL test cases for validation
 
 UVL uses [ANTLR4](https://www.antlr.org/) as its parser generator.
@@ -129,7 +129,6 @@ To use UVL in your projects, you can either:
 ### Python Parser
 #### Prerequisites
 - Python 3.8+
-- [pip](https://pip.pypa.io/en/stable/)
 - [ANTLR4](https://www.antlr.org/)
 #### Build Steps
 1. Clone the repository:
@@ -147,7 +146,6 @@ To use UVL in your projects, you can either:
 ### JavaScript Parser
 #### Prerequisites
 - Node.js 14+
-- [npm](https://www.npmjs.com/get-npm)
 - [ANTLR4](https://www.antlr.org/)
 #### Build Steps
 1. Clone the repository:
