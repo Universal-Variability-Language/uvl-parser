@@ -104,7 +104,6 @@ To use UVL in your projects, you can either:
 ### Java Parser
 #### Prerequisites
 
-- [ANTLR4](https://www.antlr.org/)
 - Java 17+
 - [Maven](https://maven.apache.org/)
 
@@ -117,11 +116,49 @@ To use UVL in your projects, you can either:
 
 2. Build the parser:
   ```bash
-   cd java
-   mvn clean package
+  make java_parser
+  ```
+  This will generate the jar file in the `java/target/` directory. You can also build the JAR with:
+  ```bash
+  cd java && mvn clean package
   ```
 
 3. Include the generated JAR in your Java project.
+---
+
+### Python Parser
+#### Prerequisites
+- Python 3.8+
+- [pip](https://pip.pypa.io/en/stable/)
+- [ANTLR4](https://www.antlr.org/)
+#### Build Steps
+1. Clone the repository:
+  ```bash
+   git clone https://github.com/Universal-Variability-Language/uvl-parser
+  ```
+2. Build the parser:
+  ```bash
+    make python_parser
+  ```
+ This will generate the parser files in the `python/` directory. To build the wheel package, run:
+  ```bash
+    make python_prepare_package
+  ```
+### JavaScript Parser
+#### Prerequisites
+- Node.js 14+
+- [npm](https://www.npmjs.com/get-npm)
+- [ANTLR4](https://www.antlr.org/)
+#### Build Steps
+1. Clone the repository:
+  ```bash
+   git clone https://github.com/Universal-Variability-Language/uvl-parser
+  ```
+2. Build the parser:
+  ```bash
+  make javascript_parser
+  ```
+This will generate the parser files in the `js/` directory.
 ---
 
 ## 📚 Resources
