@@ -20,88 +20,39 @@ This repository contains the **ANTLR4 grammar files** for UVL. With these, you c
 - `java/` – Java-based parser implementation using Maven (generated)
 - `python/` – Python-based parser implementation (generated)
 - `js/` – JavaScript-based parser implementation (generated)
-- `tests/` – UVL test cases for validation
 
 UVL uses [ANTLR4](https://www.antlr.org/) as its parser generator.
 
----
+## Usage
 
-## 💡 Language Overview
-
-Each UVL model may consist of five optional sections:
-
-1. **Language levels**: Enable optional concepts via `include` keyword.
-2. **Namespace**: Allows referencing the model from other UVL models.
-3. **Imports**: Include other feature models (e.g., `subdir.filename as fn`).
-4. **Feature tree**: Hierarchical features with cardinalities, attributes, and group types (`mandatory`, `optional`, `or`, `alternative`).
-5. **Cross-tree constraints**: Logical and arithmetic constraints among features.
-
-### 🔍 Example
-
-```uvl
-namespace Server
-
-features
-  Server {abstract}
-    mandatory
-      FileSystem
-        or
-          NTFS
-          APFS
-          EXT4
-      OperatingSystem {abstract}
-        alternative
-          Windows
-          macOS
-          Debian
-    optional
-      Logging {
-        default,
-        log_level "warn"
-      }
-
-constraints
-  Windows => NTFS
-  macOS => APFS
-```
-
-**Explanation:**
-- `Server` is an abstract feature.
-- It must include a `FileSystem` and an `OperatingSystem`.
-- `Logging` is optional and includes an attribute.
-- Logical constraints define dependencies between features.
-
-🔗 More examples: https://github.com/Universal-Variability-Language/uvl-models/tree/main/Feature_Models
-
----
-
-
-## Usage 
 To use UVL in your projects, you can either:
+
 1. **Use the pre-built parsers**
-    ### Java Parser
-    Include the following dependency in your Maven project:
-    ```xml
-    <dependency>
-        <groupId>io.github.universal-variability-language</groupId>
-        <artifactId>uvl-parser</artifactId>
-        <version>0.3</version>
-    </dependency>
-    ```
-    ### Python Parser
-    Install the package via pip:
-    ```bash
-    pip install uvlparser
-    ```
-    ### JavaScript Parser
-    Install the package via npm:
-    ```bash
-    npm install uvl-parser
-    ```
+   ### Java Parser
+   Include the following dependency in your Maven project:
+   ```xml
+   <dependency>
+       <groupId>io.github.universal-variability-language</groupId>
+       <artifactId>uvl-parser</artifactId>
+       <version>0.3</version>
+   </dependency>
+   ```
+   ### Python Parser
+   Install the package via pip:
+   ```bash
+   pip install uvlparser
+   ```
+   ### JavaScript Parser
+   Install the package via npm:
+   ```bash
+   npm install uvl-parser
+   ```
 2. **Build the parser manually** See the sections below for details.
 
 ## ⚙️ Building the Parser manually
+
 ### Java Parser
+
 #### Prerequisites
 
 - Java 17+
@@ -110,62 +61,96 @@ To use UVL in your projects, you can either:
 #### Build Steps
 
 1. Clone the repository:
-  ```bash 
-   git clone https://github.com/Universal-Variability-Language/uvl-parser
-   ```
+
+```bash
+ git clone https://github.com/Universal-Variability-Language/uvl-parser
+```
 
 2. Build the parser:
-  ```bash
-  make java_parser
-  ```
-  This will generate the jar file in the `java/target/` directory. You can also build the JAR with:
-  ```bash
-  cd java && mvn clean package
-  ```
+
+```bash
+make java_parser
+```
+
+This will generate the jar file in the `java/target/` directory. You can also build the JAR with:
+
+```bash
+cd java && mvn clean package
+```
 
 3. Include the generated JAR in your Java project.
+
 ---
 
 ### Python Parser
+
 #### Prerequisites
+
 - Python 3.8+
 - [ANTLR4](https://www.antlr.org/)
+
 #### Build Steps
+
 1. Clone the repository:
-  ```bash
-   git clone https://github.com/Universal-Variability-Language/uvl-parser
-  ```
+
+```bash
+ git clone https://github.com/Universal-Variability-Language/uvl-parser
+```
+
 2. Build the parser:
-  ```bash
-    make python_parser
-  ```
- This will generate the parser files in the `python/` directory. To build the wheel package, run:
-  ```bash
-    make python_prepare_package
-  ```
+
+```bash
+  make python_parser
+```
+
+This will generate the parser files in the `python/` directory. To build the wheel package, run:
+
+```bash
+  make python_prepare_package
+```
+
 ### JavaScript Parser
+
 #### Prerequisites
+
 - Node.js 14+
 - [ANTLR4](https://www.antlr.org/)
+
 #### Build Steps
+
 1. Clone the repository:
-  ```bash
-   git clone https://github.com/Universal-Variability-Language/uvl-parser
-  ```
+
+```bash
+ git clone https://github.com/Universal-Variability-Language/uvl-parser
+```
+
 2. Build the parser:
-  ```bash
-  make javascript_parser
-  ```
-This will generate the parser files in the `js/` directory.
+
+```bash
+make javascript_parser
+```
+
+## This will generate the parser files in the `js/` directory.
+
+## 💡 Universal-Variability-Language (UVL)
+
+For comprehensive guidance on utilizing UVL, please refer to the following publication:
+
+[![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.jss.2024.112326-blue)](https://doi.org/10.1016/j.jss.2024.112326)
+
+🔗 **Sample UVL models** are available at: https://github.com/Universal-Variability-Language/uvl-models
+
 ---
 
 ## 📚 Resources
 
 **UVL Models & Tools**
+
 - https://github.com/Universal-Variability-Language/uvl-models
 - https://www.uvlhub.io/
 
 **Tooling Ecosystem**
+
 - https://github.com/FeatureIDE/FeatureIDE
 - https://ide.flamapy.org/
 - https://github.com/Universal-Variability-Language/uvl-lsp
@@ -192,6 +177,7 @@ If you use UVL in your research, please cite:
   keywords  = {Feature model, Software product lines, Variability}
 }
 ```
+
 ---
 
 ## 📬 Contact & Contributions
