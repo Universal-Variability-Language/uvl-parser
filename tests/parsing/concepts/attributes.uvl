@@ -1,5 +1,0 @@
-features
-    A
-        optional
-            B {Fun 'yes', Name 'B', Package {Name 'P', Content 'Even more fun'}, Price 5}
-            C {Fun 'maybe', Name 'C'}
