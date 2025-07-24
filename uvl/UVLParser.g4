@@ -85,22 +85,32 @@ expression:
 	| expression DIV expression			# DivExpression;
 
 aggregateFunction:
-	SUM_KEY OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN
-	| AVG_KEY OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN
-	| stringAggregateFunction
-	| numericAggregateFunction;
+	sumAggregateFunction 		# SumAggregateFunctionExpression
+	| avgAggregateFunction 		# AvgAggregateFunctionExpression
+	| stringAggregateFunction	# StringAggregateFunctionExpression
+	| numericAggregateFunction  # NumericAggregateFunctionExpression
+	;
+
+sumAggregateFunction:
+	SUM_KEY OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN;
+
+
+avgAggregateFunction:
+	AVG_KEY OPEN_PAREN (reference COMMA)? reference CLOSE_PAREN;
 
 stringAggregateFunction:
-	LEN_KEY OPEN_PAREN reference CLOSE_PAREN;
+	LEN_KEY OPEN_PAREN reference CLOSE_PAREN # LengthAggregateFunction
+	;
 
 numericAggregateFunction:
-	FLOOR_KEY OPEN_PAREN reference CLOSE_PAREN
-	| CEIL_KEY OPEN_PAREN reference CLOSE_PAREN;
+	FLOOR_KEY OPEN_PAREN reference CLOSE_PAREN # FloorAggregateFunction
+	| CEIL_KEY OPEN_PAREN reference CLOSE_PAREN # CeilAggregateFunction
+	;
 
 reference: (id DOT)* id;
 id: ID_STRICT | ID_NOT_STRICT;
 
-featureType: STRING_KEY | INCLUDE_KEY | BOOLEAN_KEY | REAL_KEY;
+featureType: STRING_KEY | INTEGER_KEY | BOOLEAN_KEY | REAL_KEY;
 
 languageLevel: majorLevel (DOT (minorLevel | MUL))?;
 

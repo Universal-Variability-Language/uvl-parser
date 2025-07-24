@@ -70,7 +70,7 @@ DOT: '.';
 ID_NOT_STRICT: '"' ~[\r\n".]+ '"';
 ID_STRICT: [a-zA-Z]([a-zA-Z0-9_#§%?\\'äüöß;])*;
 
-STRING: '\'' ~[\r\n'.]+ '\'';
+STRING: '\'' ~[\r\n']+ '\'';
 
 SKIP_: ( SPACES | COMMENT) -> skip;
 
