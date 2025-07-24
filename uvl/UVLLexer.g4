@@ -19,12 +19,12 @@ SUM_KEY: 'sum';
 AVG_KEY: 'avg';
 FLOOR_KEY: 'floor';
 CEIL_KEY: 'ceil';
-TYPE_KEY: 'type';
-ARITHMETIC_KEY: 'arithmetic';
+TYPE_KEY: 'Type';
+ARITHMETIC_KEY: 'Arithmetic';
 GROUP_CARDINALITY_KEY: 'group-cardinality';
 FEATURE_CARDINALITY_KEY: 'feature-cardinality';
 AGGREGATE_KEY: 'aggregate-function';
-STRING_CONSTRAINT_KEY: 'string-constraint';
+STRING_CONSTRAINTS_KEY: 'string-constraints';
 
 ORGROUP: 'or';
 ALTERNATIVE: 'alternative';
