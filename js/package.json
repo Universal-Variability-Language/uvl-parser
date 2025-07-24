@@ -4,7 +4,7 @@
   "type": "module",
   "version": "0.0.3",
   "scripts": {
-    "build-grammar": "antlr4 -Dlanguage=JavaScript -o src/lib -Xexact-output-dir ../uvl/UVLJavaScript.g4",
+    "build-grammar": "antlr4 -lib ../uvl/ -Dlanguage=JavaScript -o ./src/lib ../uvl/JavaScript/UVLJavaScriptLexer.g4 ../uvl/JavaScript/UVLJavaScriptParser.g4",
     "lint": "eslint src --ignore-pattern src/lib/*",
     "test": "vitest"
   },
@@ -16,7 +16,7 @@
     "vitest": "^2.0.4"
   },
   "dependencies": {
-    "antlr4": "4.12.0"
+    "antlr4": "4.13.2"
   },
   "author": {
     "name": "Maria Isabel Limaylla",
