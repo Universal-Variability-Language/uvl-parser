@@ -93,7 +93,7 @@ NEWLINE: (
      int next = _input.LA(1);
      int nextNext = _input.LA(1);
 
-     if (opened > 0 || next == '\r' || next == '\n' || next == '/' && nextNext == '/') {
+     if (opened > 0 || next == '\r' || next == '\n' || (next == '/' && nextNext == '/')) {
        skip();
      } else {
        emit(commonToken(UVLJavaParser.NEWLINE, newLine));
