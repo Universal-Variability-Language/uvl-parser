@@ -110,7 +110,7 @@ NEWLINE: (
      String newLine = getText().replaceAll("[^\r\n]+", "");
      String spaces = getText().replaceAll("[\r\n]+", "");
      int next = _input.LA(1);
-     int nextNext = _input.LA(1);
+     int nextNext = _input.LA(2);
 
      if (opened > 0 || next == '\r' || next == '\n' || (next == '/' && nextNext == '/')) {
        // If we're inside a list or on a blank line, ignore all indents,
