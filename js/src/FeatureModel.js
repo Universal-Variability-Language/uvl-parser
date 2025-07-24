@@ -5,8 +5,6 @@ import ErrorListener from "./errors/ErrorListener.js";
 import antlr4 from 'antlr4';
 import fs from 'fs';
 
-export { UVLJavaScriptParser };
-
 export default class FeatureModel {
 
   constructor(param) {
