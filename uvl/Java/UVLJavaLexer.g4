@@ -1,9 +1,12 @@
-grammar UVLJava;
-import UVLBase;
+lexer grammar UVLJavaLexer;
+
+import UVLLexer;
+
 @header {
 package uvl;
 }
-@lexer::members {
+
+@members {
   // A queue where extra tokens are pushed on (see the NEWLINE lexer rule).
   private java.util.LinkedList<Token> tokens = new java.util.LinkedList<>();
   // The stack that keeps track of the indentation level.
@@ -12,6 +15,7 @@ package uvl;
   private int opened = 0;
   // The most recently produced token.
   private Token lastToken = null;
+
   @Override
   public void emit(Token t) {
     super.setToken(t);
@@ -28,22 +32,18 @@ package uvl;
           tokens.remove(i);
         }
       }
-
       // First emit an extra line break that serves as the end of the statement.
       this.emit(commonToken(UVLJavaParser.NEWLINE, "\n"));
-
       // Now emit as much DEDENT tokens as needed.
       while (!indents.isEmpty()) {
         this.emit(createDedent());
         indents.pop();
       }
-
       // Put the EOF back on the token stream.
       this.emit(commonToken(UVLJavaParser.EOF, "<EOF>"));
     }
 
     Token next = super.nextToken();
-
     if (next.getChannel() == Token.DEFAULT_CHANNEL) {
       // Keep track of the last token on the default channel.
       this.lastToken = next;
@@ -80,51 +80,48 @@ package uvl;
           count += 8 - (count % 8);
           break;
         default:
-          // A normal space char.
+        // A normal space char.
           count++;
       }
     }
-
     return count;
   }
 
   boolean atStartOfInput() {
     return super.getCharPositionInLine() == 0 && super.getLine() == 1;
   }
-
 }
 
-OPEN_PAREN : '(' {this.opened += 1;};
-CLOSE_PAREN : ')' {this.opened -= 1;};
-OPEN_BRACK : '[' {this.opened += 1;};
-CLOSE_BRACK : ']' {this.opened -= 1;};
-OPEN_BRACE : '{' {this.opened += 1;};
-CLOSE_BRACE : '}' {this.opened -= 1;};
+// Indentation-sensitive tokens
+OPEN_PAREN: '(' {this.opened += 1;};
+CLOSE_PAREN: ')' {this.opened -= 1;};
+OPEN_BRACK: '[' {this.opened += 1;};
+CLOSE_BRACK: ']' {this.opened -= 1;};
+OPEN_BRACE: '{' {this.opened += 1;};
+CLOSE_BRACE: '}' {this.opened -= 1;};
 OPEN_COMMENT: '/*' {this.opened += 1;};
 CLOSE_COMMENT: '*/' {this.opened -= 1;};
 
-
-//This is here because the way python manage tabs and new lines
-NEWLINE
- : ( {atStartOfInput()}?   SPACES
-   | ( '\r'? '\n' | '\r' ) SPACES?
-   )
-   {
+// Indentation-sensitive NEWLINE rule
+NEWLINE: (
+		{atStartOfInput()}? SPACES
+		| ( '\r'? '\n' | '\r') SPACES?
+	) {
      String newLine = getText().replaceAll("[^\r\n]+", "");
      String spaces = getText().replaceAll("[\r\n]+", "");
      int next = _input.LA(1);
-     int nextNext = _input.LA(1);
+     int nextNext = _input.LA(2);
 
-     if (opened > 0 || next == '\r' || next == '\n' || next == '/' && nextNext == '/') {
+     if (opened > 0 || next == '\r' || next == '\n' || (next == '/' && nextNext == '/')) {
        // If we're inside a list or on a blank line, ignore all indents,
        // dedents and line breaks.
        skip();
      } else {
-       emit(commonToken(NEWLINE, newLine));
+       emit(commonToken(UVLJavaParser.NEWLINE, newLine));
        int indent = getIndentationCount(spaces);
        int previous = indents.isEmpty() ? 0 : indents.peek();
        if (indent == previous) {
-         // skip indents of the same size as the present indent-size
+          // skip indents of the same size as the present indent-size
          skip();
        }
        else if (indent > previous) {
@@ -139,5 +136,7 @@ NEWLINE
          }
        }
      }
-   }
- ;
+   };
+
+// Fragment used by NEWLINE
+fragment SPACES: [ \t]+;
