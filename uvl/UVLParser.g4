@@ -44,7 +44,7 @@ value: BOOLEAN | FLOAT | INTEGER | STRING | attributes | vector;
 vector: OPEN_BRACK (value (COMMA value)*)? CLOSE_BRACK;
 
 constraintAttribute:
-	CONSTRAINTS_KEY constraint			# SingleConstraintAttribute
+	CONSTRAINT_KEY constraint			# SingleConstraintAttribute
 	| CONSTRAINTS_KEY constraintList	# ListConstraintAttribute;
 constraintList:
 	OPEN_BRACK (constraint (COMMA constraint)*)? CLOSE_BRACK;
