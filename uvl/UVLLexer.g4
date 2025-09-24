@@ -8,6 +8,7 @@ FEATURES_KEY: 'features';
 IMPORTS_KEY: 'imports';
 NAMESPACE_KEY: 'namespace';
 AS_KEY: 'as';
+CONSTRAINT_KEY: 'constraint';
 CONSTRAINTS_KEY: 'constraints';
 CARDINALITY_KEY: 'cardinality';
 STRING_KEY: 'String';
@@ -60,17 +61,17 @@ CLOSE_BRACE: '}';
 OPEN_COMMENT: '/*';
 CLOSE_COMMENT: '*/';
 
-FLOAT: '-'? [0-9]* [.][0-9]+;
-INTEGER: '0' | '-'? [1-9][0-9]*;
+FLOAT: '-'?[0-9]*[.][0-9]+;
+INTEGER: '0' | '-'?[1-9][0-9]*;
 BOOLEAN: 'true' | 'false';
 
 COMMA: ',';
 DOT: '.';
 
-ID_NOT_STRICT: '"' ~[\r\n".]+ '"';
+ID_NOT_STRICT: '"'~[\r\n".]+'"';
 ID_STRICT: [a-zA-Z]([a-zA-Z0-9_#§%?\\'äüöß;])*;
 
-STRING: '\'' ~[\r\n']+ '\'';
+STRING: '\''~[\r\n'.]+'\'';
 
 SKIP_: ( SPACES | COMMENT) -> skip;
 
