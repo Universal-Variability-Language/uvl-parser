@@ -1,7 +1,9 @@
 name: Build and Deploy Python Parser
 
 on:
-  push
+  push:
+    branches: [develop]
+    tags: ['v*']
 
 jobs:
   build:
@@ -9,17 +11,33 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Install ANTLR4 and Python dependencies
       run: |
-        # Add installation steps for ANTLR4 here
         sudo apt-get update
         sudo apt-get install -y python3 python3-pip
         make dev
 
     - name: Generate and Build Python Code
       run: make python_parser
+
+    - name: Set dev version (develop branch)
+      if: github.ref == 'refs/heads/develop'
+      run: |
+        cd python
+        BASE_VERSION=$(grep -oP 'version="\K[0-9]+\.[0-9]+\.[0-9]+' setup.py)
+        DEV_VERSION="${BASE_VERSION}.dev${GITHUB_RUN_NUMBER}"
+        sed -i "s/version=\"[^\"]*\"/version=\"${DEV_VERSION}\"/" setup.py
+        echo "Publishing version: ${DEV_VERSION}"
+
+    - name: Set release version (tag)
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        cd python
+        TAG_VERSION=${GITHUB_REF_NAME#v}
+        sed -i "s/version=\"[^\"]*\"/version=\"${TAG_VERSION}\"/" setup.py
+        echo "Publishing version: ${TAG_VERSION}"
 
     - name: Build and publish python package
       env:

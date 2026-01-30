@@ -1,7 +1,9 @@
 name: Build and Deploy JS Parser
 
 on:
-  push
+  push:
+    branches: [develop]
+    tags: ['v*']
 
 jobs:
   build:
@@ -9,14 +11,14 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Setup Node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
-          node-version: 19
-          registry-url: https://registry.npmjs.org/
-    
+        node-version: 20
+        registry-url: https://registry.npmjs.org/
+
     - name: Install ANTLR4
       run: |
         make dev
@@ -25,7 +27,23 @@ jobs:
     - name: Generate and Build Node Code
       run: cd js && npm install && npm run build-grammar
 
-    - name: Publish npm package
-      run: cd js && npm publish --access public
+    - name: Set dev version and publish (develop branch)
+      if: github.ref == 'refs/heads/develop'
+      run: |
+        cd js
+        npm version --no-git-tag-version "$(node -p "require('./package.json').version")-dev.${GITHUB_RUN_NUMBER}"
+        echo "Publishing version: $(node -p "require('./package.json').version")"
+        npm publish --tag dev --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+    - name: Set release version and publish (tag)
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        cd js
+        TAG_VERSION=${GITHUB_REF_NAME#v}
+        npm version --no-git-tag-version "${TAG_VERSION}"
+        echo "Publishing version: ${TAG_VERSION}"
+        npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
