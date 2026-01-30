@@ -18,15 +18,14 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '21'
+        server-id: central
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
     - name: Install ANTLR4
       run: make dev
-
-    - name: Import GPG key
-      uses: crazy-max/ghaction-import-gpg@v6
-      with:
-        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-        passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
     - name: Set SNAPSHOT version (develop branch)
       if: github.ref == 'refs/heads/develop'
@@ -52,18 +51,9 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
 
-    - name: Deploy SNAPSHOT to OSSRH (develop branch)
-      if: github.ref == 'refs/heads/develop'
-      run: cd java && mvn clean deploy --settings ../.github/settings.xml
+    - name: Deploy to Central Portal
+      run: cd java && mvn clean deploy -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
       env:
-        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-    - name: Deploy Release to Maven Central (tag)
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: cd java && mvn clean deploy --settings ../.github/settings.xml
-      env:
-        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
