@@ -24,6 +24,12 @@ jobs:
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
         gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
+    - name: Configure GPG for batch mode
+      run: |
+        echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+        gpgconf --kill gpg-agent
+
     - name: Install ANTLR4
       run: make dev
 
@@ -52,7 +58,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
 
     - name: Deploy to Central Portal
-      run: cd java && mvn clean deploy -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+      run: cd java && mvn clean deploy
       env:
         MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
