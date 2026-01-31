@@ -30,6 +30,14 @@ jobs:
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         gpgconf --kill gpg-agent
 
+    - name: Verify GPG key
+      run: |
+        gpg --list-secret-keys
+        echo "Testing GPG signing..."
+        echo "test" | gpg --batch --pinentry-mode loopback --passphrase "$MAVEN_GPG_PASSPHRASE" --clearsign > /dev/null && echo "GPG signing works!"
+      env:
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
     - name: Install ANTLR4
       run: make dev
 
