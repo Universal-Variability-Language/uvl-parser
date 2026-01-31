@@ -2,7 +2,7 @@ name: Build and Deploy Java Parser
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, main]
     tags: ['v*']
 
 jobs:
@@ -48,6 +48,13 @@ jobs:
         BASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
         mvn versions:set -DnewVersion="${BASE_VERSION}-SNAPSHOT" -DgenerateBackupPoms=false
 
+    - name: Set release version (main branch)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        cd java
+        BASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
+        mvn versions:set -DnewVersion="${BASE_VERSION}" -DgenerateBackupPoms=false
+
     - name: Set release version (tag)
       if: startsWith(github.ref, 'refs/tags/v')
       run: |
@@ -74,7 +81,7 @@ jobs:
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
     - name: Deploy Release to Central Portal
-      if: startsWith(github.ref, 'refs/tags/v')
+      if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
       run: cd java && mvn clean deploy
       env:
         MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}

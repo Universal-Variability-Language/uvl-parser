@@ -2,7 +2,7 @@ name: Build and Deploy Python Parser
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, main]
     tags: ['v*']
 
 jobs:
@@ -30,6 +30,13 @@ jobs:
         DEV_VERSION="${BASE_VERSION}.dev${GITHUB_RUN_NUMBER}"
         sed -i "s/version=\"[^\"]*\"/version=\"${DEV_VERSION}\"/" setup.py
         echo "Publishing version: ${DEV_VERSION}"
+
+    - name: Set release version (main branch)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        cd python
+        BASE_VERSION=$(grep -oP 'version="\K[0-9]+\.[0-9]+\.[0-9]+' setup.py)
+        echo "Publishing version: ${BASE_VERSION}"
 
     - name: Set release version (tag)
       if: startsWith(github.ref, 'refs/tags/v')
