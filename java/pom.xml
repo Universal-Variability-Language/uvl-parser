@@ -60,6 +60,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <skipCentralPublishing>false</skipCentralPublishing>
     </properties>
 
     <dependencies>
@@ -171,6 +172,7 @@
                     <publishingServerId>central</publishingServerId>
                     <tokenAuth>true</tokenAuth>
                     <autoPublish>true</autoPublish>
+                    <skipPublishing>${skipCentralPublishing}</skipPublishing>
                 </configuration>
             </plugin>
 
