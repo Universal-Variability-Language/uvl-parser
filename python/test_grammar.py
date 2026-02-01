@@ -6,6 +6,12 @@ from main import get_tree
 
 TEST_MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "test_models")
 
+# Files that are misplaced in test_models/ but actually test invalid syntax
+# (dotinfeaturename.uvl has comment "should be illegal" - dots not allowed in quoted IDs)
+MISPLACED_INVALID_FILES = {
+    "lexing/dotinfeaturename.uvl",
+}
+
 # Semantic errors that the parser cannot detect (only syntax errors are caught)
 SEMANTIC_ERROR_FILES = {
     "missingreference.uvl",
@@ -14,19 +20,20 @@ SEMANTIC_ERROR_FILES = {
 }
 
 
+def relative_path(file):
+    return os.path.relpath(file, TEST_MODELS_DIR)
+
+
 def get_valid_files():
     all_files = glob.glob(os.path.join(TEST_MODELS_DIR, "**", "*.uvl"), recursive=True)
-    return [f for f in all_files if os.sep + "faulty" + os.sep not in f]
+    valid = [f for f in all_files if os.sep + "faulty" + os.sep not in f]
+    return [f for f in valid if relative_path(f) not in MISPLACED_INVALID_FILES]
 
 
 def get_faulty_syntax_files():
     """Only return files with syntax errors (not semantic errors)."""
     all_faulty = glob.glob(os.path.join(TEST_MODELS_DIR, "faulty", "*.uvl"))
     return [f for f in all_faulty if os.path.basename(f) not in SEMANTIC_ERROR_FILES]
-
-
-def relative_path(file):
-    return os.path.relpath(file, TEST_MODELS_DIR)
 
 
 @pytest.mark.parametrize("uvl_file", get_valid_files(), ids=relative_path)

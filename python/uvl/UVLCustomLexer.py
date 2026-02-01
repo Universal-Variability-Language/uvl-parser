@@ -76,7 +76,7 @@ class UVLCustomLexer(UVLPythonLexer):
       next_code = self._input.LA(1)
       next_char = chr(next_code) if next_code != -1 else ''
 
-      if self.opened > 0 or next_char == '\r' or next_char == '\n' or next_char == '\f' or next_char == '#':
+      if self.opened > 0 or next_char in '\r\n\f' or next_char == '/' or next_char == '#':
         self.skip()
       else:
         self.emitToken(self.common_token(self.NEWLINE, new_line))
