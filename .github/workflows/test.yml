@@ -57,7 +57,7 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run tests
-        run: pytest test_grammar.py -v
+        run: PYTHONPATH=. pytest test_grammar.py -v
 
   test-java:
     runs-on: ubuntu-latest
