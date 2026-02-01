@@ -23,7 +23,7 @@ jobs:
         run: cd .. && make dev
 
       - name: Build grammar
-        run: npm run build-grammar
+        run: cd .. && make js_parser
 
       - name: Install dependencies
         run: npm install
