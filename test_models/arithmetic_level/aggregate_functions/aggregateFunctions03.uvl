@@ -1,0 +1,10 @@
+features
+    A {Price 2}
+        optional
+            B {Price 2}
+            C {Price 5}
+            D {Price 10.5}
+
+constraints
+    sum(Price, A) == 19.5
+    avg(Price, A) == 6.5

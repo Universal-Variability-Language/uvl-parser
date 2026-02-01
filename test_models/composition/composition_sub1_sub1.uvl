@@ -1,0 +1,11 @@
+features
+	Intel
+		mandatory
+			feature1 {power 10}
+			feature2 {power 15}
+				alternative
+					feature3
+					feature4
+
+constraints
+	feature1 & feature2 <=> (feature1 | feature2) & feature4

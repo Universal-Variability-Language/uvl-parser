@@ -1,0 +1,19 @@
+features
+    A
+        or
+            B {Price 3.25, Fun 8}
+            C {Price 7.50, Fun 1}
+            D {Price 2.00, Fun 5}
+                mandatory
+                    E {Price 1.00, Fun 10}
+                optional
+                    F {Price 0.50, Fun 2}
+                    G {Price 4.00, Fun 4}
+constraints
+    B.Price + C.Price < 10.00
+    B.Price * B.Fun > 20
+    E.Fun / B.Price <= 2.00
+    F.Price - C.Price == 7.00
+    E.Fun + F.Fun + B.Fun >= 15
+    D => (E.Fun + G.Fun) > 12
+    C.Fun != 0

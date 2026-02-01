@@ -1,0 +1,14 @@
+imports
+	Topping as top
+	Dough
+	submodels.Size as Size
+features
+	Pizza {abstract}	
+		mandatory
+			top.Topping
+			Size.Size
+			Dough.Dough
+		optional
+			CheesyCrust
+constraints
+	CheesyCrust => Size.Big

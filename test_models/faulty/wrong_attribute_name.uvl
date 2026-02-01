@@ -1,0 +1,12 @@
+imports
+  nested."string-attributes-external" as external
+
+features
+    A
+        optional
+            B {Fun 'Yes. This is  a Test', Name 'B // Cxn I do a comment in here?', Package {Name 'P', Content 'Even more fun'}, Price 5}
+            C {Fun 'maybe', Name 'C'}
+            D {Fun 'This is a test with a newline in the string', Name 'D'}
+            external.E
+            F {Fun 'This string external.G See?', Name 'F'}
+            G {Fun 'Another.test.with.multiple.dots', Name 'G'}

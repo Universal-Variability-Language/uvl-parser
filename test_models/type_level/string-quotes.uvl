@@ -1,0 +1,15 @@
+features
+    Icecream
+        mandatory
+            Container {Price 5.00}
+                alternative
+                    Cup {Price 6.00}
+                    Cone 
+                    Stick {doc 'A stick ice cream'}
+        optional
+            String "Customer name"
+            Integer "N Scoops"
+constraints
+    "Customer name" == 'Josemi' | "Customer name" == 'Jose Miguel'
+    sum("N Scoops") <= 3
+    sum(Price, Container) <= 11.00

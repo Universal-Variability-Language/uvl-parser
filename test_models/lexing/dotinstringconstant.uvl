@@ -1,0 +1,7 @@
+features
+    A {attribute 'This should be allowed. and this ...'} // Failed in previous version
+        optional
+            String B
+
+constraints
+    B == 'This also...'

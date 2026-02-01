@@ -1,0 +1,820 @@
+features
+        Boolean "Feature-0"
+                alternative
+                        Boolean "Feature-1" {Price 740, Fun -38}
+                                [1..1]
+                                        Boolean "Feature-18"
+                                                [3..3]
+                                                        Boolean "Feature-26" {Price 979}
+                                                                mandatory
+                                                                        Boolean "Feature-32"
+                                                                                alternative
+                                                                                        Boolean "Feature-101" {Price 308}
+                                                                                        Boolean "Feature-168" {Price 895}
+                                                                                        Boolean "Feature-229"
+                                                                        String "Feature-44"
+                                                                                [1..1]
+                                                                                        Real "Feature-60" cardinality [1..5]
+                                                                                        Boolean "Feature-129" cardinality [1..5] {Price 572}
+                                                                                        Boolean "Feature-176" {Price 756}
+                                                                                        Boolean "Feature-253"
+                                                                        Boolean "Feature-54" {Price 809}
+                                                                                mandatory
+                                                                                        Boolean "Feature-327" {Price 851}
+                                                                                        String "Feature-352"
+                                                                                        Boolean "Feature-411" cardinality [1..5]
+                                                                        Boolean "Feature-64"
+                                                                                alternative
+                                                                                        String "Feature-84"
+                                                                                        Boolean "Feature-196" {Fun 0}
+                                                                                        Integer "Feature-316"
+                                                                                        Integer "Feature-513" {Price 92}
+                                                                        Boolean "Feature-72" {Price 329}
+                                                                                mandatory
+                                                                                        String "Feature-126"
+                                                                                        Boolean "Feature-138" {Price 743, Fun 11}
+                                                                                        Boolean "Feature-193"
+                                                                                        Boolean "Feature-296" cardinality [1..5] {Price 245}
+                                                                        String "Feature-369"
+                                                                                or
+                                                                                        Boolean "Feature-460"
+                                                        Integer "Feature-69"
+                                                                or
+                                                                        Real "Feature-115"
+                                                                                alternative
+                                                                                        Boolean "Feature-163" {Price 236}
+                                                                                        Integer "Feature-212" {Price 990, Fun -25}
+                                                                                        Boolean "Feature-310" cardinality [1..5] {Price 549}
+                                                                                        Integer "Feature-324" {Price 866}
+                                                                                        Boolean "Feature-336" {Price 144}
+                                                                                        Boolean "Feature-379" {Price 921}
+                                                                        Boolean "Feature-262" {Price 708}
+                                                                                alternative
+                                                                                        Boolean "Feature-337" {Price 546}
+                                                                        Boolean "Feature-361" {Price 719}
+                                                                        String "Feature-514" {Price 720}
+                                                        Boolean "Feature-231" cardinality [1..5] {Price 375}
+                                                                alternative
+                                                                        Boolean "Feature-254"
+                                                                                mandatory
+                                                                                        Boolean "Feature-403" cardinality [1..5]
+                                                                                        Boolean "Feature-437" cardinality [1..5]
+                                                                                        Boolean "Feature-438"
+                                                                        Boolean "Feature-292"
+                                                                        Boolean "Feature-326"
+                                                                        Integer "Feature-389" {Price 732}
+                                                                        Integer "Feature-402"
+                                                                        Boolean "Feature-457"
+                                                        Integer "Feature-287" {Fun 58}
+                                                        Integer "Feature-314"
+                                        String "Feature-155" cardinality [1..5] {Price 69}
+                                                mandatory
+                                                        Boolean "Feature-318" {Fun 85}
+                                                                or
+                                                                        Integer "Feature-359" {Price 84}
+                                                                        Boolean "Feature-367"
+                                                                                alternative
+                                                                                        Integer "Feature-506" cardinality [1..5]
+                                                                                        Boolean "Feature-547"
+                                                                        Boolean "Feature-512" {Price 933}
+                                        Integer "Feature-218"
+                                                [2..2]
+                                                        Integer "Feature-245" cardinality [1..5] {Price 371, Fun 85}
+                                                                mandatory
+                                                                        Boolean "Feature-474" cardinality [1..5]
+                                                                                alternative
+                                                                                        Integer "Feature-523"
+                                                                        Boolean "Feature-505"
+                                                                        Boolean "Feature-530"
+                                                        Boolean "Feature-270"
+                                                                or
+                                                                        Boolean "Feature-412"
+                                                        Integer "Feature-288" cardinality [1..5] {Price 196}
+                                                        Boolean "Feature-541"
+                                        Boolean "Feature-429"
+                        Boolean "Feature-2"
+                                or
+                                        Boolean "Feature-4"
+                                                alternative
+                                                        Boolean "Feature-6"
+                                                                [2..4]
+                                                                        Boolean "Feature-10" cardinality [1..5] {Price 620}
+                                                                                [0..3]
+                                                                                        Boolean "Feature-48" cardinality [1..5] {Price 64}
+                                                                                        String "Feature-49" cardinality [1..5] {Price 721}
+                                                                                        Boolean "Feature-113"
+                                                                        Boolean "Feature-11"
+                                                                                alternative
+                                                                                        Integer "Feature-33"
+                                                                                        Boolean "Feature-71" {Price 103}
+                                                                                        Boolean "Feature-180" {Price 610}
+                                                                                        Boolean "Feature-342" {Price 282}
+                                                                                        Integer "Feature-426" cardinality [1..5] {Price 257}
+                                                                        Boolean "Feature-20"
+                                                                                mandatory
+                                                                                        Boolean "Feature-47" {Price 852}
+                                                                                        Boolean "Feature-52"
+                                                                                        Boolean "Feature-99" cardinality [1..5]
+                                                                                        Boolean "Feature-137" {Price 550}
+                                                                                        Boolean "Feature-161" {Price 110}
+                                                                                        Boolean "Feature-178" {Price 347}
+                                                                                        Boolean "Feature-366" {Price 188, Fun -8}
+                                                                                        Real "Feature-507"
+                                                                        Boolean "Feature-27" {Price 987}
+                                                                                [0..1]
+                                                                                        Boolean "Feature-59"
+                                                                                        Boolean "Feature-77" {Price 491}
+                                                                                        Boolean "Feature-93"
+                                                                                        Integer "Feature-156"
+                                                                                        Integer "Feature-434"
+                                                                        Boolean "Feature-70"
+                                                                                alternative
+                                                                                        Integer "Feature-225" {Price 828, Fun 62}
+                                                                        Boolean "Feature-133" {Price 856}
+                                                                                alternative
+                                                                                        Boolean "Feature-224"
+                                                                                        Boolean "Feature-364" {Price 880}
+                                                                                        Boolean "Feature-445" cardinality [1..5] {Price 141}
+                                                                        Boolean "Feature-144" cardinality [1..5]
+                                                                                mandatory
+                                                                                        Boolean "Feature-153" {Price 443}
+                                                                                        Boolean "Feature-432"
+                                                                                        Boolean "Feature-454" cardinality [1..5]
+                                                                        Boolean "Feature-173" {Price 149}
+                                                                                optional
+                                                                                        Boolean "Feature-319" {Price 325}
+                                                        Integer "Feature-19"
+                                                                or
+                                                                        Real "Feature-24"
+                                                                                or
+                                                                                        Boolean "Feature-255" {Price 994}
+                                                                        Boolean "Feature-58"
+                                                                                optional
+                                                                                        Boolean "Feature-92" {Price 927, Fun -1}
+                                                                                        Integer "Feature-263" {Price 331}
+                                                                                        Boolean "Feature-273"
+                                                                                        Boolean "Feature-298" {Price 30}
+                                                                                        Boolean "Feature-362" {Fun 67}
+                                                                                        Real "Feature-394" {Price 682}
+                                                                                        Boolean "Feature-433"
+                                                                        Boolean "Feature-104" {Fun -13}
+                                                                                [0..2]
+                                                                                        Boolean "Feature-107" {Price 22}
+                                                                                        Integer "Feature-241" {Price 559}
+                                                                        Boolean "Feature-192" {Fun -19}
+                                                                                [0..3]
+                                                                                        Boolean "Feature-237"
+                                                                                        Boolean "Feature-527"
+                                                                                        Boolean "Feature-537" {Price 572, Fun -100}
+                                                                        Boolean "Feature-247" cardinality [1..5] {Price 986, Fun 1}
+                                                                                or
+                                                                                        Integer "Feature-401" {Price 210}
+                                                                                        Integer "Feature-413"
+                                                                                        Integer "Feature-488"
+                                                                        Boolean "Feature-271" cardinality [1..5] {Price 673}
+                                                                        Integer "Feature-400"
+                                                        String "Feature-159" cardinality [1..5] {Price 41, Fun 80}
+                                                                mandatory
+                                                                        Boolean "Feature-350"
+                                                                                [0..1]
+                                                                                        Boolean "Feature-450"
+                                                                        Integer "Feature-549" {Price 421}
+                                                        Boolean "Feature-214" {Price 725}
+                                                                mandatory
+                                                                        Boolean "Feature-504"
+                                                        Integer "Feature-508" {Price 17}
+                                        Boolean "Feature-5"
+                                                alternative
+                                                        Boolean "Feature-8" {Price 659}
+                                                                mandatory
+                                                                        Integer "Feature-16" {Price 165}
+                                                                                optional
+                                                                                        Real "Feature-40" {Price 461}
+                                                                                        Boolean "Feature-45" {Price 902}
+                                                                                        Boolean "Feature-51" {Fun -90}
+                                                                                        String "Feature-81" {Price 45}
+                                                                                        Boolean "Feature-280"
+                                                                                        Boolean "Feature-354" {Price 123}
+                                                                        Boolean "Feature-105" {Price 362}
+                                                                                alternative
+                                                                                        Boolean "Feature-386" {Fun 13}
+                                                                                        Boolean "Feature-492" {Price 286}
+                                                                                        Real "Feature-520" {Price 643}
+                                                                        Boolean "Feature-351" cardinality [1..5]
+                                                                                [0..1]
+                                                                                        Boolean "Feature-515"
+                                                                        Boolean "Feature-528" {Price 776, Fun 52}
+                                                        Boolean "Feature-14" {Price 578, Fun -31}
+                                                                alternative
+                                                                        String "Feature-29" {Price 850}
+                                                                                [2..2]
+                                                                                        Boolean "Feature-53" {Price 167, Fun 67}
+                                                                                        Boolean "Feature-132" cardinality [1..5]
+                                                                                        Boolean "Feature-209" {Price 178}
+                                                                        Boolean "Feature-43" cardinality [1..5] {Price 469}
+                                                                                [2..2]
+                                                                                        Boolean "Feature-82" {Price 67, Fun 59}
+                                                                                        Boolean "Feature-89"
+                                                                                        Integer "Feature-121"
+                                                                                        Boolean "Feature-131"
+                                                                                        Real "Feature-205" {Price 560, Fun -28}
+                                                                        String "Feature-87"
+                                                                                alternative
+                                                                                        Boolean "Feature-293" cardinality [1..5] {Price 556}
+                                                                                        Boolean "Feature-397" {Price 472}
+                                                                                        Boolean "Feature-524" {Price 469}
+                                                                        Boolean "Feature-97" {Price 440}
+                                                                        Boolean "Feature-167"
+                                                                                mandatory
+                                                                                        Boolean "Feature-331" {Price 617}
+                                                                                        Integer "Feature-395"
+                                                                                        Boolean "Feature-430"
+                                                                        Boolean "Feature-194" {Fun 49}
+                                                                                mandatory
+                                                                                        Integer "Feature-278"
+                                                                        Real "Feature-494" {Price 110}
+                                        Boolean "Feature-56" {Fun 36}
+                                                mandatory
+                                                        Boolean "Feature-90" {Price 623}
+                                                                [0..2]
+                                                                        Integer "Feature-171" {Fun 80}
+                                                                                or
+                                                                                        Boolean "Feature-172"
+                                                                                        Boolean "Feature-199" {Price 503}
+                                                                        Boolean "Feature-294" {Price 286}
+                                                                                mandatory
+                                                                                        Boolean "Feature-325" cardinality [1..5]
+                                                                        Real "Feature-358" {Price 980, Fun -15}
+                                                                        Boolean "Feature-525"
+                                                        Integer "Feature-147"
+                                                        Boolean "Feature-201" {Price 181}
+                                                                alternative
+                                                                        Boolean "Feature-436" {Price 341}
+                                                                        Integer "Feature-509"
+                                                        Boolean "Feature-275"
+                                                                or
+                                                                        Boolean "Feature-496" {Price 989}
+                                                        Boolean "Feature-373"
+                                                                alternative
+                                                                        Integer "Feature-519"
+                                                        Boolean "Feature-390" {Price 832, Fun 66}
+                                        Integer "Feature-98"
+                                                mandatory
+                                                        Boolean "Feature-117"
+                                                                alternative
+                                                                        Boolean "Feature-135"
+                                                                                alternative
+                                                                                        Boolean "Feature-177"
+                                                                                        Boolean "Feature-191" {Price 137}
+                                                                        Boolean "Feature-211" {Fun 22}
+                                                        Integer "Feature-184"
+                                                        Boolean "Feature-489"
+                                        Boolean "Feature-187" {Price 65}
+                                                or
+                                                        Integer "Feature-453" cardinality [1..5]
+                                                        Boolean "Feature-497" {Fun -36}
+                                                                or
+                                                                        Boolean "Feature-502" {Price 650}
+                                                                        Boolean "Feature-538" cardinality [1..5] {Price 376}
+                                        Boolean "Feature-228" {Price 458}
+                                                [0..1]
+                                                        Integer "Feature-252" cardinality [1..5]
+                                        Boolean "Feature-380" cardinality [1..5]
+                                                alternative
+                                                        Boolean "Feature-455"
+                                                        Boolean "Feature-462" cardinality [1..5]
+                                                        Real "Feature-518"
+                                        Boolean "Feature-452" cardinality [1..5] {Price 360}
+                        Boolean "Feature-3" cardinality [1..5] {Price 756}
+                                alternative
+                                        Boolean "Feature-21"
+                                                [0..5]
+                                                        Real "Feature-78" cardinality [1..5] {Price 320}
+                                                                alternative
+                                                                        Integer "Feature-88"
+                                                                                alternative
+                                                                                        Integer "Feature-233" {Price 548}
+                                                                                        Boolean "Feature-238"
+                                                                                        Boolean "Feature-250" cardinality [1..5] {Price 51, Fun 57}
+                                                                                        Integer "Feature-393"
+                                                                                        Boolean "Feature-486" {Price 568}
+                                                                        Boolean "Feature-471" {Price 648}
+                                                                        Integer "Feature-472"
+                                                                                alternative
+                                                                                        Boolean "Feature-539" {Price 656}
+                                                        Integer "Feature-119"
+                                                                optional
+                                                                        Boolean "Feature-227"
+                                                                                alternative
+                                                                                        Boolean "Feature-365" {Price 987}
+                                                        Boolean "Feature-276"
+                                                                mandatory
+                                                                        Boolean "Feature-305" {Price 706}
+                                                                                or
+                                                                                        Real "Feature-545" {Price 80, Fun -72}
+                                                                        Boolean "Feature-340" cardinality [1..5] {Price 67}
+                                                                                or
+                                                                                        Integer "Feature-383" cardinality [1..5] {Price 536}
+                                                                        Boolean "Feature-363" {Price 457}
+                                                        Real "Feature-396"
+                                                        Boolean "Feature-459"
+                                                                alternative
+                                                                        Boolean "Feature-510" {Price 99, Fun 61}
+                                        Boolean "Feature-22" {Price 152}
+                                                alternative
+                                                        Boolean "Feature-112"
+                                                                or
+                                                                        Boolean "Feature-150"
+                                                                                alternative
+                                                                                        Real "Feature-217" {Price 936}
+                                                                                        Real "Feature-268"
+                                                                        Boolean "Feature-274" cardinality [1..5]
+                                                        Boolean "Feature-219" {Price 32}
+                                                                alternative
+                                                                        Boolean "Feature-240"
+                                                                        Boolean "Feature-534"
+                                                        Boolean "Feature-374" {Price 438}
+                                        Real "Feature-23" {Price 46}
+                                                alternative
+                                                        Boolean "Feature-31" cardinality [1..5] {Price 38}
+                                                                [0..2]
+                                                                        Boolean "Feature-230"
+                                                                                alternative
+                                                                                        Real "Feature-479" {Price 571}
+                                                                                        Boolean "Feature-517" {Fun 64}
+                                                                        String "Feature-283" cardinality [1..5] {Price 482}
+                                                        Boolean "Feature-83"
+                                                                mandatory
+                                                                        Boolean "Feature-143"
+                                                                                [0..1]
+                                                                                        Boolean "Feature-160" {Fun 96}
+                                                                        Integer "Feature-376" {Price 916}
+                                                                        Integer "Feature-387" cardinality [1..5] {Price 813}
+                                                        Integer "Feature-442" {Price 955}
+                                                        Boolean "Feature-532" {Price 586}
+                                        Integer "Feature-37" {Price 436}
+                                                optional
+                                                        Boolean "Feature-122" cardinality [1..5] {Price 512}
+                                                                mandatory
+                                                                        Boolean "Feature-170" cardinality [1..5] {Price 522, Fun -40}
+                                                                                optional
+                                                                                        Integer "Feature-221" {Price 203}
+                                                                                        Real "Feature-266"
+                                                                                        Boolean "Feature-339"
+                                                                                        Boolean "Feature-458" {Price 835}
+                                                                        Boolean "Feature-290" {Price 939}
+                                                                                mandatory
+                                                                                        Boolean "Feature-341" {Price 295}
+                                                                                        Real "Feature-529"
+                                                                                        Boolean "Feature-543" {Price 567}
+                                                                        String "Feature-291" {Price 958, Fun -28}
+                                                                                mandatory
+                                                                                        Boolean "Feature-302" cardinality [1..5] {Price 537}
+                                                                                        Integer "Feature-464" {Price 461}
+                                        Boolean "Feature-79" {Price 499}
+                                                alternative
+                                                        Boolean "Feature-94" cardinality [1..5]
+                                                                alternative
+                                                                        Real "Feature-100" {Price 168, Fun 66}
+                                                                                [0..1]
+                                                                                        String "Feature-398" {Price 281}
+                                                                        Boolean "Feature-136" {Price 916}
+                                                                                or
+                                                                                        Boolean "Feature-166" {Price 416}
+                                                                                        Integer "Feature-289" {Price 947}
+                                                                                        Boolean "Feature-444"
+                                                                                        Boolean "Feature-500" cardinality [1..5] {Price 711}
+                                                                        Boolean "Feature-269" {Price 527}
+                                                        Integer "Feature-236" {Price 423}
+                                                        Boolean "Feature-248" {Price 816}
+                                                                mandatory
+                                                                        Integer "Feature-406"
+                                                                        Boolean "Feature-461"
+                                                        Boolean "Feature-313" cardinality [1..5] {Price 35}
+                                                                [0..1]
+                                                                        String "Feature-343"
+                                                                                mandatory
+                                                                                        Boolean "Feature-410" {Fun -53}
+                                                                                        String "Feature-465"
+                                                        Boolean "Feature-328" {Price 803}
+                                                                alternative
+                                                                        Boolean "Feature-441" cardinality [1..5]
+                                                        Integer "Feature-485"
+                                        Boolean "Feature-174" {Price 995}
+                                                alternative
+                                                        Boolean "Feature-257"
+                                                                mandatory
+                                                                        Boolean "Feature-286"
+                                        Boolean "Feature-466" {Price 468}
+                                        Boolean "Feature-548" {Price 688, Fun -89}
+                        Boolean "Feature-7"
+                                [0..2]
+                                        Boolean "Feature-9" {Price 841}
+                                                [4..5]
+                                                        Integer "Feature-12" {Price 750}
+                                                                mandatory
+                                                                        Integer "Feature-13" cardinality [1..5]
+                                                                                optional
+                                                                                        Boolean "Feature-169" {Price 105}
+                                                                                        Integer "Feature-335" cardinality [1..5]
+                                                                                        Integer "Feature-416" {Price 474}
+                                                                        Boolean "Feature-38" cardinality [1..5] {Price 783}
+                                                                                [0..1]
+                                                                                        Boolean "Feature-162" {Price 131}
+                                                                        Boolean "Feature-55"
+                                                                                [1..1]
+                                                                                        Boolean "Feature-134"
+                                                                        Boolean "Feature-95" {Price 796}
+                                                                                alternative
+                                                                                        Boolean "Feature-140"
+                                                                                        Boolean "Feature-186"
+                                                                                        Integer "Feature-215" {Price 991}
+                                                                        Integer "Feature-301" {Fun -35}
+                                                                        Boolean "Feature-542"
+                                                        Boolean "Feature-25" {Price 947}
+                                                                alternative
+                                                                        Boolean "Feature-39" {Price 347}
+                                                                                alternative
+                                                                                        Boolean "Feature-74"
+                                                                                        Integer "Feature-356" {Price 730, Fun -31}
+                                                                                        Boolean "Feature-469"
+                                                                        Boolean "Feature-96"
+                                                                                or
+                                                                                        Boolean "Feature-285"
+                                                                                        Boolean "Feature-487"
+                                                                                        Integer "Feature-511" {Price 245}
+                                                                        Integer "Feature-139" {Fun 71}
+                                                                                alternative
+                                                                                        Boolean "Feature-330" {Price 209}
+                                                                                        Boolean "Feature-448" {Price 249}
+                                                                        Integer "Feature-360" {Price 499}
+                                                        Real "Feature-28" {Price 713}
+                                                                optional
+                                                                        Boolean "Feature-65" {Price 744}
+                                                                                alternative
+                                                                                        Integer "Feature-91" {Price 662}
+                                                                                        Boolean "Feature-244" {Price 49}
+                                                                                        Boolean "Feature-424"
+                                                                                        Integer "Feature-521" {Price 84}
+                                                                        Boolean "Feature-67"
+                                                                                mandatory
+                                                                                        Boolean "Feature-109" {Price 321}
+                                                                                        Boolean "Feature-114"
+                                                                                        Boolean "Feature-182" {Price 567}
+                                                                        Boolean "Feature-282" {Price 816}
+                                                                                alternative
+                                                                                        Integer "Feature-349"
+                                                                                        Integer "Feature-536"
+                                                                        Boolean "Feature-315" {Price 544}
+                                                                                [1..1]
+                                                                                        Integer "Feature-385"
+                                                                        Integer "Feature-425" cardinality [1..5] {Price 630}
+                                                        Boolean "Feature-34"
+                                                                [2..5]
+                                                                        Boolean "Feature-42" {Price 22}
+                                                                                or
+                                                                                        Integer "Feature-61"
+                                                                                        Integer "Feature-110" {Price 165}
+                                                                                        Boolean "Feature-357" {Price 809, Fun -100}
+                                                                                        Boolean "Feature-388" {Price 940}
+                                                                        Integer "Feature-50"
+                                                                                [1..1]
+                                                                                        Boolean "Feature-312"
+                                                                        Boolean "Feature-73" {Price 145, Fun -39}
+                                                                                [1..2]
+                                                                                        Boolean "Feature-111"
+                                                                                        Boolean "Feature-204"
+                                                                                        Boolean "Feature-338" {Price 766, Fun -89}
+                                                                        Boolean "Feature-309"
+                                                                        Boolean "Feature-417" {Price 78}
+                                                        Boolean "Feature-46"
+                                                                mandatory
+                                                                        Boolean "Feature-62" {Price 780}
+                                                                                mandatory
+                                                                                        Boolean "Feature-146"
+                                                                                        Boolean "Feature-154" {Price 98, Fun -91}
+                                                                                        Integer "Feature-188"
+                                                                        Boolean "Feature-311" {Price 376}
+                                                                                mandatory
+                                                                                        Integer "Feature-392"
+                                                                                        Boolean "Feature-456"
+                                                                        Boolean "Feature-371" {Price 108}
+                                                        Boolean "Feature-63" cardinality [1..5] {Price 214}
+                                                                optional
+                                                                        Integer "Feature-66"
+                                                                                alternative
+                                                                                        Boolean "Feature-76" {Price 281}
+                                                                                        Boolean "Feature-86"
+                                                                                        Boolean "Feature-164" {Price 24}
+                                                                                        Boolean "Feature-181"
+                                                                                        Boolean "Feature-246" {Price 375}
+                                                                                        String "Feature-306" {Price 774}
+                                                                                        Integer "Feature-384"
+                                                                        Boolean "Feature-148" cardinality [1..5]
+                                                                                [1..1]
+                                                                                        Integer "Feature-208" cardinality [1..5] {Price 274, Fun 81}
+                                                        Integer "Feature-123" cardinality [1..5]
+                                                                or
+                                                                        Boolean "Feature-260" {Price 155}
+                                                                                [0..1]
+                                                                                        Boolean "Feature-299" cardinality [1..5] {Price 989}
+                                                                                        Boolean "Feature-375"
+                                                                        Boolean "Feature-284"
+                                                                                or
+                                                                                        Integer "Feature-408" cardinality [1..5] {Price 142}
+                                                                                        Integer "Feature-501" {Price 13}
+                                                                        Boolean "Feature-355"
+                                                        Boolean "Feature-220"
+                                                                alternative
+                                                                        Real "Feature-347" {Price 293}
+                                                                        Real "Feature-348" {Price 286}
+                                                                        Integer "Feature-431"
+                                                                        Boolean "Feature-531" {Price 401}
+                                                        Boolean "Feature-242" {Price 866, Fun -49}
+                                        Boolean "Feature-36" {Price 257}
+                                                or
+                                                        Boolean "Feature-409" {Price 491}
+                                                                or
+                                                                        Boolean "Feature-418"
+                                                                                alternative
+                                                                                        Integer "Feature-477"
+                                        Boolean "Feature-57" cardinality [1..5] {Price 819}
+                                                [0..2]
+                                                        Boolean "Feature-102"
+                                                                optional
+                                                                        Boolean "Feature-124" {Price 861}
+                                                                                alternative
+                                                                                        Integer "Feature-320" {Price 627}
+                                                                                        Integer "Feature-391" cardinality [1..5]
+                                                                        Boolean "Feature-202" {Price 637}
+                                                                                alternative
+                                                                                        Boolean "Feature-234"
+                                                                                        Boolean "Feature-323"
+                                                                                        Boolean "Feature-476" cardinality [1..5] {Price 946}
+                                                                                        Integer "Feature-503" {Price 959}
+                                                                        Boolean "Feature-405" cardinality [1..5]
+                                                                        Boolean "Feature-498"
+                                                        Integer "Feature-189"
+                                                                optional
+                                                                        Boolean "Feature-449" cardinality [1..5]
+                                                                                or
+                                                                                        Boolean "Feature-522" {Price 531}
+                                                        Integer "Feature-272" cardinality [1..5]
+                                        Real "Feature-68"
+                                                alternative
+                                                        Boolean "Feature-157"
+                                                                optional
+                                                                        Boolean "Feature-185"
+                                                                        Integer "Feature-216" {Price 111}
+                                                                                mandatory
+                                                                                        Boolean "Feature-243" cardinality [1..5] {Fun -48}
+                                                                        Boolean "Feature-251"
+                                                                                alternative
+                                                                                        Boolean "Feature-381" {Price 758, Fun 82}
+                                                                        Boolean "Feature-277" cardinality [1..5] {Fun -55}
+                                                                                optional
+                                                                                        Boolean "Feature-467"
+                                                                        Real "Feature-535" {Price 208}
+                                                        Boolean "Feature-158"
+                                                                [0..1]
+                                                                        Real "Feature-179" {Price 908}
+                                                                                alternative
+                                                                                        Boolean "Feature-304"
+                                                                                        Integer "Feature-446" cardinality [1..5]
+                                                                        Boolean "Feature-279"
+                                                                                alternative
+                                                                                        Boolean "Feature-346"
+                                                                        Integer "Feature-345"
+                                                        Boolean "Feature-165" {Price 24}
+                                                                alternative
+                                                                        Boolean "Feature-175" {Price 285}
+                                                                                or
+                                                                                        Boolean "Feature-256" {Price 168}
+                                                                                        Real "Feature-332" cardinality [1..5]
+                                                                        Real "Feature-198" {Fun -85}
+                                                                                [1..1]
+                                                                                        Boolean "Feature-264" cardinality [1..5]
+                                                                                        Boolean "Feature-265"
+                                                                        Boolean "Feature-414"
+                                                                                optional
+                                                                                        Integer "Feature-490" cardinality [1..5] {Fun 45}
+                                                                        Boolean "Feature-443" {Price 959}
+                                                        Boolean "Feature-183" {Price 325}
+                                                        Boolean "Feature-195"
+                                                                or
+                                                                        Boolean "Feature-370" {Price 533}
+                                                                        Boolean "Feature-415"
+                                                                                alternative
+                                                                                        String "Feature-423" {Price 181}
+                                                                                        Real "Feature-544"
+                                                        Boolean "Feature-235"
+                                                                alternative
+                                                                        Integer "Feature-420"
+                                                                                alternative
+                                                                                        Boolean "Feature-428" {Fun 47}
+                                                        Integer "Feature-317" {Price 647}
+                                                        Integer "Feature-322" {Price 745}
+                                                                or
+                                                                        Integer "Feature-499"
+                                                                                optional
+                                                                                        Boolean "Feature-526" cardinality [1..5]
+                                        Boolean "Feature-106"
+                                                alternative
+                                                        Boolean "Feature-203"
+                                                                mandatory
+                                                                        Boolean "Feature-249"
+                                                                        Real "Feature-267" {Price 384}
+                                                                                alternative
+                                                                                        Integer "Feature-353"
+                                                                                        Integer "Feature-382" {Price 601}
+                                                                                        Boolean "Feature-427" cardinality [1..5] {Fun -65}
+                                                                        Boolean "Feature-399" cardinality [1..5] {Price 274}
+                                                        Boolean "Feature-223"
+                                                        Boolean "Feature-300" cardinality [1..5] {Price 824}
+                                        Boolean "Feature-127" cardinality [1..5]
+                                        String "Feature-149"
+                                        Boolean "Feature-378"
+                                                or
+                                                        Boolean "Feature-468" {Fun 64}
+                                                        Boolean "Feature-475" {Price 786}
+                        Integer "Feature-15" {Price 826}
+                                alternative
+                                        Integer "Feature-30"
+                                                [0..1]
+                                                        Boolean "Feature-35" {Fun 83}
+                                                                [2..2]
+                                                                        Boolean "Feature-41" {Price 115}
+                                                                                alternative
+                                                                                        Integer "Feature-118"
+                                                                                        Integer "Feature-142" {Price 147}
+                                                                                        Boolean "Feature-303"
+                                                                                        Boolean "Feature-421" {Price 881}
+                                                                                        Integer "Feature-484" {Price 687}
+                                                                        String "Feature-125" {Price 231}
+                                                                                or
+                                                                                        Integer "Feature-130"
+                                                                                        Boolean "Feature-141" cardinality [1..5] {Price 885}
+                                                                                        Integer "Feature-206" {Price 494}
+                                                                                        Integer "Feature-207"
+                                                                        Boolean "Feature-152" {Fun 37}
+                                                                                mandatory
+                                                                                        Boolean "Feature-197" cardinality [1..5]
+                                                                                        String "Feature-344" cardinality [1..5]
+                                                        Boolean "Feature-75"
+                                                                or
+                                                                        Boolean "Feature-80"
+                                                                                optional
+                                                                                        Boolean "Feature-108" {Price 30}
+                                                                                        Boolean "Feature-190" {Price 416}
+                                                                                        Boolean "Feature-232"
+                                                                        Boolean "Feature-85" {Price 234}
+                                                                                optional
+                                                                                        Boolean "Feature-120"
+                                                                        Boolean "Feature-128" {Price 576, Fun -57}
+                                                                                [2..2]
+                                                                                        Boolean "Feature-145" cardinality [1..5]
+                                                                                        Boolean "Feature-151" {Price 661}
+                                                                        Boolean "Feature-200" {Price 411}
+                                                                                or
+                                                                                        Integer "Feature-213" cardinality [1..5] {Price 420}
+                                                                                        Boolean "Feature-407"
+                                                                        Boolean "Feature-281" {Price 116, Fun 5}
+                                                        Boolean "Feature-226" {Price 62}
+                                                                alternative
+                                                                        Boolean "Feature-372" {Price 634}
+                                                                        Boolean "Feature-481"
+                                                                        String "Feature-533" {Price 279}
+                                                        Integer "Feature-308"
+                                                                optional
+                                                                        Boolean "Feature-329" {Price 116}
+                                                                                or
+                                                                                        Boolean "Feature-334" {Price 180}
+                                                                                        Boolean "Feature-451" {Price 251}
+                                                                        Integer "Feature-435" {Price 962}
+                                                                        Boolean "Feature-447" cardinality [1..5]
+                                                                                optional
+                                                                                        Boolean "Feature-463" cardinality [1..5]
+                                                                                        Boolean "Feature-470" {Price 480}
+                                                        Integer "Feature-495" cardinality [1..5]
+                                        Integer "Feature-258" cardinality [1..5] {Price 27}
+                                                alternative
+                                                        Boolean "Feature-259" {Price 272}
+                                                                mandatory
+                                                                        Integer "Feature-483" {Price 538}
+                                                        Boolean "Feature-540" {Price 831}
+                                        Boolean "Feature-261" {Price 500}
+                                                or
+                                                        Boolean "Feature-295" {Price 145}
+                                                                or
+                                                                        Boolean "Feature-493" {Price 637}
+                                        Boolean "Feature-307" cardinality [1..5]
+                                                alternative
+                                                        String "Feature-333" {Price 769}
+                                                                mandatory
+                                                                        Boolean "Feature-368" {Price 406}
+                                                                                alternative
+                                                                                        Real "Feature-473" cardinality [1..5] {Fun 52}
+                                                                        Boolean "Feature-439" {Price 882}
+                                                                        Boolean "Feature-440" {Price 571}
+                                        Real "Feature-419" {Price 169}
+                                        Boolean "Feature-422" cardinality [1..5]
+                                                or
+                                                        Boolean "Feature-478"
+                        String "Feature-17"
+                                [1..3]
+                                        Boolean "Feature-103" cardinality [1..5] {Fun -85}
+                                                mandatory
+                                                        Integer "Feature-116" {Price 510}
+                                                                alternative
+                                                                        Boolean "Feature-222"
+                                                                                alternative
+                                                                                        Boolean "Feature-321"
+                                                                                        Boolean "Feature-404" cardinality [1..5] {Price 879}
+                                                        Boolean "Feature-210" {Price 517}
+                                                        Integer "Feature-239"
+                                        Boolean "Feature-377"
+                                                alternative
+                                                        Boolean "Feature-480" {Price 247, Fun -88}
+                                                        String "Feature-491"
+                                                        Real "Feature-516" cardinality [1..5]
+                                        Boolean "Feature-482" cardinality [1..5] {Price 625}
+                                                mandatory
+                                                        Boolean "Feature-546"
+                        Boolean "Feature-297" {Price 732}
+
+constraints
+        "Feature-305".Price == "Feature-152".Fun * "Feature-404".Price / "Feature-242".Price - "Feature-497".Fun - "Feature-142".Price / "Feature-54".Price * "Feature-423".Price + "Feature-56".Fun * "Feature-179".Price - "Feature-468".Fun * "Feature-214".Price / "Feature-305".Price
+        avg(Fun) > 471
+        "Feature-540" | "Feature-467" <=> "Feature-85" <=> "Feature-421" <=> "Feature-290" <=> "Feature-315" | "Feature-55" & "Feature-281" | "Feature-259" | "Feature-457" => "Feature-312" => "Feature-43" & "Feature-223" => !"Feature-163"
+        "Feature-480" <=> "Feature-364" | "Feature-432" & "Feature-447" & "Feature-452" | "Feature-51" | "Feature-285" <=> "Feature-101" <=> "Feature-111" <=> "Feature-178" => !"Feature-168"
+        len("Feature-29") == 47
+        len("Feature-352") == 256
+        "Feature-226" => "Feature-4" => "Feature-373" <=> "Feature-63" => "Feature-133" => "Feature-249" => "Feature-270"
+        "Feature-249" | "Feature-455" => "Feature-334" <=> "Feature-120" <=> "Feature-452"
+        avg(Price) > 439
+        "Feature-543" => "Feature-242" | "Feature-292" & "Feature-22" | "Feature-168" => "Feature-279" | "Feature-421" <=> "Feature-7" & "Feature-158"
+        "Feature-113" => "Feature-1" & "Feature-448" | "Feature-144" | "Feature-474" => "Feature-42" => "Feature-31" <=> "Feature-238" => "Feature-25" <=> !"Feature-444"
+        "Feature-412" <=> "Feature-63" <=> "Feature-331" => "Feature-64" & "Feature-433" | "Feature-418" & "Feature-148" & "Feature-31" | "Feature-108" => "Feature-120" <=> "Feature-138" | !"Feature-122"
+        "Feature-67" => "Feature-326" => "Feature-83"
+        "Feature-85" | "Feature-452" | "Feature-122" & "Feature-296" <=> "Feature-517" <=> "Feature-526" => !"Feature-274"
+        "Feature-10" | "Feature-103" => "Feature-325" => "Feature-45" | "Feature-6" <=> "Feature-153" => "Feature-377" <=> "Feature-21" | "Feature-273" => "Feature-164" & "Feature-92" => "Feature-436" <=> "Feature-56" & !"Feature-32"
+        "Feature-235" => "Feature-502" | "Feature-112" => "Feature-443" => "Feature-319" <=> !"Feature-56"
+        len("Feature-49") == 771
+        "Feature-102" | "Feature-399" <=> "Feature-259" <=> "Feature-122" | "Feature-321" => "Feature-467" | "Feature-338" | "Feature-339" => "Feature-367" | "Feature-146" => !"Feature-22"
+        "Feature-56".Fun / "Feature-71".Price * "Feature-205".Price * "Feature-208".Price * "Feature-452".Price / "Feature-310".Price < "Feature-277".Fun * "Feature-248".Price - "Feature-51".Fun + "Feature-201".Price * "Feature-306".Price
+        "Feature-331" => "Feature-70" | "Feature-290" | "Feature-430" => "Feature-67"
+        "Feature-36" | "Feature-255" | "Feature-297" | "Feature-270" & "Feature-42" => "Feature-340" => "Feature-539" <=> "Feature-407" <=> "Feature-109" <=> "Feature-79" <=> "Feature-194" => "Feature-59"
+        "Feature-143" | "Feature-102" => "Feature-292" <=> "Feature-517" & "Feature-174" & "Feature-539"
+        "Feature-312" & "Feature-457" | !"Feature-103"
+        "Feature-122" => "Feature-467" | "Feature-296" & "Feature-197" => "Feature-249" <=> "Feature-186" & "Feature-373" <=> "Feature-379" & "Feature-248" & "Feature-145" => "Feature-210" <=> "Feature-450"
+        "Feature-470" => "Feature-277" | "Feature-548" <=> "Feature-71" & "Feature-108" => "Feature-105" | !"Feature-451"
+        "Feature-256" <=> !"Feature-512"
+        avg(Price) > 2158
+        "Feature-412" => "Feature-166" => "Feature-73" & "Feature-6" <=> "Feature-264" & "Feature-480"
+        "Feature-32" => "Feature-259" => "Feature-432" <=> "Feature-274" & "Feature-276" | "Feature-325" & "Feature-6" | "Feature-346" <=> "Feature-250" <=> "Feature-41" => "Feature-255" | "Feature-191" & "Feature-89" <=> !"Feature-437"
+        "Feature-526" => "Feature-452" | "Feature-293" | "Feature-144" => "Feature-548" <=> "Feature-269" <=> "Feature-443" => "Feature-227" <=> "Feature-228" <=> "Feature-168" <=> "Feature-323" => "Feature-21" => "Feature-203" => "Feature-410"
+        "Feature-108" => "Feature-361" & "Feature-67" & "Feature-183" => !"Feature-79"
+        "Feature-248" <=> "Feature-129" <=> !"Feature-181"
+        "Feature-377" <=> "Feature-134" | "Feature-500"
+        "Feature-259".Price * "Feature-174".Price / "Feature-101".Price + "Feature-256".Price * "Feature-250".Fun - "Feature-537".Price + "Feature-205".Price < "Feature-14".Price
+        "Feature-328" <=> "Feature-200" <=> "Feature-228" => "Feature-59" <=> "Feature-456" & "Feature-459" & "Feature-18"
+        "Feature-475" | "Feature-307" => "Feature-158" <=> "Feature-531" | "Feature-79" | "Feature-476" <=> "Feature-256" & "Feature-285" | "Feature-337" <=> "Feature-279" => "Feature-210" <=> !"Feature-232"
+        "Feature-291" == '-1931116597'
+        "Feature-251" | "Feature-186" | !"Feature-307"
+        "Feature-333" == '1456235393'
+        "Feature-280" => "Feature-187" <=> "Feature-440" | "Feature-341" | "Feature-269" => "Feature-231" <=> "Feature-274" => "Feature-364" & "Feature-62" <=> "Feature-102" => "Feature-191" => "Feature-417"
+        "Feature-38" <=> "Feature-174" <=> "Feature-36" => "Feature-62" <=> "Feature-18" <=> "Feature-285" <=> "Feature-251" & "Feature-460" | "Feature-441" <=> "Feature-452" & "Feature-367" & "Feature-34" => "Feature-111" & "Feature-65"
+        "Feature-187".Price + "Feature-170".Price * "Feature-73".Price - "Feature-139".Fun * "Feature-404".Price == "Feature-104".Fun - "Feature-315".Price * "Feature-492".Price - "Feature-37".Price / "Feature-41".Price / "Feature-49".Price + "Feature-452".Price
+        "Feature-279" <=> "Feature-422" <=> "Feature-55" => "Feature-463" & "Feature-117" & "Feature-67" | "Feature-307" <=> "Feature-129"
+        "Feature-209" => "Feature-355" => "Feature-32" & "Feature-476" | "Feature-232" & !"Feature-459"
+        "Feature-44" == '-1303819005'
+        "Feature-318" | "Feature-355" => "Feature-148" <=> "Feature-175" | "Feature-70" | "Feature-181" => "Feature-502" <=> "Feature-197" | "Feature-530" => "Feature-292" & !"Feature-195"
+        "Feature-312" => "Feature-243" <=> "Feature-8" <=> "Feature-170" => "Feature-321" & "Feature-200" <=> "Feature-185" => "Feature-430" | "Feature-85"
+        avg(Price) > 1716
+        "Feature-244" | "Feature-270" | "Feature-251" & "Feature-14" => "Feature-174" | "Feature-195" => "Feature-94" => "Feature-455" | "Feature-355" & "Feature-146" => "Feature-97" & "Feature-227"
+        "Feature-111" => "Feature-46" & "Feature-265" <=> !"Feature-323"
+        "Feature-465" == '843641675'
+        "Feature-337".Price / "Feature-287".Fun * "Feature-174".Price - "Feature-330".Price * "Feature-532".Price / "Feature-357".Price / "Feature-281".Price * "Feature-73".Price / "Feature-535".Price > "Feature-245".Fun * "Feature-470".Price - "Feature-416".Price / "Feature-327".Price + "Feature-381".Price
+        "Feature-328" => "Feature-248" <=> "Feature-534" & "Feature-265" | "Feature-381" <=> "Feature-447" & "Feature-378" <=> "Feature-234" | "Feature-285" <=> "Feature-337" <=> "Feature-357"
+        "Feature-77" => "Feature-169" <=> "Feature-418" <=> "Feature-129"
+        "Feature-42" | "Feature-334" <=> "Feature-34" <=> "Feature-222" & "Feature-229" <=> "Feature-505" & "Feature-170" <=> "Feature-41" <=> "Feature-62" => "Feature-112" | !"Feature-235"
+        "Feature-524" <=> "Feature-162" <=> "Feature-92" => "Feature-250" | "Feature-111" & "Feature-412" | "Feature-129" => "Feature-182" => "Feature-180" => "Feature-456" <=> "Feature-480" <=> "Feature-498" => "Feature-367" <=> "Feature-388"
+        "Feature-109" => "Feature-77" | "Feature-280" & "Feature-190" & "Feature-444" <=> "Feature-46" | "Feature-103"
+        "Feature-367" | "Feature-79" <=> "Feature-199" | "Feature-303" <=> "Feature-111" <=> "Feature-444" <=> "Feature-361" <=> "Feature-135" | "Feature-373" => "Feature-89" & "Feature-34" => "Feature-323"
+        "Feature-343" == '-2046275448'
+        "Feature-502" <=> "Feature-279" <=> "Feature-109" => "Feature-14" <=> "Feature-253" & "Feature-482" => "Feature-83" <=> "Feature-298" <=> "Feature-229" => "Feature-102" <=> "Feature-475" <=> "Feature-21" => "Feature-444" => "Feature-145"
+        "Feature-259" | "Feature-200" | "Feature-76" => "Feature-480"
+        "Feature-404" | "Feature-546" <=> "Feature-297" => "Feature-162" | "Feature-326" => "Feature-83"
+        "Feature-215".Price > "Feature-79".Price / "Feature-215".Price
+        "Feature-373" <=> "Feature-109" <=> "Feature-94" | "Feature-246" <=> "Feature-111" <=> "Feature-22" | "Feature-73" | "Feature-168" <=> "Feature-181" => "Feature-399" => "Feature-517" => "Feature-498" & "Feature-297" <=> "Feature-405"
+        avg(Fun) > 106
+        "Feature-448".Price + "Feature-51".Fun == "Feature-388".Price / "Feature-458".Price
+        "Feature-163" | "Feature-367" => "Feature-457" & "Feature-502" => !"Feature-134"
+        "Feature-363" => "Feature-178" <=> "Feature-417" & "Feature-350" & "Feature-41"
+        "Feature-352" == '-2136655433'
+        "Feature-546" | "Feature-14"
+        "Feature-74" <=> "Feature-298" & "Feature-323" <=> "Feature-238" <=> "Feature-165" | "Feature-101" | "Feature-277" => "Feature-285" & "Feature-361" => "Feature-133" <=> !"Feature-114"
+        "Feature-409" => "Feature-174" | "Feature-517" & "Feature-378" => "Feature-134" | "Feature-539" <=> "Feature-310" | "Feature-199" & "Feature-379" <=> "Feature-421" <=> "Feature-470" <=> "Feature-460" & !"Feature-338"
+        "Feature-535".Price / "Feature-90".Price - "Feature-256".Price * "Feature-27".Price / "Feature-116".Price > "Feature-410".Fun + "Feature-241".Price * "Feature-225".Fun - "Feature-436".Price * "Feature-182".Price * "Feature-298".Price
+        "Feature-530" => "Feature-297" | "Feature-421" & "Feature-455" => "Feature-336" & "Feature-253" <=> "Feature-21" <=> !"Feature-404"
+        "Feature-228" <=> "Feature-71" <=> "Feature-517" => "Feature-240" <=> "Feature-405" <=> "Feature-135" & !"Feature-277"

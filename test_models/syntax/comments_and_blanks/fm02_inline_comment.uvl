@@ -1,0 +1,24 @@
+namespace Pizza
+
+features
+	Pizza {abstract}
+		mandatory
+			Topping
+				or
+					Salami
+					Ham
+					Mozzarella
+			// Size is a xor-group feature
+			Size
+				alternative
+					Normal
+					Big
+			Dough
+				alternative
+					Neapolitan
+					Sicilian
+		optional
+			CheesyCrust
+
+constraints
+	CheesyCrust => Big

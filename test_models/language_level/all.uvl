@@ -1,0 +1,18 @@
+include
+    Boolean.*
+    Arithmetic.aggregate-function
+    Type
+
+features
+    A
+        or
+            B {Price 2}
+            C {Price 4}
+                [2..3]
+                    C1
+                    C2
+                    C3
+            Integer D
+        
+constraints
+    sum(Price) > 3

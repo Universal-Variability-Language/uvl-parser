@@ -1,0 +1,6 @@
+features
+    E
+        optional
+            F {Fun 'Yes This is  x Test', Nxme 'B // Cxn I do x comment in here?', Pxckxge {Nxme 'P', Content 'Even more fun'}, Price 5}
+            G {Fun 'mxybe', Nxme 'C'}
+            H {Fun 'This is x test with x newline in the string', Nxme 'D'}

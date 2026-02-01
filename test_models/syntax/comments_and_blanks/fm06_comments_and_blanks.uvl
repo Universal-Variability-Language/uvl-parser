@@ -1,0 +1,27 @@
+// This is a comment
+features 
+
+
+    // This is a comment
+    A 
+
+        or 
+
+            B {Price 2, Fun 12} 
+            C {Price 7, Fun 6} 
+            D {Price 5, Fun 8} 
+
+
+constraints
+
+
+
+    // This is a comment
+    B.Fun + C.Fun - B.Price == 16
+    B.Fun + (C.Fun - B.Price) == 16 // This is a comment
+
+    
+    B.Fun + C.Fun * B.Price == 20 // This is a comment
+
+    // This is a comment
+

@@ -1,0 +1,9 @@
+features
+    A
+        optional
+            String B 
+            String C 
+constraints
+    len(B) == 16
+    len(C) == 16
+    len(B) == len(C)

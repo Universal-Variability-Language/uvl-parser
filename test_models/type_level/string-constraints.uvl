@@ -1,0 +1,12 @@
+features
+    A
+        optional
+            String C
+            String D
+
+constraints
+    len(C) == 3
+    D == C
+    C == 'Fun'
+    'Fun' == D
+    A
