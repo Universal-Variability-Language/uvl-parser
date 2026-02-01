@@ -29,7 +29,7 @@ def get_tree(argv):
     parser.removeErrorListeners()
     parser.addErrorListener(CustomErrorListener())
 
-    tree = parser.feature_model()
+    tree = parser.featureModel()
 
     return tree
 
