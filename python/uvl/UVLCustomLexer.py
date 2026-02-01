@@ -73,9 +73,10 @@ class UVLCustomLexer(UVLPythonLexer):
     def handleNewline(self):
       new_line = re.sub(r"[^\r\n\f]+", "", self._interp.getText(self._input)) #.replaceAll("[^\r\n\f]+", "")
       spaces = re.sub(r"[\r\n\f]+", "", self._interp.getText(self._input)) #.replaceAll("[\r\n\f]+", "")
-      next = self._input.LA(1)
+      next_code = self._input.LA(1)
+      next_char = chr(next_code) if next_code != -1 else ''
 
-      if self.opened > 0 or next == '\r' or next == '\n' or next == '\f' or next == '#':
+      if self.opened > 0 or next_char == '\r' or next_char == '\n' or next_char == '\f' or next_char == '#':
         self.skip()
       else:
         self.emitToken(self.common_token(self.NEWLINE, new_line))
