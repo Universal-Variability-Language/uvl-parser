@@ -37,6 +37,7 @@ dist/
 .coverage
 htmlcov/
 python/uvl/*
+!python/uvl/__init__.py
 !python/uvl/UVLCustomLexer.py
 
 # JavaScript
