@@ -2,7 +2,7 @@
   "name": "uvl-parser",
   "main": "index.js",
   "type": "module",
-  "version": "0.0.3",
+  "version": "2.5.0",
   "scripts": {
     "build-grammar": "antlr4 -lib ../uvl/ -Dlanguage=JavaScript -o ./src/lib ../uvl/JavaScript/UVLJavaScriptLexer.g4 ../uvl/JavaScript/UVLJavaScriptParser.g4",
     "lint": "eslint src --ignore-pattern src/lib/*",
