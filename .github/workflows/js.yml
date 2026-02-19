@@ -35,14 +35,14 @@ jobs:
         cd js
         npm version --no-git-tag-version "$(node -p "require('./package.json').version")-dev.${GITHUB_RUN_NUMBER}"
         echo "Publishing version: $(node -p "require('./package.json').version")"
-        npm publish --tag dev --access public
+        npm publish --tag dev --access public --provenance
 
     - name: Set release version and publish (main branch)
       if: github.ref == 'refs/heads/main'
       run: |
         cd js
         echo "Publishing version: $(node -p "require('./package.json').version")"
-        npm publish --access public
+        npm publish --access public --provenance
 
     - name: Set release version and publish (tag)
       if: startsWith(github.ref, 'refs/tags/v')
@@ -51,4 +51,4 @@ jobs:
         TAG_VERSION=${GITHUB_REF_NAME#v}
         npm version --no-git-tag-version "${TAG_VERSION}"
         echo "Publishing version: ${TAG_VERSION}"
-        npm publish --access public
+        npm publish --access public --provenance
