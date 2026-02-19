@@ -16,11 +16,11 @@ java_parser:
 js_parser:
 	mkdir -p $(JAVASCRIPT_OUTPUT_DIR)
 	cd uvl/JavaScript && \
-		antlr4 $(LIB_FLAG) $(ROOT_DIR)/$(LIB_PATH) -Dlanguage=JavaScript -o $(ROOT_DIR)/$(JAVASCRIPT_OUTPUT_DIR) UVLJavaScriptLexer.g4 UVLJavaScriptParser.g4	
+		ANTLR4_TOOLS_ANTLR_VERSION=4.13.2 antlr4 $(LIB_FLAG) $(ROOT_DIR)/$(LIB_PATH) -Dlanguage=JavaScript -o $(ROOT_DIR)/$(JAVASCRIPT_OUTPUT_DIR) UVLJavaScriptLexer.g4 UVLJavaScriptParser.g4
 
 python_parser:
 	cd uvl/Python && \
-		antlr4 $(LIB_FLAG) $(ROOT_DIR)/$(LIB_PATH) -Dlanguage=Python3 -o $(ROOT_DIR)/$(PYTHON_OUTPUT_DIR) UVLPythonLexer.g4 UVLPythonParser.g4
+		ANTLR4_TOOLS_ANTLR_VERSION=4.13.2 antlr4 $(LIB_FLAG) $(ROOT_DIR)/$(LIB_PATH) -Dlanguage=Python3 -o $(ROOT_DIR)/$(PYTHON_OUTPUT_DIR) UVLPythonLexer.g4 UVLPythonParser.g4
 
 python_prepare_package:
 	cd python && python3 -m build
