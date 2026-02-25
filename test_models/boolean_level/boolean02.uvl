@@ -1,0 +1,34 @@
+features
+    A
+        mandatory
+            B
+                or
+                    C
+                    D
+            E
+                alternative
+                    F
+                    G
+                    J
+        optional
+            H
+            I
+                or
+                    M
+                    N
+        mandatory
+            K
+                alternative
+                    O
+                    P
+        optional
+            L
+constraints
+    !H
+    A & B
+    C | D
+    E => G
+    A <=> B
+    I => !J
+    (M & N) => O
+    (M | !N) => L

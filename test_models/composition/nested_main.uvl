@@ -1,0 +1,7 @@
+imports
+    nested.nested_sub as nesu
+
+features
+    Root
+        optional
+            nesu.Root

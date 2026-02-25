@@ -1,0 +1,7 @@
+features
+     Root
+       optional
+           Integer A
+           Integer B
+constraints
+     A-B == 0

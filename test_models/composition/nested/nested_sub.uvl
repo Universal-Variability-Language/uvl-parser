@@ -1,0 +1,9 @@
+imports
+    nested_referenced_sub as nrs
+
+features
+    Root
+        optional
+            F1
+            F2
+            nrs.Nested

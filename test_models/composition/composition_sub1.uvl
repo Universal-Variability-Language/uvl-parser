@@ -1,0 +1,20 @@
+imports
+	composition_sub1_sub1 as fmIntel
+	composition_sub1_sub2
+
+features
+	CPU
+		mandatory
+			brand
+				alternative
+					fmIntel.Intel
+					composition_sub1_sub2.AMD
+			architecture
+				alternative
+					Bit64 {bit 64}
+					Bit32 {bit 32}
+
+constraints
+	fmIntel.feature1 & fmIntel.feature2 <=> (Bit64) | !composition_sub1_sub2.feature2
+	Bit64.bit + Bit32.bit > 32
+	fmIntel.feature1.power - fmIntel.feature2.power == 25

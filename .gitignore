@@ -1,21 +1,54 @@
-# VSCode, Eclipse, and IntelliJ IDEA project files
-.vscode
-.settings
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.settings/
 .classpath
 .project
-.idea
+.idea/
+*.iml
+*.swp
+*.swo
+*~
 
-# Python virtual environments
-env
-build
-python/uvl/__pycache__
+# Java
+target/
+*.class
+*.jar
+*.war
+.antlr/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.coverage
+htmlcov/
 python/uvl/*
+!python/uvl/__init__.py
 !python/uvl/UVLCustomLexer.py
 
-# Node.js
-js/node_modules
+# JavaScript
+node_modules/
+js/node_modules/
 js/package-lock.json
+js/src/lib/
+*.log
+npm-debug.log*
 
-# Java build files
-.antlr/
-target/
+# Environment files
+.env
+.env.local
+.env.*.local

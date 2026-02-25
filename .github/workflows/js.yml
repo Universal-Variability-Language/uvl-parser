@@ -2,12 +2,15 @@ name: Build and Deploy JS Parser
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, main]
     tags: ['v*']
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC trusted publishing
+      contents: read
 
     steps:
     - name: Checkout code
@@ -16,7 +19,7 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 24
         registry-url: https://registry.npmjs.org/
 
     - name: Install ANTLR4
@@ -33,9 +36,14 @@ jobs:
         cd js
         npm version --no-git-tag-version "$(node -p "require('./package.json').version")-dev.${GITHUB_RUN_NUMBER}"
         echo "Publishing version: $(node -p "require('./package.json').version")"
-        npm publish --tag dev --access public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        npm publish --tag dev --access public --provenance
+
+    - name: Set release version and publish (main branch)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        cd js
+        echo "Publishing version: $(node -p "require('./package.json').version")"
+        npm publish --access public --provenance
 
     - name: Set release version and publish (tag)
       if: startsWith(github.ref, 'refs/tags/v')
@@ -44,6 +52,4 @@ jobs:
         TAG_VERSION=${GITHUB_REF_NAME#v}
         npm version --no-git-tag-version "${TAG_VERSION}"
         echo "Publishing version: ${TAG_VERSION}"
-        npm publish --access public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        npm publish --access public --provenance

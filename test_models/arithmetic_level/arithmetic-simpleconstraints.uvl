@@ -1,0 +1,8 @@
+features
+    A
+        or
+            B {Price 3, Fun 8}
+            C {Price 7, Fun 1}
+constraints
+    B.Price + C.Price < 10
+    B.Price * B.Fun > 20

@@ -1,0 +1,29 @@
+features
+	Pizza {abstract}
+		optional
+			CheesyCrust {Kcal 370, Price 1.00}
+			Integer SpicyLvl
+			String Name
+		mandatory
+			Topping {abstract}
+				or
+					Salami {Kcal 462}
+					Ham {Kcal 115}
+					Mozzarella {Kcal 310}
+					Anchovies {Kcal 210, Price 0.50}
+			Size {abstract}
+				alternative
+					Normal {Price 8.00}
+					Big {Price 12.00}
+			Dough {abstract}
+				alternative
+					Neapolitan 
+					Sicilian {Price 0.50}
+constraints
+	(CheesyCrust & Sicilian) => Big
+	Neapolitan => (!Salami & !Ham)
+	sum(Price) < 12
+	Name => len(Name)<10 & Name=='Margherita'
+	SpicyLvl >= 1 & SpicyLvl <= 5
+	SpicyLvl==5 => SpicyLvl.Price==1.00
+	(SpicyLvl>=1 & SpicyLvl<5) => SpicyLvl.Price==0

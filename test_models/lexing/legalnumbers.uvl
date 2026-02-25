@@ -1,0 +1,6 @@
+features
+    A {float 6.2, int 3}
+
+constraints
+    A.float == 6 // Dead but valid
+    A.int == 3

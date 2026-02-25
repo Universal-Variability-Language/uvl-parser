@@ -1,0 +1,35 @@
+features
+	Penguin
+		optional
+			"Left Wing Item"
+				alternative
+					"Lightsaber"
+						alternative
+							"lightsaber left"
+							"light-staff left"
+					"Flag"
+						alternative
+							"german flag left"
+							"pride flag left"
+					"Staff"
+						alternative
+							"staff left"
+							"spear left"
+							"cross left"
+							"cane left"
+			"Right Wing Item"
+				alternative
+					"Lightsaber"
+						alternative
+							"lightsaber right"
+							"light-staff right"
+					"Flag"
+						alternative
+							"german flag right"
+							"pride flag right"
+					"Staff"
+						alternative
+							"staff right"
+							"spear right"
+							"cross right"
+							"cane right"

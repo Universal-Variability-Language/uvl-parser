@@ -1,0 +1,9 @@
+features
+    R
+        mandatory
+            A cardinality [2..3]
+                optional
+                    B cardinality [2..3]
+                        mandatory
+                            D
+                    C

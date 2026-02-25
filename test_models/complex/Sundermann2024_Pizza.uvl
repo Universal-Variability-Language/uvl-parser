@@ -1,0 +1,31 @@
+features
+	Pizza {City 'Omashu'}
+		mandatory
+			Base {Price 2.0}
+			Sauce
+				alternative
+					Tomato {Price 0.8}
+					"Creme Fraiche" {Price 1.1}
+		optional
+			Cheese
+				or
+					Mozarella {Price 0.4}
+					Cheddar {Price 0.6}
+			Toppings
+				[1..3]
+					Mushrooms {Price 0.5}
+					Onion {Price 0.3}
+					Olive {Price 0.3}
+					Pineapple {Price 0.8}
+		mandatory
+			Integer Size
+			DeliveryAddress cardinality [1..10]
+				mandatory
+					String Street
+					String City
+constraints
+	Cheddar => !"Creme Fraiche"
+	sum(Price) < 5
+	20 < Size & Size < 60
+	City == Pizza.City
+	len(Street) < 100

@@ -1,0 +1,23 @@
+features
+  Electricity_price
+    mandatory
+      Period 
+        alternative
+          half_hourly
+          hourly
+      Integer USEP { constraint USEP >= 0 & USEP <= 1000 }
+      Integer DEMAND { constraint DEMAND >= 0 & DEMAND <= 100 }
+      DATE
+        mandatory
+          Integer DAY { constraint DAY >= 0 & DAY <= 30 }
+          Integer MONTH { constraint MONTH >= 1 & MONTH <= 12 }
+          Integer YEAR { constraint YEAR >= 2021 & YEAR <= 2025 }
+          String DAY_NAME
+    optional
+      String INFORMATION_TYPE { values ['type1','type2','type3','type4'] }
+      LCP 
+      SOLAR
+      TCL
+constraints
+  INFORMATION_TYPE == 'type1' | INFORMATION_TYPE == 'type2' | INFORMATION_TYPE == 'type3' | INFORMATION_TYPE == 'type4'
+  DAY_NAME == 'Monday' | DAY_NAME == 'Tuesday' | DAY_NAME == 'Wednesday' | DAY_NAME == 'Thursday' | DAY_NAME == 'Friday' | DAY_NAME == 'Saturday' | DAY_NAME == 'Sunday'

@@ -1,0 +1,14 @@
+features
+    R
+        optional
+            A cardinality [2..3] 
+                optional
+                    B 
+                    C cardinality [1..2]
+                        alternative
+                            C1
+                            C2 
+            D
+constraints
+    B => C
+    D => (C & B)

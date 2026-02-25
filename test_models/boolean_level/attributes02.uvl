@@ -1,0 +1,9 @@
+features
+    A {abstract}
+        optional
+            B {Fun 'yes', Name 'B', Package {Name 'P', Content 'Even more fun'}, Cost 1, Price 5.0}
+            C {Fun 'maybe', Name 'C'}
+        mandatory
+            D {Fun 'no', Name 'D', Cost 2, Price 10.0}
+            E {abstract false}
+            F {important true}

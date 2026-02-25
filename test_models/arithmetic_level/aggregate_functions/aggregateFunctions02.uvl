@@ -1,0 +1,10 @@
+features
+    A {Price 2}
+        optional
+            B {Price 2}
+            C {Price 5}
+            D {Price 10.5}
+
+constraints
+    floor(D.Price) == 10
+    ceil(D.Price) == 11

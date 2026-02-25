@@ -1,0 +1,60 @@
+features
+    "Ice Cream" {abstract}
+        mandatory
+            Category
+                alternative
+                    Popsicle {Price 1}
+                    Scoop {Price 2}
+            Flavors
+                or
+                    Lemon
+                    Vanilla
+                    Chocolate cardinality [1..3]  // Clonable feature
+                        alternative
+                            White
+                            Dark
+            Container
+                alternative
+                    Stick
+                    Cup
+                    Cone
+        optional
+            Waffle {Price 0.7}
+            String "Name of customer" {Value 0.5, "My Price" 2.5}
+            String shop
+            Integer Scoops
+            Topping
+                or
+                    Caramel
+                    "Whipped cream"
+                    Sprinkles
+            Integer clients
+            Integer x
+            GroupCardinality
+                [2..3]
+                    GC1
+                    GC2
+                    GC3
+                    GC4
+constraints
+    Scoops
+    !Waffle
+    Popsicle => Stick
+    Scoop => Cup | Cone
+    Topping => Caramel
+    Vanilla => Topping
+    Scoops > 1 & Scoop <= 3
+    shop != "Name of customer"
+    "Name of customer" == 'Josemi Horcas'
+    clients > (1 + 1)
+    clients < (10 - 1)
+    clients != (10 / 2)
+    clients == (10 * 2)
+    Scoop.Price + Popsicle.Price < 10
+    sum(Scoops, clients) > 0
+    avg(Scoops, clients) == 1.0
+    avg("Name of customer".Value) > 0
+    len("Name of customer") == 10
+    floor(clients) > 2
+    ceil(clients) < 10
+    "Name of customer"."My Price" >= 0

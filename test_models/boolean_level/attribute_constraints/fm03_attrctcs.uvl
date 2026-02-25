@@ -1,0 +1,11 @@
+features
+    R
+        optional
+            A  
+                optional
+                    B {constraints [B => C, B => D]} 
+                    C 
+            D
+constraints
+    D => (C & B)
+    B => D

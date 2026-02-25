@@ -1,0 +1,6 @@
+features
+    R
+        mandatory
+            A cardinality [2..*]
+                optional
+                    B

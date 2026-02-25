@@ -1,0 +1,9 @@
+features
+    A {Price 1}
+        optional
+            B {Price 2}
+            C {Price 5}
+
+constraints
+    sum(Price) > 2
+    avg(Price) > 1
