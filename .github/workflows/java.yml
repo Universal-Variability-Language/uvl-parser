@@ -2,7 +2,7 @@ name: Build and Deploy Java Parser
 
 on:
   release:
-    types : [published]
+    types: [published]
     
 jobs:
   build:
