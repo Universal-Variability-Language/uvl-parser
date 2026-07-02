@@ -56,7 +56,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
 
     - name: Deploy Release to Central Portal
-      run: cd java && mvn clean deploy
+      run: cd java && mvn --settings ../.github/settings.xml clean deploy
       env:
         MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
