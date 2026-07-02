@@ -34,7 +34,7 @@ To use UVL in your projects, you can either:
    <dependency>
        <groupId>io.github.universal-variability-language</groupId>
        <artifactId>uvl-parser</artifactId>
-       <version>0.3</version>
+       <version>0.5.1</version>
    </dependency>
    ```
    ### Python Parser

@@ -2,7 +2,7 @@ name: Conventional Commit Parser
 on:
   pull_request:
     branches: [main, master, develop]
-    types: [opened, reopened, edited, review_requested, synchronize]
+    types: [opened, reopened, edited, synchronize]
 
 jobs:
   conventional_commit:
@@ -11,6 +11,6 @@ jobs:
     permissions:
       pull-requests: read
     steps:
-      - uses: webiny/action-conventional-commits@v1.3.0
-        with:
+      - uses: amannn/action-semantic-pull-request@v6.1.1
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
