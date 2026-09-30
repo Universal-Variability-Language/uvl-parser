@@ -22,7 +22,7 @@ CLOSE_BRACE: '}' {this.opened -= 1;};
 OPEN_COMMENT: '/*' {this.opened += 1;};
 CLOSE_COMMENT: '*/' {this.opened -= 1;};
 
-NEWLINE: (
-		{this.atStartOfInput()}? SPACES
-		| ( '\r'? '\n' | '\r') SPACES?
-	) {this.handleNewline();};
+// No semantic predicate here: a predicate reachable from the lexer start state stops ANTLR
+// from caching its DFA start state, so every token would recompute the full ATN closure.
+// Indentation before the first token is handled once, in UVLJavaScriptCustomLexer.handleLeadingIndentation().
+NEWLINE: ( '\r'? '\n' | '\r') SPACES? {this.handleNewline();};

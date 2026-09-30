@@ -1,10 +1,9 @@
 name: Build and Deploy Java Parser
 
 on:
-  push:
-    branches: [develop, main]
-    tags: ['v*']
-
+  release:
+    types: [published]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,7 +21,6 @@ jobs:
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-        gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
     - name: Configure GPG for batch mode
       run: |
@@ -41,26 +39,11 @@ jobs:
     - name: Install ANTLR4
       run: make dev
 
-    - name: Set SNAPSHOT version (develop branch)
-      if: github.ref == 'refs/heads/develop'
-      run: |
-        cd java
-        BASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
-        mvn versions:set -DnewVersion="${BASE_VERSION}-SNAPSHOT" -DgenerateBackupPoms=false
-
-    - name: Set release version (main branch)
-      if: github.ref == 'refs/heads/main'
+    - name: Set release version
       run: |
         cd java
         BASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
         mvn versions:set -DnewVersion="${BASE_VERSION}" -DgenerateBackupPoms=false
-
-    - name: Set release version (tag)
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: |
-        cd java
-        TAG_VERSION=${GITHUB_REF_NAME#v}
-        mvn versions:set -DnewVersion="${TAG_VERSION}" -DgenerateBackupPoms=false
 
     - name: Generate and Compile Java Code
       run: make java_parser
@@ -72,17 +55,8 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
 
-    - name: Deploy SNAPSHOT to Sonatype Snapshots
-      if: github.ref == 'refs/heads/develop'
-      run: cd java && mvn clean deploy -DskipCentralPublishing=true
-      env:
-        MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
     - name: Deploy Release to Central Portal
-      if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
-      run: cd java && mvn clean deploy
+      run: cd java && mvn --settings ../.github/settings.xml clean deploy
       env:
         MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}

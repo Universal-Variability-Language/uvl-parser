@@ -13,12 +13,17 @@ class UVLCustomLexer(UVLPythonLexer):
         self.indents = []
         self.opened = 0
         self.lastToken = None
+        self.startChecked = False
         
     def emitToken(self, t):
         super().emitToken(t)
         self.tokens.append(t)  
 
     def nextToken(self):
+        if not self.startChecked:
+            self.startChecked = True
+            self.handleLeadingIndentation()
+
         # Check if the end-of-file is ahead and there are still some DEDENTS expected.
         if self._input.LA(1) == Token.EOF and len(self.indents) != 0:
             # Remove any trailing EOF tokens from our buffer.
@@ -67,9 +72,32 @@ class UVLCustomLexer(UVLPythonLexer):
     def skipToken(self):
         self.skip()
 
-    def atStartOfInput(self):
-        return self._interp.column == 0 and self._interp.line == 1
-    
+    def handleLeadingIndentation(self):
+        # Indentation before the first token is handled here, once, rather than with a
+        # {atStartOfInput()}? predicate in the NEWLINE rule: a predicate reachable from the lexer
+        # start state stops ANTLR from caching its DFA start state, which makes every token
+        # recompute the whole ATN closure. The spaces themselves are then skipped by SKIP_.
+        # Queues the same tokens handleNewline() emits for a leading line: an indented first
+        # line yields NEWLINE + INDENT, which the parser rejects.
+        length = 0
+        while self._input.LA(length + 1) in (ord(' '), ord('\t')):
+            length += 1
+        if length == 0:
+            return
+        next_code = self._input.LA(length + 1)
+        next_char = chr(next_code) if next_code != -1 else ''
+        if next_char in '\r\n\f' or next_char == '/' or next_char == '#':
+            return
+        spaces = self._input.getText(0, length - 1)
+        self.indents.append(self.getIndentationCount(spaces))
+        self.emitToken(self.leading_token(self.NEWLINE, length - 1, length - 1, length))
+        self.emitToken(self.leading_token(UVLPythonParser.INDENT, 0, length - 1, length))
+
+    def leading_token(self, type, start, stop, column):
+        token = CommonToken(self._tokenFactorySourcePair, type, Token.DEFAULT_CHANNEL, start, stop)
+        token.column = column
+        return token
+
     def handleNewline(self):
       new_line = re.sub(r"[^\r\n\f]+", "", self._interp.getText(self._input)) #.replaceAll("[^\r\n\f]+", "")
       spaces = re.sub(r"[\r\n\f]+", "", self._interp.getText(self._input)) #.replaceAll("[\r\n\f]+", "")

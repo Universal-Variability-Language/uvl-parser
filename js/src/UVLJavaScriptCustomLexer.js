@@ -10,6 +10,7 @@ export default class UVLJavaScriptCustomLexer extends UVLJavaScriptLexer {
         this.indents = [];
         this.opened = 0;
         this.lastToken = null;
+        this.startChecked = false;
     }
 
     emitToken(t) {
@@ -18,6 +19,11 @@ export default class UVLJavaScriptCustomLexer extends UVLJavaScriptLexer {
     }
 
     nextToken() {
+        if (!this.startChecked) {
+            this.startChecked = true;
+            this.handleLeadingIndentation();
+        }
+
         if (this._input.LA(1) === antlr4.Token.EOF && this.indents.length !== 0) {
             while (this.tokens.length > 0 && this.tokens[this.tokens.length - 1].type === antlr4.Token.EOF) {
                 this.tokens.pop();
@@ -70,8 +76,34 @@ export default class UVLJavaScriptCustomLexer extends UVLJavaScriptLexer {
         this.skip();
     }
 
-    atStartOfInput() {
-        return this._interp.column === 0 && this._interp.line === 1;
+    // Indentation before the first token is handled here, once, rather than with an
+    // {atStartOfInput()}? predicate in the NEWLINE rule: a predicate reachable from the lexer
+    // start state stops ANTLR from caching its DFA start state, which makes every token
+    // recompute the whole ATN closure. The spaces themselves are then skipped by SKIP_.
+    // Queues the same tokens handleNewline() emits for a leading line: an indented first
+    // line yields NEWLINE + INDENT, which the parser rejects.
+    handleLeadingIndentation() {
+        let length = 0;
+        while (this._input.LA(length + 1) === 32 || this._input.LA(length + 1) === 9) {
+            length += 1;
+        }
+        if (length === 0) {
+            return;
+        }
+        const next = String.fromCharCode(this._input.LA(length + 1));
+        if (next === '\r' || next === '\n' || next === '\f' || next === '#') {
+            return;
+        }
+        const spaces = this._input.getText(0, length - 1);
+        this.indents.push(UVLJavaScriptCustomLexer.getIndentationCount(spaces));
+        this.emitToken(this.leadingToken(UVLJavaScriptLexer.NEWLINE, length - 1, length - 1, length));
+        this.emitToken(this.leadingToken(UVLJavaScriptParser.INDENT, 0, length - 1, length));
+    }
+
+    leadingToken(type, start, stop, column) {
+        const token = new antlr4.CommonToken(this._tokenFactorySourcePair, type, antlr4.Token.DEFAULT_CHANNEL, start, stop);
+        token.column = column;
+        return token;
     }
 
     handleNewline() {
