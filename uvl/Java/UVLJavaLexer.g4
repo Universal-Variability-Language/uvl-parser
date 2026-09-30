@@ -15,6 +15,8 @@ package uvl;
   private int opened = 0;
   // The most recently produced token.
   private Token lastToken = null;
+  // Whether the indentation before the first token has been handled.
+  private boolean startChecked = false;
 
   @Override
   public void emit(Token t) {
@@ -24,6 +26,10 @@ package uvl;
 
   @Override
   public Token nextToken() {
+    if (!startChecked) {
+      startChecked = true;
+      handleLeadingIndentation();
+    }
     // Check if the end-of-file is ahead and there are still some DEDENTS expected.
     if (_input.LA(1) == EOF && !this.indents.isEmpty()) {
       // Remove any trailing EOF tokens from our buffer.
@@ -50,6 +56,37 @@ package uvl;
     }
 
     return tokens.isEmpty() ? next : tokens.poll();
+  }
+
+  // Indentation before the first token is handled here, once, rather than with an
+  // {atStartOfInput()}? predicate in the NEWLINE rule: a predicate reachable from the lexer
+  // start state stops ANTLR from caching its DFA start state, which makes every token
+  // recompute the whole ATN closure. The spaces themselves are then skipped by SKIP_.
+  // Queues the same tokens the NEWLINE rule emits for a leading line: an indented first
+  // line yields NEWLINE + INDENT, which the parser rejects.
+  private void handleLeadingIndentation() {
+    int length = 0;
+    while (_input.LA(length + 1) == ' ' || _input.LA(length + 1) == '\t') {
+      length++;
+    }
+    if (length == 0) {
+      return;
+    }
+    int next = _input.LA(length + 1);
+    int nextNext = _input.LA(length + 2);
+    if (next == '\r' || next == '\n' || (next == '/' && nextNext == '/')) {
+      return;
+    }
+    String spaces = _input.getText(org.antlr.v4.runtime.misc.Interval.of(0, length - 1));
+    indents.push(getIndentationCount(spaces));
+    emit(leadingToken(UVLJavaParser.NEWLINE, length - 1, length - 1, length));
+    emit(leadingToken(UVLJavaParser.INDENT, 0, length - 1, length));
+  }
+
+  private CommonToken leadingToken(int type, int start, int stop, int column) {
+    CommonToken token = new CommonToken(this._tokenFactorySourcePair, type, DEFAULT_TOKEN_CHANNEL, start, stop);
+    token.setCharPositionInLine(column);
+    return token;
   }
 
   private Token createDedent() {
@@ -86,10 +123,6 @@ package uvl;
     }
     return count;
   }
-
-  boolean atStartOfInput() {
-    return super.getCharPositionInLine() == 0 && super.getLine() == 1;
-  }
 }
 
 // Indentation-sensitive tokens
@@ -102,11 +135,11 @@ CLOSE_BRACE: '}' {this.opened -= 1;};
 OPEN_COMMENT: '/*' {this.opened += 1;};
 CLOSE_COMMENT: '*/' {this.opened -= 1;};
 
-// Indentation-sensitive NEWLINE rule
-NEWLINE: (
-		{atStartOfInput()}? SPACES
-		| ( '\r'? '\n' | '\r') SPACES?
-	) {
+// Indentation-sensitive NEWLINE rule.
+// No semantic predicate here: a predicate reachable from the lexer start state stops ANTLR
+// from caching its DFA start state, so every token would recompute the full ATN closure.
+// Indentation before the first token is handled once, in handleLeadingIndentation().
+NEWLINE: ( '\r'? '\n' | '\r') SPACES? {
      String newLine = getText().replaceAll("[^\r\n]+", "");
      String spaces = getText().replaceAll("[\r\n]+", "");
      int next = _input.LA(1);

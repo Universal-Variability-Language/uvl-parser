@@ -46,3 +46,15 @@ def test_valid_model(uvl_file):
 def test_faulty_model(uvl_file):
     with pytest.raises(Exception):
         get_tree(uvl_file)
+
+
+def test_lexer_caches_its_dfa_start_state():
+    # A semantic predicate reachable from the lexer start state stops ANTLR from caching the
+    # DFA start state (dfa.s0), so every token recomputes the full ATN closure: parsing gets
+    # several times slower. Keep lexer rules predicate-free at the start state.
+    from antlr4 import CommonTokenStream, FileStream
+    from uvl.UVLCustomLexer import UVLCustomLexer
+
+    lexer = UVLCustomLexer(FileStream(os.path.join(TEST_MODELS_DIR, "complex", "bike.uvl")))
+    CommonTokenStream(lexer).fill()
+    assert lexer._interp.decisionToDFA[lexer._mode].s0 is not None
