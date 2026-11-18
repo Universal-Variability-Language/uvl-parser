@@ -1,0 +1,5 @@
+features
+    /* the root */
+    Pizza
+        mandatory
+            Cheese

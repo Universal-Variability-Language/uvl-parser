@@ -90,6 +90,43 @@ package uvl;
   boolean atStartOfInput() {
     return super.getCharPositionInLine() == 0 && super.getLine() == 1;
   }
+
+  private static boolean isLineEnd(int code) {
+    return code == EOF || code == '\r' || code == '\n' || code == '\f';
+  }
+
+  // Whether the rest of the line holds only comments: a // comment, or /* */ comments
+  // with nothing but spaces around them.
+  private boolean isCommentOnlyLine() {
+    int offset = 1;
+    while (true) {
+      int code = _input.LA(offset);
+      if (isLineEnd(code)) {
+        return true;
+      }
+      if (code == ' ' || code == '\t') {
+        offset++;
+      } else if (code == '/') {
+        int following = _input.LA(offset + 1);
+        if (following == '/') {
+          return true;
+        }
+        if (following != '*') {
+          return false;
+        }
+        offset += 2;
+        while (!isLineEnd(_input.LA(offset))) {
+          if (_input.LA(offset) == '*' && _input.LA(offset + 1) == '/') {
+            offset += 2;
+            break;
+          }
+          offset++;
+        }
+      } else {
+        return false;
+      }
+    }
+  }
 }
 
 // Indentation-sensitive tokens
@@ -110,12 +147,11 @@ NEWLINE: (
      String newLine = getText().replaceAll("[^\r\n]+", "");
      String spaces = getText().replaceAll("[\r\n]+", "");
      int next = _input.LA(1);
-     int nextNext = _input.LA(2);
 
      if (opened > 0 || next == '\r' || next == '\n' ||
-         (next == EOF && !spaces.isEmpty()) || (next == '/' && nextNext == '/')) {
-       // If we're inside a list or on a blank line, ignore all indents,
-       // dedents and line breaks.
+         (next == EOF && !spaces.isEmpty()) || (next == '/' && isCommentOnlyLine())) {
+       // If we're inside a list, on a blank line or on a line that holds only
+       // comments, ignore all indents, dedents and line breaks.
        skip();
      } else {
        emit(commonToken(UVLJavaParser.NEWLINE, newLine));
