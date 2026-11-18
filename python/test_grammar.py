@@ -1,8 +1,12 @@
 import pytest
 import glob
 import os
+from antlr4 import CommonTokenStream, InputStream
+from antlr4.error.ErrorListener import ErrorListener
 
 from main import get_tree
+from uvl.UVLCustomLexer import UVLCustomLexer
+from uvl.UVLPythonParser import UVLPythonParser
 
 TEST_MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "test_models")
 
@@ -46,3 +50,42 @@ def test_valid_model(uvl_file):
 def test_faulty_model(uvl_file):
     with pytest.raises(Exception):
         get_tree(uvl_file)
+
+
+@pytest.mark.parametrize("depth", [64, 65, 300])
+def test_nested_attributes(depth):
+    class ErrorCollector(ErrorListener):
+        def __init__(self):
+            self.errors = []
+
+        def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+            self.errors.append(msg)
+
+    if depth == 65:
+        model_file = os.path.join(os.path.dirname(__file__), "test_models", "nested_attributes_over_limit.uvl")
+        with open(model_file, encoding="utf-8") as source:
+            model = source.read()
+    else:
+        model = "features\n    A " + "{a " * depth + "true" + "}" * depth + "\n"
+    lexer = UVLCustomLexer(InputStream(model))
+    parser = UVLPythonParser(CommonTokenStream(lexer))
+    errors = ErrorCollector()
+    parser.removeErrorListeners()
+    parser.addErrorListener(errors)
+    parser.featureModel()
+
+    if depth <= UVLCustomLexer.MAX_ATTRIBUTE_NESTING:
+        assert not errors.errors
+    else:
+        assert any("attribute nesting exceeds 64 levels" in msg for msg in errors.errors)
+
+
+@pytest.mark.parametrize("attributes", [
+    ", ".join(f"a{i} {{b true}}" for i in range(100)),
+    "a '" + "{" * 100 + "'",
+])
+def test_many_shallow_braces(attributes):
+    model = "features\n    A {" + attributes + "}\n"
+    parser = UVLPythonParser(CommonTokenStream(UVLCustomLexer(InputStream(model))))
+    parser.featureModel()
+    assert parser.getNumberOfSyntaxErrors() == 0
