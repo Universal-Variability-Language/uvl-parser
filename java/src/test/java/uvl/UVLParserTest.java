@@ -26,11 +26,6 @@ class UVLParserTest {
             "dotinfeaturename.uvl"
     );
 
-    // Files with known Java lexer edge cases (block comments with tabs)
-    private static final Set<String> JAVA_LEXER_EDGE_CASES = Set.of(
-            "fm03_block_comment.uvl"
-    );
-
     // Semantic errors that the parser cannot detect (only syntax errors are caught)
     private static final Set<String> SEMANTIC_ERROR_FILES = Set.of(
             "missingreference.uvl",
@@ -42,8 +37,7 @@ class UVLParserTest {
         return Files.walk(TEST_MODELS_DIR)
                 .filter(p -> p.toString().endsWith(".uvl"))
                 .filter(p -> !p.toString().contains("faulty"))
-                .filter(p -> !MISPLACED_INVALID_FILES.contains(p.getFileName().toString()))
-                .filter(p -> !JAVA_LEXER_EDGE_CASES.contains(p.getFileName().toString()));
+                .filter(p -> !MISPLACED_INVALID_FILES.contains(p.getFileName().toString()));
     }
 
     static Stream<Path> faultyModels() throws IOException {
