@@ -1,0 +1,5 @@
+features
+    A
+        or
+            B
+            /* c */ C

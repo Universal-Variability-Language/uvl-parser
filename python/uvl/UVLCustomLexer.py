@@ -69,6 +69,31 @@ class UVLCustomLexer(UVLPythonLexer):
 
     def atStartOfInput(self):
         return self._interp.column == 0 and self._interp.line == 1
+
+    def comment_only_line(self):
+        offset = 1
+        while True:
+            code = self._input.LA(offset)
+            if code in (Token.EOF, ord('\r'), ord('\n'), ord('\f')):
+                return True
+            if code in (ord(' '), ord('\t')):
+                offset += 1
+            elif code == ord('/'):
+                following = self._input.LA(offset + 1)
+                if following == ord('/'):
+                    return True
+                if following != ord('*'):
+                    return False
+                offset += 2
+                while self._input.LA(offset) not in (Token.EOF, ord('\r'), ord('\n'), ord('\f')):
+                    if self._input.LA(offset) == ord('*') and self._input.LA(offset + 1) == ord('/'):
+                        offset += 2
+                        break
+                    offset += 1
+                else:
+                    return True
+            else:
+                return False
     
     def handleNewline(self):
       new_line = re.sub(r"[^\r\n\f]+", "", self._interp.getText(self._input)) #.replaceAll("[^\r\n\f]+", "")
@@ -76,7 +101,7 @@ class UVLCustomLexer(UVLPythonLexer):
       next_code = self._input.LA(1)
       next_char = chr(next_code) if next_code != -1 else ''
 
-      if self.opened > 0 or next_char in '\r\n\f' or next_char == '/' or next_char == '#':
+      if self.opened > 0 or next_char in '\r\n\f' or next_char == '#' or (next_char == '/' and self.comment_only_line()):
         self.skip()
       else:
         self.emitToken(self.common_token(self.NEWLINE, new_line))
