@@ -29,8 +29,10 @@ export default class FeatureModel {
 
   getTree(chars) {
     const lexer = new UVLJavaScriptCustomLexer(chars);
-    const tokens = new antlr4.CommonTokenStream(lexer);
     const errorListener = new ErrorListener();
+    lexer.removeErrorListeners();
+    lexer.addErrorListener(errorListener);
+    const tokens = new antlr4.CommonTokenStream(lexer);
     let parser = new UVLJavaScriptParser(tokens);
     parser.removeErrorListeners();
     parser.addErrorListener(errorListener);
