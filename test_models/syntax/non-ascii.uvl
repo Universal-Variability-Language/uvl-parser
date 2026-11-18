@@ -1,0 +1,5 @@
+features
+    Pizza
+        mandatory
+            Käse
+            "Größe"

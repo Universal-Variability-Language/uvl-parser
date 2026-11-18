@@ -15,7 +15,7 @@ class CustomErrorListener(ErrorListener):
             
 
 def get_tree(argv):
-    input_stream = FileStream(argv)
+    input_stream = FileStream(argv, encoding='utf-8')
     lexer = UVLCustomLexer(input_stream)
     
     # Attach the custom error listener to the lexer
@@ -43,7 +43,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Parse the provided file
-    input_stream = FileStream(sys.argv[1])
+    input_stream = FileStream(sys.argv[1], encoding='utf-8')
     lexer = UVLCustomLexer(input_stream)
     
     # Attach the custom error listener to the lexer
