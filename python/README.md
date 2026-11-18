@@ -93,6 +93,8 @@ To use UVL in your projects, you can either:
     ```bash
     pip install uvlparser
     ```
+
+    The Python parser accepts up to 64 nested attribute objects. Deeper nesting is reported as a syntax error to avoid exhausting Python's call stack.
     ### JavaScript Parser
     Install the package via npm:
     ```bash
