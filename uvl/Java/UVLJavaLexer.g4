@@ -112,7 +112,8 @@ NEWLINE: (
      int next = _input.LA(1);
      int nextNext = _input.LA(2);
 
-     if (opened > 0 || next == '\r' || next == '\n' || (next == '/' && nextNext == '/')) {
+     if (opened > 0 || next == '\r' || next == '\n' ||
+         (next == EOF && !spaces.isEmpty()) || (next == '/' && nextNext == '/')) {
        // If we're inside a list or on a blank line, ignore all indents,
        // dedents and line breaks.
        skip();

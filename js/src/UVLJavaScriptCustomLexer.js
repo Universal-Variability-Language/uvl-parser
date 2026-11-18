@@ -79,7 +79,8 @@ export default class UVLJavaScriptCustomLexer extends UVLJavaScriptLexer {
         const spaces = this._interp.getText(this._input).replace(/[\r\n\f]+/g, "");
         const next = String.fromCharCode(this._input.LA(1));
 
-        if (this.opened > 0 || next === '\r' || next === '\n' || next === '\f' || next === '#') {
+        if (this.opened > 0 || next === '\r' || next === '\n' || next === '\f' || next === '#' ||
+            (this._input.LA(1) === antlr4.Token.EOF && spaces.length > 0)) {
             this.skip();
         } else {
             this.emitToken(this.commonToken(UVLJavaScriptLexer.NEWLINE, newLine));
