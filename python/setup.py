@@ -14,7 +14,10 @@ setup(
     author_email="jagalindo@us.es",
     # To find more licenses or classifiers go to: https://pypi.org/classifiers/
     license="GNU General Public License v3 (GPLv3)",
-    packages=['.','uvl'],
+    # 'main' stays a top-level module for existing `from main import get_tree` users;
+    # the tests and the stray top-level __init__.py are no longer installed.
+    packages=['uvl'],
+    py_modules=['main'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
@@ -23,6 +26,6 @@ setup(
     zip_safe=True,
     python_requires=">=3.0",
     install_requires=[
-        "antlr4-python3-runtime==4.13.1",
+        "antlr4-python3-runtime==4.13.2",
     ],
 )
