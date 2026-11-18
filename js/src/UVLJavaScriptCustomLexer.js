@@ -74,9 +74,40 @@ export default class UVLJavaScriptCustomLexer extends UVLJavaScriptLexer {
         return this._interp.column === 0 && this._interp.line === 1;
     }
 
+    isCommentOnlyLine() {
+        let offset = 1;
+        const isLineEnd = code => code === antlr4.Token.EOF || code === 10 || code === 13 || code === 12;
+
+        while (true) {
+            const code = this._input.LA(offset);
+            if (isLineEnd(code)) return true;
+            if (code === 32 || code === 9) {
+                offset += 1;
+            } else if (code === 47) {
+                const following = this._input.LA(offset + 1);
+                if (following === 47) return true;
+                if (following !== 42) return false;
+                offset += 2;
+                while (!isLineEnd(this._input.LA(offset))) {
+                    if (this._input.LA(offset) === 42 && this._input.LA(offset + 1) === 47) {
+                        offset += 2;
+                        break;
+                    }
+                    offset += 1;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+
     handleNewline() {
         const newLine = this._interp.getText(this._input).replace(/[^\r\n\f]+/g, "");
         const spaces = this._interp.getText(this._input).replace(/[\r\n\f]+/g, "");
+        if (this._input.LA(1) === 47 && this.isCommentOnlyLine()) {
+            this.skip();
+            return;
+        }
         const next = String.fromCharCode(this._input.LA(1));
 
         if (this.opened > 0 || next === '\r' || next === '\n' || next === '\f' || next === '#' ||
