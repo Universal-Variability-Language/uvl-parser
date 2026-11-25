@@ -1,0 +1,57 @@
+# Fuzzes the three parsers with UVL models that Fandango makes from Fanbase specs
+# (github.com/fandango-fuzzer/fandango-action). Each model is valid UVL, so one that a parser rejects, or
+# that the parsers disagree on, is a finding. The log shows counts only. What was found is in the Security
+# tab, under Code scanning, where people with write access to the repository can read it.
+name: Fuzz
+
+on:
+  push:
+    branches: [main, develop, conformance-fixes]
+  schedule:
+    - cron: "23 4 * * 1"   # Mondays, 04:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write   # to report what is found as code scanning alerts
+
+concurrency:
+  group: fuzz-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Build the three parsers
+        run: |
+          make dev
+          pip install antlr4-python3-runtime==4.13.2
+          make python_parser js_parser
+          (cd js && npm install)
+          (cd java && mvn -q -DskipTests package)
+      - name: Check the harnesses on a model of the repository
+        run: |
+          model=test_models/boolean_level/boolean.uvl
+          ulimit -v 2097152   # the fuzzer runs them with 2 GB of address space
+          python .fandango/targets/uvl-python/harness.py "$model"
+          node .fandango/targets/uvl-js/harness.mjs "$model"
+          python .fandango/targets/uvl-java/harness.py "$model"
+      - uses: fandango-fuzzer/fandango-action@v1.1.4
+        with:
+          specs: uvl uvl-lexical uvl-tabs
+          setup-python: "false"
+          count: "100"
+          reduce-budget: "15"
