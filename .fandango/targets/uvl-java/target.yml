@@ -1,0 +1,8 @@
+title: uvl-parser (Java)
+formats: [uvl]
+run: ["{python}", "{dir}/harness.py", "{file}"]   # parses FILE with UVLJavaParser; exit status 0 if it parsed
+needs:
+  commands: [java, javac]
+classify:
+  - match: "StackOverflowError"
+    as: resource-limit

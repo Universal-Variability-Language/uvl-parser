@@ -1,0 +1,6 @@
+title: uvl-parser (Python)
+formats: [uvl]
+run: ["{python}", "{dir}/harness.py", "{file}"]   # get_tree(FILE); exit status 0 if it parsed
+classify:
+  - match: "RecursionError"
+    as: resource-limit

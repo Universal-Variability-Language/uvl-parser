@@ -1,0 +1,8 @@
+title: uvl-parser (JavaScript)
+formats: [uvl]
+run: ["node", "--stack-size=8000", "{dir}/harness.mjs", "{file}"]   # new FeatureModel(FILE); exit status 0 if it parsed
+needs:
+  commands: [node]
+classify:
+  - match: "RangeError: Maximum call stack"
+    as: resource-limit
